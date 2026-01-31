@@ -32,8 +32,9 @@ qrc_*.cpp
 Thumbs.db
 *.res
 *.rc
-/.qmake.cache
-/.qmake.stash
+.qmake.cache
+.qmake.stash
+.qmlls.ini
 
 # qtcreator generated files
 *.pro.user*
@@ -79,4 +80,4 @@ CMakeLists.txt.user*
 .pch/
 .rcc/
 .uic/
-/build*/
+build*/
