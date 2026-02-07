@@ -15,9 +15,7 @@ add_subdirectory(external/mpvqt)
 
 qt_standard_project_setup(REQUIRES 6.10)
 
-qt_add_executable(radio radio/main.cpp)
-
-qt_add_qml_module(radio URI radio QML_FILES radio/Main.qml)
+add_subdirectory(radio)
 
 set_target_properties(radio PROPERTIES WIN32_EXECUTABLE TRUE)
 
