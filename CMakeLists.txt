@@ -19,7 +19,8 @@ add_subdirectory(radio)
 
 set_target_properties(radio PROPERTIES WIN32_EXECUTABLE TRUE)
 
-target_link_libraries(radio PRIVATE Qt6::Quick Qt6::QuickControls2 MpvQt::MpvQt)
+target_link_libraries(radio PRIVATE Qt6::Quick Qt6::QuickControls2 player)
+target_link_libraries(player PUBLIC MpvQt::MpvQt)
 
 include(GNUInstallDirs)
 install(
