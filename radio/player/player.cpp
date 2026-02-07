@@ -35,7 +35,7 @@ QString Player::formatTime(const double &time) {
     const int minutes = (totalNumberOfSeconds / 60) % 60;
     const int hours = totalNumberOfSeconds / 60 / 60;
 
-    return QStringLiteral("%1:%2:%3")
+    return QStringLiteral("%0:%1:%2")
         .arg(hours, 2, 10, QLatin1Char('0'))
         .arg(minutes, 2, 10, QLatin1Char('0'))
         .arg(seconds, 2, 10, QLatin1Char('0'));
@@ -64,6 +64,16 @@ Player::Player(QObject *parent)
 
     QMetaObject::invokeMethod(m_mpvController, &MpvController::init,
                               Qt::BlockingQueuedConnection);
+
+    m_mpvController->commandAsync(QStringList{
+        "loadfile", "https://stream.bigfm.de/hiphop/mp3-128/radiode"});
+
+    connect(this, &Player::nowPlayingChanged, this, [this] {
+        qDebug() << "nowplaying:" << m_nowPlaying;
+    });
+    connect(this, &Player::elapsedChanged, this, [this] {
+        qDebug() << "elapsed:" << m_elapsed;
+    });
 
     setupObservations();
 }

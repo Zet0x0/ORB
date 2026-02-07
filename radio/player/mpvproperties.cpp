@@ -1,4 +1,4 @@
 #include "mpvproperties.h"
 
-const QString MpvProperties::NowPlaying = "media-title";
-const QString MpvProperties::Elapsed = "time-pos";
+const QString MpvProperties::NowPlaying = QStringLiteral("media-title");
+const QString MpvProperties::Elapsed = QStringLiteral("time-pos");
