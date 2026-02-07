@@ -54,7 +54,7 @@ ApplicationWindow {
 
             ColumnLayout {
                 Label {
-                    id: currentlyPlayingLabel
+                    id: nowPlayingLabel
 
                     enabled: state === "showing-info"
                     font.italic: !enabled
@@ -68,7 +68,7 @@ ApplicationWindow {
                             // when: player.station === null || player.state === Stopped
 
                             PropertyChanges {
-                                target: currentlyPlayingLabel
+                                target: nowPlayingLabel
                                 text: qsTr("Not playing anything currently")
                             }
                         },
@@ -76,10 +76,10 @@ ApplicationWindow {
                             name: "no-info"
 
                             // TODO: use a real variable
-                            // when: player.currentlyPlaying === ""
+                            // when: player.nowPlaying === ""
 
                             PropertyChanges {
-                                target: currentlyPlayingLabel
+                                target: nowPlayingLabel
                                 text: qsTr("No song information available")
                             }
                         },
@@ -87,13 +87,13 @@ ApplicationWindow {
                             name: "showing-info"
 
                             // TODO: use a real variable
-                            // when: player.currentlyPlaying !== ""
+                            // when: player.nowPlaying !== ""
 
                             PropertyChanges {
-                                target: currentlyPlayingLabel
+                                target: nowPlayingLabel
 
                                 // TODO: use a real variable
-                                // text: player.currentlyPlaying
+                                // text: player.nowPlaying
                             }
                         }
                     ]
