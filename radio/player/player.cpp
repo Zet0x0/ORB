@@ -65,16 +65,6 @@ Player::Player(QObject *parent)
     QMetaObject::invokeMethod(m_mpvController, &MpvController::init,
                               Qt::BlockingQueuedConnection);
 
-    m_mpvController->commandAsync(QStringList{
-        "loadfile", "https://stream.bigfm.de/hiphop/mp3-128/radiode"});
-
-    connect(this, &Player::nowPlayingChanged, this, [this] {
-        qDebug() << "nowplaying:" << m_nowPlaying;
-    });
-    connect(this, &Player::elapsedChanged, this, [this] {
-        qDebug() << "elapsed:" << m_elapsed;
-    });
-
     setupObservations();
 }
 
