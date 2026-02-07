@@ -23,6 +23,8 @@ private:
 
     QString m_elapsed;
 
+    explicit Player(QObject *parent = nullptr);
+
     void setupObservations();
     void observeProperty(const QString &property, mpv_format format,
                          uint64_t id = 0);
@@ -33,10 +35,10 @@ private:
     void setElapsed(const QString &newElapsed);
 
 public:
-    explicit Player(QObject *parent = nullptr);
     ~Player();
 
     static Player *instance();
+    static Player *create(QQmlEngine *, QJSEngine *);
 
     QString nowPlaying() const;
 

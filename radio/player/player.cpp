@@ -1,6 +1,23 @@
 #include "player.h"
 #include "mpvproperties.h"
 
+Player::Player(QObject *parent)
+    : QObject(parent), m_workerThread(new QThread(this)) {
+    m_mpvController = new MpvController;
+
+    connect(m_workerThread, &QThread::finished, m_mpvController,
+            &QObject::deleteLater);
+
+    m_mpvController->moveToThread(m_workerThread);
+
+    m_workerThread->start();
+
+    QMetaObject::invokeMethod(m_mpvController, &MpvController::init,
+                              Qt::BlockingQueuedConnection);
+
+    setupObservations();
+}
+
 void Player::setupObservations() {
     connect(m_mpvController, &MpvController::propertyChanged, this,
             &Player::onPropertyChanged, Qt::QueuedConnection);
@@ -51,23 +68,6 @@ void Player::setElapsed(const QString &newElapsed) {
     emit elapsedChanged();
 }
 
-Player::Player(QObject *parent)
-    : QObject(parent), m_workerThread(new QThread(this)) {
-    m_mpvController = new MpvController;
-
-    connect(m_workerThread, &QThread::finished, m_mpvController,
-            &QObject::deleteLater);
-
-    m_mpvController->moveToThread(m_workerThread);
-
-    m_workerThread->start();
-
-    QMetaObject::invokeMethod(m_mpvController, &MpvController::init,
-                              Qt::BlockingQueuedConnection);
-
-    setupObservations();
-}
-
 Player::~Player() {
     m_workerThread->quit();
     m_workerThread->wait();
@@ -81,6 +81,10 @@ Player *Player::instance() {
     static Player *instance = new Player;
 
     return instance;
+}
+
+Player *Player::create(QQmlEngine *, QJSEngine *) {
+    return instance();
 }
 
 QString Player::nowPlaying() const {
