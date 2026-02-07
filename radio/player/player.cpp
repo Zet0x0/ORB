@@ -6,7 +6,7 @@ Player::Player(QObject *parent)
     m_mpvController = new MpvController;
 
     connect(m_workerThread, &QThread::finished, m_mpvController,
-            &QObject::deleteLater);
+            &QObject::deleteLater, Qt::QueuedConnection);
 
     m_mpvController->moveToThread(m_workerThread);
 
