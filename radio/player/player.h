@@ -12,6 +12,7 @@ class Player : public QObject {
     Q_PROPERTY(
         QString nowPlaying READ nowPlaying NOTIFY nowPlayingChanged FINAL)
 
+    // TODO: make use of this in the UI - currently unused
     Q_PROPERTY(QString elapsed READ elapsed NOTIFY elapsedChanged FINAL)
 
 private:

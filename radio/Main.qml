@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import radio.player
 
 ApplicationWindow {
     height: 480
@@ -74,9 +75,7 @@ ApplicationWindow {
                         },
                         State {
                             name: "no-info"
-
-                            // TODO: use a real variable
-                            // when: player.nowPlaying === ""
+                            when: Player.nowPlaying === ""
 
                             PropertyChanges {
                                 target: nowPlayingLabel
@@ -85,15 +84,11 @@ ApplicationWindow {
                         },
                         State {
                             name: "showing-info"
-
-                            // TODO: use a real variable
-                            // when: player.nowPlaying !== ""
+                            when: Player.nowPlaying !== ""
 
                             PropertyChanges {
                                 target: nowPlayingLabel
-
-                                // TODO: use a real variable
-                                // text: player.nowPlaying
+                                text: Player.nowPlaying
                             }
                         }
                     ]
