@@ -4,6 +4,7 @@ set(MPV_EXTRACT_DIR "${MPV_CACHE_DIR}/libmpv")
 
 file(MAKE_DIRECTORY "${MPV_DOWNLOAD_DIR}")
 file(MAKE_DIRECTORY "${MPV_EXTRACT_DIR}")
+file(MAKE_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/bin")
 
 set(MPV_GITHUB_API
     "https://api.github.com/repos/shinchiro/mpv-winbuild-cmake/releases/latest")
@@ -68,6 +69,10 @@ if(NOT EXISTS "${MPV_EXTRACT_DIR}/include")
     file(ARCHIVE_EXTRACT INPUT "${MPV_ARCHIVE_PATH}" DESTINATION
          "${MPV_EXTRACT_DIR}")
 endif()
+
+# Copy libmpv-2.dll to build_dir/bin
+file(COPY_FILE "${MPV_EXTRACT_DIR}/libmpv-2.dll"
+     "${CMAKE_CURRENT_BINARY_DIR}/bin/libmpv-2.dll" ONLY_IF_DIFFERENT)
 
 # Set CMake variables
 set(Libmpv_INCLUDE_DIRS
