@@ -42,9 +42,7 @@ ApplicationWindow {
                     asynchronous: true
                     cache: false
                     fillMode: Image.PreserveAspectCrop
-                    // TODO: use a real variable
-                    // source: player.station.imageUrl
-                    source: "https://picsum.photos/256/128"
+                    source: Player.station.imageUrl
                 }
 
                 // Image.Loading
@@ -64,9 +62,7 @@ ApplicationWindow {
                     states: [
                         State {
                             name: "playback-stopped"
-
-                            // TODO: use a real variable
-                            when: /*Player.station === null || */ Player.state === Player.Stopped
+                            when: !Player.station.valid || Player.state === Player.Stopped
 
                             PropertyChanges {
                                 target: nowPlayingLabel
@@ -103,9 +99,7 @@ ApplicationWindow {
                     states: [
                         State {
                             name: "no-station"
-
-                            // TODO: use a real variable
-                            // when: player.station === null
+                            when: !Player.station.valid
 
                             PropertyChanges {
                                 target: stationNameLabel
@@ -114,16 +108,11 @@ ApplicationWindow {
                         },
                         State {
                             name: "showing-name"
-
-                            // TODO: use a real variable
-                            // when: player.station !== null
+                            when: Player.station.valid
 
                             PropertyChanges {
                                 target: stationNameLabel
-
-                                // TODO: use a real variable
-                                // text: player.station.name
-
+                                text: Player.station.name
                             }
                         }
                     ]
@@ -131,6 +120,7 @@ ApplicationWindow {
 
                 RowLayout {
                     ToolButton {
+                        enabled: Player.station.valid
                         // TODO: use real icons
                         // TODO: make this change depending on state;
                         // NOTE: this app might or might not use icon.name
