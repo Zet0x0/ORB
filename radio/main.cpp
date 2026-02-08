@@ -7,7 +7,7 @@
     qmlRegisterSingletonInstance<type>(uri, 1, 0, #type, type::instance())
 
 int main(int argc, char *argv[]) {
-    QQuickStyle::setStyle("Fusion");
+    QQuickStyle::setStyle(QStringLiteral("Fusion"));
 
     QGuiApplication app(argc, argv);
     QQmlApplicationEngine engine;
@@ -21,7 +21,7 @@ int main(int argc, char *argv[]) {
 
     REGISTER_QML_SINGLETON(Player, "radio.player");
 
-    engine.loadFromModule("radio", "Main");
+    engine.loadFromModule(QStringLiteral("radio"), QStringLiteral("Main"));
 
     return app.exec();
 }

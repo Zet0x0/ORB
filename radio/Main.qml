@@ -66,7 +66,7 @@ ApplicationWindow {
                             name: "playback-stopped"
 
                             // TODO: use a real variable
-                            // when: player.station === null || player.state === Stopped
+                            when: /*Player.station === null || */ Player.state === Player.Stopped
 
                             PropertyChanges {
                                 target: nowPlayingLabel
@@ -136,6 +136,14 @@ ApplicationWindow {
                         // NOTE: this app might or might not use icon.name
                         // instead of icon.source
                         icon.source: "https://picsum.photos/24/24"
+
+                        onClicked: {
+                            if (Player.state === Player.Stopped) {
+                                Player.play();
+                            } else {
+                                Player.stop();
+                            }
+                        }
                     }
                 }
             }

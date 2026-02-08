@@ -13,41 +13,67 @@ class Player : public QObject, public Singleton<Player> {
     Q_PROPERTY(
         QString nowPlaying READ nowPlaying NOTIFY nowPlayingChanged FINAL)
 
+    Q_PROPERTY(Player::State state READ state NOTIFY stateChanged FINAL)
     // TODO: make use of this in the UI - currently unused
     Q_PROPERTY(QString elapsed READ elapsed NOTIFY elapsedChanged FINAL)
 
+public:
+    enum class State { Stopped, Loading, Playing };
+    Q_ENUM(State)
+
 private:
+    enum class AsyncCommandId { None, Stop };
+
     MpvController *m_mpvController = nullptr;
     QThread *m_workerThread = nullptr;
 
     QString m_nowPlaying;
 
-    QString m_elapsed;
+    Player::State m_state = Player::State::Stopped;
+    QString m_elapsed = QStringLiteral("00:00:00");
 
     friend class Singleton<Player>;
     explicit Player(QObject *parent = nullptr);
+
+    void setupConnections();
 
     void setupObservations();
     void observeProperty(const QString &property, mpv_format format,
                          uint64_t id = 0);
 
+    void commandAsync(const QStringList &params,
+                      Player::AsyncCommandId id = Player::AsyncCommandId::None);
+
     void setNowPlaying(QString newNowPlaying);
 
+    void setState(const Player::State &newState);
     QString formatTime(const double &time);
     void setElapsed(const QString &newElapsed);
+
+private slots:
+    void onPropertyChanged(const QString &property, const QVariant &value);
+
+    void onAsyncReply(const QVariant &data, mpv_event event);
+
+    void onEndFile(QString reason);
+    void onFileStarted();
+    void onFileLoaded();
 
 public:
     ~Player();
 
     QString nowPlaying() const;
 
+    Player::State state() const;
     QString elapsed() const;
+
+public slots:
+    void play();
+    void stop();
 
 signals:
     void nowPlayingChanged();
 
+    void stateChanged();
     void elapsedChanged();
-
-private slots:
-    void onPropertyChanged(const QString &property, const QVariant &value);
 };

@@ -9,4 +9,3 @@ public:
     static const QString NowPlaying;
     static const QString Elapsed;
 };
-
