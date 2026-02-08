@@ -1,20 +1,27 @@
+#include "player/player.h"
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
 #include <QQuickStyle>
 
+#define REGISTER_QML_SINGLETON(type, uri)                                  \
+    qmlRegisterSingletonInstance<type>(uri, 1, 0, #type, type::instance())
+
 int main(int argc, char *argv[]) {
-    QQuickStyle::setStyle("Fusion");
+    QQuickStyle::setStyle(QStringLiteral("Fusion"));
 
     QGuiApplication app(argc, argv);
-
     QQmlApplicationEngine engine;
+
     QObject::connect(
         &engine, &QQmlApplicationEngine::objectCreationFailed, &app,
         []() {
             QCoreApplication::exit(-1);
         },
         Qt::QueuedConnection);
-    engine.loadFromModule("radio", "Main");
+
+    REGISTER_QML_SINGLETON(Player, "radio.player");
+
+    engine.loadFromModule(QStringLiteral("radio"), QStringLiteral("Main"));
 
     return app.exec();
 }

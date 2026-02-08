@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import radio.player
 
 ApplicationWindow {
     height: 480
@@ -41,9 +42,7 @@ ApplicationWindow {
                     asynchronous: true
                     cache: false
                     fillMode: Image.PreserveAspectCrop
-                    // TODO: use a real variable
-                    // source: player.station.imageUrl
-                    source: "https://picsum.photos/256/128"
+                    source: Player.station.imageUrl
                 }
 
                 // Image.Loading
@@ -53,9 +52,13 @@ ApplicationWindow {
             }
 
             ColumnLayout {
-                Label {
-                    id: currentlyPlayingLabel
+                Layout.fillWidth: true
 
+                Label {
+                    id: nowPlayingLabel
+
+                    Layout.fillWidth: true
+                    elide: Text.ElideMiddle
                     enabled: state === "showing-info"
                     font.italic: !enabled
                     textFormat: Text.PlainText
@@ -63,84 +66,92 @@ ApplicationWindow {
                     states: [
                         State {
                             name: "playback-stopped"
-
-                            // TODO: use a real variable
-                            // when: player.station === null || player.state === Stopped
+                            when: !Player.station.valid || Player.state === Player.Stopped
 
                             PropertyChanges {
-                                target: currentlyPlayingLabel
+                                target: nowPlayingLabel
                                 text: qsTr("Not playing anything currently")
                             }
                         },
                         State {
                             name: "no-info"
-
-                            // TODO: use a real variable
-                            // when: player.currentlyPlaying === ""
+                            when: Player.nowPlaying === ""
 
                             PropertyChanges {
-                                target: currentlyPlayingLabel
+                                target: nowPlayingLabel
                                 text: qsTr("No song information available")
                             }
                         },
                         State {
                             name: "showing-info"
-
-                            // TODO: use a real variable
-                            // when: player.currentlyPlaying !== ""
+                            when: Player.nowPlaying !== ""
 
                             PropertyChanges {
-                                target: currentlyPlayingLabel
-
-                                // TODO: use a real variable
-                                // text: player.currentlyPlaying
+                                target: nowPlayingLabel
+                                text: Player.nowPlaying
                             }
                         }
                     ]
                 }
 
-                Label {
-                    id: stationNameLabel
+                Row {
+                    Layout.fillWidth: true
+                    spacing: parent.spacing
 
-                    font.italic: state !== "showing-name"
-                    textFormat: Text.PlainText
+                    Label {
+                        id: stationNameLabel
 
-                    states: [
-                        State {
-                            name: "no-station"
+                        elide: Text.ElideMiddle
+                        font.italic: state !== "showing-name"
+                        textFormat: Text.PlainText
+                        width: Math.min(parent.width - ((elapsedLabel.visible) ? elapsedLabel.width + parent.spacing : 0), implicitWidth)
 
-                            // TODO: use a real variable
-                            // when: player.station === null
+                        states: [
+                            State {
+                                name: "no-station"
+                                when: !Player.station.valid
 
-                            PropertyChanges {
-                                target: stationNameLabel
-                                text: qsTr("No station selected")
+                                PropertyChanges {
+                                    target: stationNameLabel
+                                    text: qsTr("No station selected")
+                                }
+                            },
+                            State {
+                                name: "showing-name"
+                                when: Player.station.valid
+
+                                PropertyChanges {
+                                    target: stationNameLabel
+                                    text: Player.station.name
+                                }
                             }
-                        },
-                        State {
-                            name: "showing-name"
+                        ]
+                    }
 
-                            // TODO: use a real variable
-                            // when: player.station !== null
+                    Label {
+                        id: elapsedLabel
 
-                            PropertyChanges {
-                                target: stationNameLabel
-
-                                // TODO: use a real variable
-                                // text: player.station.name
-
-                            }
-                        }
-                    ]
+                        enabled: false
+                        text: Player.elapsed
+                        visible: Player.state === Player.Playing
+                    }
                 }
 
                 RowLayout {
                     ToolButton {
+                        enabled: Player.station.valid
                         // TODO: use real icons
-                        // TODO: make this change depending on state;
                         // NOTE: this app might or might not use icon.name
                         // instead of icon.source
-                        icon.source: "https://picsum.photos/24/24"
+                        icon.source: (Player.state === Player.Stopped) ? "https://picsum.photos/24/24" : "https://picsum.photos/24/24"
+
+                        onClicked: {
+                            if (Player.state === Player.Stopped) {
+                                Player.play();
+                            } else {
+                                Player.stop();
+                            }
+                        }
                     }
                 }
             }
