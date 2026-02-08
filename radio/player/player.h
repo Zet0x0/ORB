@@ -17,7 +17,6 @@ class Player : public QObject, public Singleton<Player> {
         QString nowPlaying READ nowPlaying NOTIFY nowPlayingChanged FINAL)
 
     Q_PROPERTY(Player::State state READ state NOTIFY stateChanged FINAL)
-    // TODO: make use of this in the UI - currently unused
     Q_PROPERTY(QString elapsed READ elapsed NOTIFY elapsedChanged FINAL)
 
 public:

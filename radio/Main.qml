@@ -52,6 +52,8 @@ ApplicationWindow {
             }
 
             ColumnLayout {
+                Layout.fillWidth: true
+
                 Label {
                     id: nowPlayingLabel
 
@@ -90,32 +92,47 @@ ApplicationWindow {
                     ]
                 }
 
-                Label {
-                    id: stationNameLabel
+                Row {
+                    Layout.fillWidth: true
+                    spacing: parent.spacing
 
-                    font.italic: state !== "showing-name"
-                    textFormat: Text.PlainText
+                    Label {
+                        id: stationNameLabel
 
-                    states: [
-                        State {
-                            name: "no-station"
-                            when: !Player.station.valid
+                        elide: Text.ElideMiddle
+                        font.italic: state !== "showing-name"
+                        textFormat: Text.PlainText
+                        width: Math.min(parent.width - ((elapsedLabel.visible) ? elapsedLabel.width + parent.spacing : 0), implicitWidth)
 
-                            PropertyChanges {
-                                target: stationNameLabel
-                                text: qsTr("No station selected")
+                        states: [
+                            State {
+                                name: "no-station"
+                                when: !Player.station.valid
+
+                                PropertyChanges {
+                                    target: stationNameLabel
+                                    text: qsTr("No station selected")
+                                }
+                            },
+                            State {
+                                name: "showing-name"
+                                when: Player.station.valid
+
+                                PropertyChanges {
+                                    target: stationNameLabel
+                                    text: Player.station.name
+                                }
                             }
-                        },
-                        State {
-                            name: "showing-name"
-                            when: Player.station.valid
+                        ]
+                    }
 
-                            PropertyChanges {
-                                target: stationNameLabel
-                                text: Player.station.name
-                            }
-                        }
-                    ]
+                    Label {
+                        id: elapsedLabel
+
+                        enabled: false
+                        text: Player.elapsed
+                        visible: Player.state === Player.Playing
+                    }
                 }
 
                 RowLayout {
