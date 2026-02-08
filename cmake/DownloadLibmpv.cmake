@@ -10,11 +10,14 @@ set(MPV_GITHUB_API
 
 if(NOT EXISTS "${MPV_DOWNLOAD_DIR}/latest_release.json")
     message(STATUS "Fetching latest mpv release info...")
+
     file(
         DOWNLOAD "${MPV_GITHUB_API}" "${MPV_DOWNLOAD_DIR}/latest_release.json"
         STATUS _status
         SHOW_PROGRESS)
+
     list(GET _status 0 _code)
+
     if(NOT _code EQUAL 0)
         message(FATAL_ERROR "Failed to fetch latest mpv release info.")
     endif()
@@ -45,11 +48,14 @@ set(MPV_ARCHIVE_PATH "${MPV_DOWNLOAD_DIR}/${MPV_FILENAME}")
 # Download
 if(NOT EXISTS "${MPV_ARCHIVE_PATH}")
     message(STATUS "Downloading ${MPV_FILENAME}...")
+
     file(
         DOWNLOAD "${MPV_URL}" "${MPV_ARCHIVE_PATH}"
         SHOW_PROGRESS
         STATUS _download_status)
+
     list(GET _download_status 0 _code)
+
     if(NOT _code EQUAL 0)
         message(FATAL_ERROR "Failed to download ${MPV_FILENAME}")
     endif()
@@ -58,14 +64,9 @@ endif()
 # Extract
 if(NOT EXISTS "${MPV_EXTRACT_DIR}/include")
     message(STATUS "Extracting ${MPV_FILENAME}...")
-    execute_process(COMMAND 7z x "${MPV_ARCHIVE_PATH}" "-o${MPV_EXTRACT_DIR}" -y
-                    RESULT_VARIABLE _extract_result)
-    if(NOT _extract_result EQUAL 0)
-        message(
-            FATAL_ERROR
-                "Failed to extract ${MPV_FILENAME}. Make sure 7z is installed and in PATH."
-        )
-    endif()
+
+    file(ARCHIVE_EXTRACT INPUT "${MPV_ARCHIVE_PATH}" DESTINATION
+         "${MPV_EXTRACT_DIR}")
 endif()
 
 # Set CMake variables
