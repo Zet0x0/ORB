@@ -1,10 +1,11 @@
 #pragma once
 
+#include "../singleton.h"
 #include <MpvController>
 #include <QQmlEngine>
 #include <QThread>
 
-class Player : public QObject {
+class Player : public QObject, public Singleton<Player> {
     Q_OBJECT
     QML_ELEMENT
     QML_SINGLETON
@@ -23,6 +24,7 @@ private:
 
     QString m_elapsed;
 
+    friend class Singleton<Player>;
     explicit Player(QObject *parent = nullptr);
 
     void setupObservations();
@@ -36,9 +38,6 @@ private:
 
 public:
     ~Player();
-
-    static Player *instance();
-    static Player *create(QQmlEngine *, QJSEngine *);
 
     QString nowPlaying() const;
 

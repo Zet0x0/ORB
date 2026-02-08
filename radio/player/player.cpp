@@ -77,16 +77,6 @@ Player::~Player() {
     m_workerThread->deleteLater();
 }
 
-Player *Player::instance() {
-    static Player *instance = new Player;
-
-    return instance;
-}
-
-Player *Player::create(QQmlEngine *, QJSEngine *) {
-    return instance();
-}
-
 QString Player::nowPlaying() const {
     return m_nowPlaying;
 }
