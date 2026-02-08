@@ -57,6 +57,8 @@ ApplicationWindow {
                 Label {
                     id: nowPlayingLabel
 
+                    Layout.fillWidth: true
+                    elide: Text.ElideMiddle
                     enabled: state === "showing-info"
                     font.italic: !enabled
                     textFormat: Text.PlainText
