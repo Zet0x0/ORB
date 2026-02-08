@@ -122,10 +122,9 @@ ApplicationWindow {
                     ToolButton {
                         enabled: Player.station.valid
                         // TODO: use real icons
-                        // TODO: make this change depending on state;
                         // NOTE: this app might or might not use icon.name
                         // instead of icon.source
-                        icon.source: "https://picsum.photos/24/24"
+                        icon.source: (Player.state === Player.Stopped) ? "https://picsum.photos/24/24" : "https://picsum.photos/24/24"
 
                         onClicked: {
                             if (Player.state === Player.Stopped) {

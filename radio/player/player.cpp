@@ -130,7 +130,10 @@ void Player::onAsyncReply(const QVariant &data, mpv_event event) {
 
 void Player::onEndFile(QString reason) {
     if (reason == QStringLiteral("eof") || reason == QStringLiteral("error")) {
-        // TODO: some error handling here
+        // TODO: remove this qCritical when some
+        // proper error handling involving the UI
+        // is done here
+        qCritical() << "playback error";
     }
 
     setState(Player::State::Stopped);
