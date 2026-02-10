@@ -19,4 +19,5 @@ private:
 public:
     bool sourceExists(const QString &sourceName);
     bool registerSource(const QString &name, Source *source);
+    Q_INVOKABLE QStringList getSources() const;
 };

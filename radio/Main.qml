@@ -2,6 +2,7 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import radio.player
+import radio.sources
 
 ApplicationWindow {
     height: 480
@@ -156,26 +157,14 @@ ApplicationWindow {
             ComboBox {
                 id: sourceSelector
 
-                // TODO: this should probably be removed
-                // along with the QML's ListModel that's
-                // currently set as ComboBox's model
-                textRole: "text"
-                valueRole: "value"
-
-                // TODO: retrieve the model from backend instead
-                model: ListModel {
-                    ListElement {
-                        text: "Not selected"
-                        value: -1
-                    }
-                }
+                model: SourceController.getSources()
             }
 
             SearchField {
                 id: stationSearchField
 
                 Layout.fillWidth: true
-                enabled: sourceSelector.currentValue !== -1
+                enabled: sourceSelector.currentIndex > 0
             }
         }
 
@@ -185,7 +174,7 @@ ApplicationWindow {
             states: [
                 State {
                     name: "no-source"
-                    when: sourceSelector.currentValue === -1
+                    when: sourceSelector.currentIndex === 0
 
                     PropertyChanges {
                         statusLabel.text: qsTr("# Nothing to show\nStart by [selecting a source](#sourceSelector)")
