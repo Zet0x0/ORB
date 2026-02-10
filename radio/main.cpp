@@ -1,4 +1,5 @@
 #include "player/player.h"
+#include "sources/sourcecontroller.h"
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
 #include <QQuickStyle>
@@ -20,6 +21,13 @@ int main(int argc, char *argv[]) {
         Qt::QueuedConnection);
 
     REGISTER_QML_SINGLETON(Player, "radio.player");
+    REGISTER_QML_SINGLETON(SourceController, "radio.sources");
+
+    // TODO
+    // SourceController *sourceController = SourceController::instance();
+    // sourceController->registerSource("testsource1", new Source);
+    // sourceController->registerSource("testsource1", new Source);
+    // sourceController->registerSource("testsource2", new Source);
 
     engine.loadFromModule(QStringLiteral("radio"), QStringLiteral("Main"));
 

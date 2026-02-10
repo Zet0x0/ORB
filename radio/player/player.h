@@ -19,6 +19,8 @@ class Player : public QObject, public Singleton<Player> {
     Q_PROPERTY(Player::State state READ state NOTIFY stateChanged FINAL)
     Q_PROPERTY(QString elapsed READ elapsed NOTIFY elapsedChanged FINAL)
 
+    friend class Singleton<Player>;
+
 public:
     enum class State { Stopped, Loading, Playing };
     Q_ENUM(State)
@@ -35,7 +37,6 @@ private:
     Player::State m_state = Player::State::Stopped;
     QString m_elapsed = QStringLiteral("00:00:00");
 
-    friend class Singleton<Player>;
     explicit Player(QObject *parent = nullptr);
 
     void setupConnections();
