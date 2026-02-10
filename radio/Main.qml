@@ -188,7 +188,7 @@ ApplicationWindow {
                     when: sourceSelector.currentValue === -1
 
                     PropertyChanges {
-                        statusLabel.text: qsTr("# Nothing to show\n\nStart by [selecting a source](#sourceSelector)")
+                        statusLabel.text: qsTr("# Nothing to show\nStart by [selecting a source](#sourceSelector)")
                     }
                 },
                 State {
@@ -198,7 +198,7 @@ ApplicationWindow {
                     // when: results > 0
 
                     PropertyChanges {
-                        statusLabel.text: qsTr("# You should be seeing the stations,\n\nnot this message")
+                        statusLabel.text: qsTr("# You should be seeing the stations,\nnot this message")
                     }
                 },
                 State {
@@ -206,7 +206,7 @@ ApplicationWindow {
                     when: stationSearchField.text.trim().length === 0
 
                     PropertyChanges {
-                        statusLabel.text: qsTr("# Nothing to show\n\nYour search query is empty")
+                        statusLabel.text: qsTr("# Nothing to show\nYour search query is empty")
                     }
                 },
                 State {
@@ -217,7 +217,7 @@ ApplicationWindow {
 
                     PropertyChanges {
                         // TODO: use real variables and insert them as needed
-                        statusLabel.text: qsTr("# Error title\n\nError message")
+                        statusLabel.text: qsTr("# Error title\nError message")
                     }
                 },
                 State {
@@ -227,7 +227,7 @@ ApplicationWindow {
                     // when: results === 0
 
                     PropertyChanges {
-                        statusLabel.text: qsTr("# Nothing found\n\nCheck your search query")
+                        statusLabel.text: qsTr("# Nothing found\nCheck your search query")
                     }
                 }
             ]
