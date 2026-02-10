@@ -69,8 +69,7 @@ ApplicationWindow {
                             when: !Player.station.valid || Player.state === Player.Stopped
 
                             PropertyChanges {
-                                target: nowPlayingLabel
-                                text: qsTr("Not playing anything currently")
+                                nowPlayingLabel.text: qsTr("Not playing anything currently")
                             }
                         },
                         State {
@@ -78,8 +77,7 @@ ApplicationWindow {
                             when: Player.nowPlaying === ""
 
                             PropertyChanges {
-                                target: nowPlayingLabel
-                                text: qsTr("No song information available")
+                                nowPlayingLabel.text: qsTr("No song information available")
                             }
                         },
                         State {
@@ -87,8 +85,7 @@ ApplicationWindow {
                             when: Player.nowPlaying !== ""
 
                             PropertyChanges {
-                                target: nowPlayingLabel
-                                text: Player.nowPlaying
+                                nowPlayingLabel.text: Player.nowPlaying
                             }
                         }
                     ]
@@ -112,8 +109,7 @@ ApplicationWindow {
                                 when: !Player.station.valid
 
                                 PropertyChanges {
-                                    target: stationNameLabel
-                                    text: qsTr("No station selected")
+                                    stationNameLabel.text: qsTr("No station selected")
                                 }
                             },
                             State {
@@ -121,8 +117,7 @@ ApplicationWindow {
                                 when: Player.station.valid
 
                                 PropertyChanges {
-                                    target: stationNameLabel
-                                    text: Player.station.name
+                                    stationNameLabel.text: Player.station.name
                                 }
                             }
                         ]
@@ -193,8 +188,7 @@ ApplicationWindow {
                     when: sourceSelector.currentValue === -1
 
                     PropertyChanges {
-                        target: statusLabel
-                        text: qsTr("# Nothing to show\n\nStart by [selecting a source](#sourceSelector)")
+                        statusLabel.text: qsTr("# Nothing to show\n\nStart by [selecting a source](#sourceSelector)")
                     }
                 },
                 State {
@@ -204,8 +198,7 @@ ApplicationWindow {
                     // when: results > 0
 
                     PropertyChanges {
-                        target: statusLabel
-                        text: qsTr("# You should be seeing the stations,\n\nnot this message")
+                        statusLabel.text: qsTr("# You should be seeing the stations,\n\nnot this message")
                     }
                 },
                 State {
@@ -213,8 +206,7 @@ ApplicationWindow {
                     when: stationSearchField.text.trim().length === 0
 
                     PropertyChanges {
-                        target: statusLabel
-                        text: qsTr("# Nothing to show\n\nYour search query is empty")
+                        statusLabel.text: qsTr("# Nothing to show\n\nYour search query is empty")
                     }
                 },
                 State {
@@ -224,9 +216,8 @@ ApplicationWindow {
                     // when: results < 0
 
                     PropertyChanges {
-                        target: statusLabel
                         // TODO: use real variables and insert them as needed
-                        text: qsTr("# Error title\n\nError message")
+                        statusLabel.text: qsTr("# Error title\n\nError message")
                     }
                 },
                 State {
@@ -236,8 +227,7 @@ ApplicationWindow {
                     // when: results === 0
 
                     PropertyChanges {
-                        target: statusLabel
-                        text: qsTr("# Nothing found\n\nCheck your search query")
+                        statusLabel.text: qsTr("# Nothing found\n\nCheck your search query")
                     }
                 }
             ]
