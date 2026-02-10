@@ -39,19 +39,20 @@ private:
 
     explicit Player(QObject *parent = nullptr);
 
-    void setupConnections();
+    void setupConnections() const;
 
-    void setupObservations();
+    void setupObservations() const;
     void observeProperty(const QString &property, mpv_format format,
-                         uint64_t id = 0);
+                         uint64_t id = 0) const;
 
-    void commandAsync(const QStringList &params,
-                      Player::AsyncCommandId id = Player::AsyncCommandId::None);
+    void commandAsync(
+        const QStringList &params,
+        Player::AsyncCommandId id = Player::AsyncCommandId::None) const;
 
     void setNowPlaying(QString newNowPlaying);
 
     void setState(const Player::State &newState);
-    QString formatTime(const double &time);
+    QString formatTime(const double &time) const;
     void setElapsed(const QString &newElapsed);
 
 private slots:
@@ -74,8 +75,8 @@ public:
     QString elapsed() const;
 
 public slots:
-    void play();
-    void stop();
+    void play() const;
+    void stop() const;
 
 signals:
     void stationChanged();

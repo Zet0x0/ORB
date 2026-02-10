@@ -21,7 +21,7 @@ private:
     QString m_streamUrl;
     QString m_imageUrl;
 
-    QString qUrlParse(const QString &rawUrl);
+    QString qUrlParse(const QString &rawUrl) const;
 
 public:
     explicit Station(QObject *parent, const QString &name = QString(),

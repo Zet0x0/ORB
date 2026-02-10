@@ -26,7 +26,7 @@ Player::Player(QObject *parent)
     setupObservations();
 }
 
-void Player::setupConnections() {
+void Player::setupConnections() const {
     connect(m_mpvController, &MpvController::propertyChanged, this,
             &Player::onPropertyChanged, Qt::QueuedConnection);
 
@@ -41,19 +41,19 @@ void Player::setupConnections() {
             &Player::onFileLoaded, Qt::QueuedConnection);
 }
 
-void Player::setupObservations() {
+void Player::setupObservations() const {
     observeProperty(MpvProperties::NowPlaying, MPV_FORMAT_STRING);
     observeProperty(MpvProperties::Elapsed, MPV_FORMAT_DOUBLE);
 }
 
 void Player::observeProperty(const QString &property, mpv_format format,
-                             uint64_t id) {
+                             uint64_t id) const {
     QMetaObject::invokeMethod(m_mpvController, &MpvController::observeProperty,
                               Qt::QueuedConnection, property, format, id);
 }
 
 void Player::commandAsync(const QStringList &params,
-                          Player::AsyncCommandId id) {
+                          Player::AsyncCommandId id) const {
     QMetaObject::invokeMethod(m_mpvController, &MpvController::commandAsync,
                               Qt::QueuedConnection, params,
                               static_cast<int>(id));
@@ -82,7 +82,7 @@ void Player::setState(const Player::State &newState) {
 }
 
 // taken from MpvQt examples & slightly modified
-QString Player::formatTime(const double &time) {
+QString Player::formatTime(const double &time) const {
     const int totalNumberOfSeconds = static_cast<int>(time);
 
     const int seconds = totalNumberOfSeconds % 60;
@@ -189,10 +189,10 @@ QString Player::elapsed() const {
     return m_elapsed;
 }
 
-void Player::play() {
+void Player::play() const {
     commandAsync({QStringLiteral("loadfile"), m_station->streamUrl()});
 }
 
-void Player::stop() {
+void Player::stop() const {
     commandAsync({QStringLiteral("stop")}, Player::AsyncCommandId::Stop);
 }

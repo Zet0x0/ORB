@@ -1,6 +1,6 @@
 #include "station.h"
 
-QString Station::qUrlParse(const QString &rawUrl) {
+QString Station::qUrlParse(const QString &rawUrl) const {
     return QUrl::fromUserInput(rawUrl).toString();
 }
 
