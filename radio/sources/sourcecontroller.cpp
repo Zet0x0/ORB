@@ -24,15 +24,14 @@ void SourceController::setupSourceConnections(Source *source) const {
             &SourceController::onSearchCancelled);
 }
 
-void SourceController::setSearchState(
-    const SourceController::SearchState &newSearchState) {
+void SourceController::setSearchState(const SearchState &newSearchState) {
     if (m_searchState == newSearchState) {
         return;
     }
 
     m_searchState = newSearchState;
 
-    if (m_searchState != SourceController::SearchState::Searching) {
+    if (m_searchState != SearchState::Searching) {
         m_currentSearchSource = nullptr;
     }
 
@@ -51,7 +50,7 @@ void SourceController::setSearchError(const QString &title,
     emit searchErrorChanged();
 
     if (!title.isEmpty() || !message.isEmpty()) {
-        setSearchState(SourceController::SearchState::Error);
+        setSearchState(SearchState::Error);
     }
 }
 
@@ -61,23 +60,23 @@ void SourceController::cancelSearch() {
     }
 }
 
-void SourceController::onSearchStarted() {
-    setSearchState(SourceController::SearchState::Searching);
-}
-
-void SourceController::onSearchCancelled() {
-    setSearchState(SourceController::SearchState::Idle);
-}
-
 void
 SourceController::onSourceStationsDispatched(const QList<Station> &stations) {
     m_stationModel->setStations(stations);
 
-    setSearchState(SourceController::SearchState::Idle);
+    setSearchState(SearchState::Idle);
 }
 
 void SourceController::onSourceErrorOccurred(const QString &message) {
     setSearchError(tr("Error"), message);
+}
+
+void SourceController::onSearchStarted() {
+    setSearchState(SearchState::Searching);
+}
+
+void SourceController::onSearchCancelled() {
+    setSearchState(SearchState::Idle);
 }
 
 bool SourceController::registerSource(const QString &name, Source *source) {
@@ -124,7 +123,7 @@ StationModel *SourceController::stationModel() const {
 }
 
 void SourceController::loadDefaultStations(const QString &sourceName) {
-    setSearchState(SourceController::SearchState::Idle);
+    setSearchState(SearchState::Idle);
 
     if (!sourceExists(sourceName) || !hasDefaultStations(sourceName)) {
         return;

@@ -34,7 +34,7 @@ private:
     Station m_station;
     QString m_nowPlaying;
 
-    Player::State m_state = Player::State::Stopped;
+    State m_state = State::Stopped;
     QString m_elapsed = QStringLiteral("00:00:00");
 
     explicit Player(QObject *parent = nullptr);
@@ -45,13 +45,12 @@ private:
     void observeProperty(const QString &property, mpv_format format,
                          uint64_t id = 0) const;
 
-    void commandAsync(
-        const QStringList &params,
-        Player::AsyncCommandId id = Player::AsyncCommandId::None) const;
+    void commandAsync(const QStringList &params,
+                      AsyncCommandId id = AsyncCommandId::None) const;
 
     void setNowPlaying(QString newNowPlaying);
 
-    void setState(const Player::State &newState);
+    void setState(const State &newState);
     QString formatTime(const double &time) const;
     void setElapsed(const QString &newElapsed);
 
@@ -71,7 +70,7 @@ public:
     void setStation(const Station &newStation);
     QString nowPlaying() const;
 
-    Player::State state() const;
+    State state() const;
     QString elapsed() const;
 
 public slots:

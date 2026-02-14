@@ -52,8 +52,7 @@ void Player::observeProperty(const QString &property, mpv_format format,
                               Qt::QueuedConnection, property, format, id);
 }
 
-void Player::commandAsync(const QStringList &params,
-                          Player::AsyncCommandId id) const {
+void Player::commandAsync(const QStringList &params, AsyncCommandId id) const {
     QMetaObject::invokeMethod(m_mpvController, &MpvController::commandAsync,
                               Qt::QueuedConnection, params,
                               static_cast<int>(id));
@@ -71,7 +70,7 @@ void Player::setNowPlaying(QString newNowPlaying) {
     emit nowPlayingChanged();
 }
 
-void Player::setState(const Player::State &newState) {
+void Player::setState(const State &newState) {
     if (m_state == newState) {
         return;
     }
@@ -120,7 +119,7 @@ void Player::onAsyncReply(const QVariant &data, mpv_event event) {
     }
     case AsyncCommandId::Stop: {
         if (event.error > -1) {
-            setState(Player::State::Stopped);
+            setState(State::Stopped);
         }
 
         break;
@@ -136,15 +135,15 @@ void Player::onEndFile(QString reason) {
         qCritical() << "playback error";
     }
 
-    setState(Player::State::Stopped);
+    setState(State::Stopped);
 }
 
 void Player::onFileStarted() {
-    setState(Player::State::Loading);
+    setState(State::Loading);
 }
 
 void Player::onFileLoaded() {
-    setState(Player::State::Playing);
+    setState(State::Playing);
 }
 
 Player::~Player() {
@@ -187,5 +186,5 @@ void Player::play() const {
 }
 
 void Player::stop() const {
-    commandAsync({QStringLiteral("stop")}, Player::AsyncCommandId::Stop);
+    commandAsync({QStringLiteral("stop")}, AsyncCommandId::Stop);
 }

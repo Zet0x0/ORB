@@ -29,7 +29,7 @@ private:
     QStringList m_sourcesInsertOrder;
 
     Source *m_currentSearchSource = nullptr;
-    SourceController::SearchState m_searchState;
+    SearchState m_searchState;
     SearchError m_searchError;
     StationModel *m_stationModel = nullptr;
 
@@ -38,7 +38,7 @@ private:
     void setupSourceResultModelConnections() const;
     void setupSourceConnections(Source *source) const;
 
-    void setSearchState(const SourceController::SearchState &newSearchState);
+    void setSearchState(const SearchState &newSearchState);
     void setSearchError(const QString &title, const QString &message);
 
     void cancelSearch();
@@ -57,7 +57,7 @@ public:
 
     Q_INVOKABLE bool hasDefaultStations(const QString &sourceName);
 
-    SourceController::SearchState searchState() const;
+    SearchState searchState() const;
     SearchError searchError() const;
     StationModel *stationModel() const;
 

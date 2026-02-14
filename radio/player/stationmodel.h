@@ -18,13 +18,12 @@ public:
         StreamUrlRole,
         ImageUrlRole
     };
-    Q_ENUM(StationModel::StationRoles)
+    Q_ENUM(StationRoles)
 
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
 
-    QVariant
-    data(const QModelIndex &index,
-         int role = StationModel::StationRoles::NameRole) const override;
+    QVariant data(const QModelIndex &index,
+                  int role = StationRoles::NameRole) const override;
 
     Qt::ItemFlags flags(const QModelIndex &index) const override;
 
