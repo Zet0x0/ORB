@@ -81,6 +81,13 @@ void SourceController::search(const QString &sourceName, QString query) {
     cancelSearch();
     clearSearchError();
 
+    if (!sourceExists(sourceName)) {
+        setSearchError(tr("Invalid source"),
+                       tr("An invalid source identifier was passed"));
+
+        return;
+    }
+
     query = query.trimmed();
 
     if (query.isEmpty()) {
