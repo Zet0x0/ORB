@@ -194,9 +194,7 @@ ApplicationWindow {
                 },
                 State {
                     name: "showing-stations"
-
-                    // TODO: use a real variable
-                    // when: results > 0
+                    when: searchResultsView.count > 0
 
                     PropertyChanges {
                         statusLabel.text: qsTr("# You should be seeing the stations,\nnot this message")
@@ -212,9 +210,7 @@ ApplicationWindow {
                 },
                 State {
                     name: "no-results"
-
-                    // TODO: use a real variable
-                    // when: results === 0
+                    when: searchResultsView.count === 0
 
                     PropertyChanges {
                         statusLabel.text: qsTr("# Nothing found\nCheck your search query")
@@ -242,8 +238,11 @@ ApplicationWindow {
                 }
             }
 
-            // TODO: show the results in this ListView
             ListView {
+                id: searchResultsView
+
+                clip: true
+                model: SourceController.searchResultModel
             }
         }
     }

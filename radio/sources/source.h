@@ -1,6 +1,6 @@
 #pragma once
 
-#include <QObject>
+#include "../player/station.h"
 
 class Source : public QObject {
     Q_OBJECT
@@ -14,6 +14,6 @@ public:
 signals:
     void searchStarted();
     void searchCancelled();
-    void searchSuccessful();
+    void searchCompleted(const QList<Station> &stations);
     void searchErrorOccurred(const QString &message);
 };

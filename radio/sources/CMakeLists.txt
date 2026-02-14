@@ -9,6 +9,8 @@ qt_add_qml_module(
     sourcecontroller.cpp
     source.h
     source.cpp
-    searcherror.h)
+    searcherror.h
+    searchresultmodel.h
+    searchresultmodel.cpp)
 
 target_link_libraries(sources PRIVATE sourcesplugin)

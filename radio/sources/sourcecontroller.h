@@ -2,6 +2,7 @@
 
 #include "../singleton.h"
 #include "searcherror.h"
+#include "searchresultmodel.h"
 #include "source.h"
 #include <QQmlEngine>
 
@@ -14,6 +15,8 @@ class SourceController : public QObject, public Singleton<SourceController> {
                    searchStateChanged FINAL)
     Q_PROPERTY(SearchError searchError READ searchError NOTIFY
                    searchErrorChanged FINAL)
+    Q_PROPERTY(SearchResultModel *searchResultModel READ searchResultModel
+                   NOTIFY searchResultModelChanged FINAL)
 
     friend class Singleton<SourceController>;
 
@@ -25,11 +28,15 @@ private:
     QHash<QString, Source *> m_sources;
     QStringList m_sourcesInsertOrder;
 
-    Source *m_currentSearchSource;
+    Source *m_currentSearchSource = nullptr;
     SourceController::SearchState m_searchState;
     SearchError m_searchError;
+    SearchResultModel *m_searchResultModel = nullptr;
 
     explicit SourceController(QObject *parent = nullptr);
+
+    void setupSourceResultModelConnections() const;
+    void setupSourceConnections(Source *source) const;
 
     void setSearchState(const SourceController::SearchState &newSearchState);
     void setSearchError(const QString &title, const QString &message);
@@ -39,7 +46,7 @@ private:
 private slots:
     void onSearchStarted();
     void onSearchCancelled();
-    void onSearchSuccessful();
+    void onSearchCompleted(const QList<Station> &stations);
     void onSearchErrorOccurred(const QString &message);
 
 public:
@@ -49,6 +56,7 @@ public:
 
     SourceController::SearchState searchState() const;
     SearchError searchError() const;
+    SearchResultModel *searchResultModel() const;
 
 public slots:
     void search(const QString &sourceName, QString query);
@@ -56,4 +64,5 @@ public slots:
 signals:
     void searchStateChanged();
     void searchErrorChanged();
+    void searchResultModelChanged();
 };

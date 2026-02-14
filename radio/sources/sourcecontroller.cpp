@@ -1,8 +1,28 @@
 #include "sourcecontroller.h"
 
 SourceController::SourceController(QObject *parent)
-    : QObject(parent), m_currentSearchSource(nullptr) {
+    : QObject(parent), m_searchResultModel(new SearchResultModel) {
+    setupSourceResultModelConnections();
+
     registerSource(tr("Not selected"), nullptr);
+}
+
+void SourceController::setupSourceResultModelConnections() const {
+    connect(m_searchResultModel, &QAbstractListModel::rowsInserted, this,
+            &SourceController::searchResultModelChanged);
+    connect(m_searchResultModel, &QAbstractListModel::modelReset, this,
+            &SourceController::searchResultModelChanged);
+}
+
+void SourceController::setupSourceConnections(Source *source) const {
+    connect(source, &Source::searchStarted, this,
+            &SourceController::onSearchStarted);
+    connect(source, &Source::searchCancelled, this,
+            &SourceController::onSearchCancelled);
+    connect(source, &Source::searchCompleted, this,
+            &SourceController::onSearchCompleted);
+    connect(source, &Source::searchErrorOccurred, this,
+            &SourceController::onSearchErrorOccurred);
 }
 
 void SourceController::setSearchState(
@@ -15,10 +35,6 @@ void SourceController::setSearchState(
 
     if (m_searchState != SourceController::SearchState::Searching) {
         m_currentSearchSource = nullptr;
-    }
-
-    if (m_searchState != SourceController::SearchState::Error) {
-        setSearchError(QString(), QString());
     }
 
     emit searchStateChanged();
@@ -54,8 +70,9 @@ void SourceController::onSearchCancelled() {
     setSearchState(SourceController::SearchState::Idle);
 }
 
-// TODO: handle results
-void SourceController::onSearchSuccessful() {
+void SourceController::onSearchCompleted(const QList<Station> &stations) {
+    m_searchResultModel->setStations(stations);
+
     setSearchState(SourceController::SearchState::Idle);
 }
 
@@ -71,14 +88,7 @@ bool SourceController::registerSource(const QString &name, Source *source) {
     if (source) {
         source->setParent(this);
 
-        connect(source, &Source::searchStarted, this,
-                &SourceController::onSearchStarted);
-        connect(source, &Source::searchCancelled, this,
-                &SourceController::onSearchCancelled);
-        connect(source, &Source::searchSuccessful, this,
-                &SourceController::onSearchSuccessful);
-        connect(source, &Source::searchErrorOccurred, this,
-                &SourceController::onSearchErrorOccurred);
+        setupSourceConnections(source);
     }
 
     m_sources[name] = source;
@@ -103,8 +113,14 @@ SearchError SourceController::searchError() const {
     return m_searchError;
 }
 
+SearchResultModel *SourceController::searchResultModel() const {
+    return m_searchResultModel;
+}
+
 void SourceController::search(const QString &sourceName, QString query) {
     cancelSearch();
+    setSearchError(QString(), QString());
+    m_searchResultModel->clear();
 
     if (!sourceExists(sourceName)) {
         setSearchError(tr("Invalid source"),

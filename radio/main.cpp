@@ -15,12 +15,6 @@ int main(int argc, char *argv[]) {
         },
         Qt::QueuedConnection);
 
-    // TODO
-    // SourceController *sourceController = SourceController::instance();
-    // sourceController->registerSource("testsource1", new Source);
-    // sourceController->registerSource("testsource1", new Source);
-    // sourceController->registerSource("testsource2", new Source);
-
     engine.loadFromModule(QStringLiteral("radio"), QStringLiteral("Main"));
 
     return app.exec();
