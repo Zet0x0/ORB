@@ -40,8 +40,8 @@ private:
     explicit Player(QObject *parent = nullptr);
 
     void setupConnections() const;
-
     void setupObservations() const;
+
     void observeProperty(const QString &property, mpv_format format,
                          uint64_t id = 0) const;
 
