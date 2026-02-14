@@ -194,7 +194,7 @@ ApplicationWindow {
                 },
                 State {
                     name: "showing-stations"
-                    when: searchResultsView.count > 0
+                    when: stationView.count > 0
 
                     PropertyChanges {
                         statusLabel.text: qsTr("# You should be seeing the stations,\nnot this message")
@@ -218,7 +218,7 @@ ApplicationWindow {
                 },
                 State {
                     name: "no-default-stations"
-                    when: !SourceController.hasDefaultStations(sourceSelector.currentText) && searchResultsView.count === 0
+                    when: !SourceController.hasDefaultStations(sourceSelector.currentText) && stationView.count === 0
 
                     PropertyChanges {
                         statusLabel.text: qsTr("# Nothing to show\nType something in the search field")
@@ -226,7 +226,7 @@ ApplicationWindow {
                 },
                 State {
                     name: "no-results"
-                    when: SourceController.hasDefaultStations(sourceSelector.currentText) && searchResultsView.count === 0
+                    when: SourceController.hasDefaultStations(sourceSelector.currentText) && stationView.count === 0
 
                     PropertyChanges {
                         statusLabel.text: qsTr("# Nothing found\nCheck your search query")
@@ -255,7 +255,7 @@ ApplicationWindow {
             }
 
             ListView {
-                id: searchResultsView
+                id: stationView
 
                 clip: true
                 model: SourceController.stationModel
