@@ -1,15 +1,15 @@
 #include "sourcecontroller.h"
 
 SourceController::SourceController(QObject *parent)
-    : QObject(parent), m_searchResultModel(new SearchResultModel) {
+    : QObject(parent), m_stationModel(new StationModel) {
     setupSourceResultModelConnections();
 }
 
 void SourceController::setupSourceResultModelConnections() const {
-    connect(m_searchResultModel, &QAbstractListModel::rowsInserted, this,
-            &SourceController::searchResultModelChanged);
-    connect(m_searchResultModel, &QAbstractListModel::modelReset, this,
-            &SourceController::searchResultModelChanged);
+    connect(m_stationModel, &QAbstractListModel::rowsInserted, this,
+            &SourceController::stationModelChanged);
+    connect(m_stationModel, &QAbstractListModel::modelReset, this,
+            &SourceController::stationModelChanged);
 }
 
 void SourceController::setupSourceConnections(Source *source) const {
@@ -69,7 +69,7 @@ void SourceController::onSearchCancelled() {
 }
 
 void SourceController::onSearchCompleted(const QList<Station> &stations) {
-    m_searchResultModel->setStations(stations);
+    m_stationModel->setStations(stations);
 
     setSearchState(SourceController::SearchState::Idle);
 }
@@ -117,8 +117,8 @@ SearchError SourceController::searchError() const {
     return m_searchError;
 }
 
-SearchResultModel *SourceController::searchResultModel() const {
-    return m_searchResultModel;
+StationModel *SourceController::stationModel() const {
+    return m_stationModel;
 }
 
 void SourceController::loadDefaultStations(const QString &sourceName) {
@@ -132,7 +132,7 @@ void SourceController::loadDefaultStations(const QString &sourceName) {
 void SourceController::search(const QString &sourceName, QString query) {
     cancelSearch();
     setSearchError(QString(), QString());
-    m_searchResultModel->clear();
+    m_stationModel->clear();
 
     if (!sourceExists(sourceName)) {
         setSearchError(tr("Invalid source"),

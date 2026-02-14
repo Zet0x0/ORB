@@ -10,8 +10,6 @@ qt_add_qml_module(
     source.h
     source.cpp
     searcherror.h
-    searchresultmodel.h
-    searchresultmodel.cpp
     nullsource.h
     nullsource.cpp)
 

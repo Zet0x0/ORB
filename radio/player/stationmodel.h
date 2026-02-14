@@ -1,10 +1,10 @@
 #pragma once
 
-#include "../player/station.h"
+#include "station.h"
 #include <QAbstractListModel>
 #include <QQmlEngine>
 
-class SearchResultModel : public QAbstractListModel {
+class StationModel : public QAbstractListModel {
     Q_OBJECT
     QML_ELEMENT
 
@@ -18,13 +18,13 @@ public:
         StreamUrlRole,
         ImageUrlRole
     };
-    Q_ENUM(SearchResultModel::StationRoles)
+    Q_ENUM(StationModel::StationRoles)
 
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
 
     QVariant
     data(const QModelIndex &index,
-         int role = SearchResultModel::StationRoles::NameRole) const override;
+         int role = StationModel::StationRoles::NameRole) const override;
 
     Qt::ItemFlags flags(const QModelIndex &index) const override;
 

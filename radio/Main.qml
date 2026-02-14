@@ -258,7 +258,7 @@ ApplicationWindow {
                 id: searchResultsView
 
                 clip: true
-                model: SourceController.searchResultModel
+                model: SourceController.stationModel
             }
         }
     }

@@ -1,8 +1,8 @@
 #pragma once
 
+#include "../player/stationModel.h"
 #include "../singleton.h"
 #include "searcherror.h"
-#include "searchresultmodel.h"
 #include "source.h"
 #include <QQmlEngine>
 
@@ -15,8 +15,8 @@ class SourceController : public QObject, public Singleton<SourceController> {
                    searchStateChanged FINAL)
     Q_PROPERTY(SearchError searchError READ searchError NOTIFY
                    searchErrorChanged FINAL)
-    Q_PROPERTY(SearchResultModel *searchResultModel READ searchResultModel
-                   NOTIFY searchResultModelChanged FINAL)
+    Q_PROPERTY(StationModel *stationModel READ stationModel NOTIFY
+                   stationModelChanged FINAL)
 
     friend class Singleton<SourceController>;
 
@@ -31,7 +31,7 @@ private:
     Source *m_currentSearchSource = nullptr;
     SourceController::SearchState m_searchState;
     SearchError m_searchError;
-    SearchResultModel *m_searchResultModel = nullptr;
+    StationModel *m_stationModel = nullptr;
 
     explicit SourceController(QObject *parent = nullptr);
 
@@ -58,7 +58,7 @@ public:
 
     SourceController::SearchState searchState() const;
     SearchError searchError() const;
-    SearchResultModel *searchResultModel() const;
+    StationModel *stationModel() const;
 
 public slots:
     void loadDefaultStations(const QString &sourceName);
@@ -68,5 +68,5 @@ public slots:
 signals:
     void searchStateChanged();
     void searchErrorChanged();
-    void searchResultModelChanged();
+    void stationModelChanged();
 };
