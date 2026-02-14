@@ -1,7 +1,7 @@
 #include "nullsource.h"
 
 void NullSource::search(const QString &query) {
-    emit searchStarted();
+    Q_UNUSED(query)
 
     emit searchErrorOccurred(tr("This source is not searchable"));
 }
