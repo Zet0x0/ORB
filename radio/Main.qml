@@ -193,14 +193,6 @@ ApplicationWindow {
                     }
                 },
                 State {
-                    name: "no-default-stations"
-                    when: !SourceController.hasDefaultStations(sourceSelector.currentText) && searchResultsView.count === 0
-
-                    PropertyChanges {
-                        statusLabel.text: qsTr("# Nothing to show\nType something in the search field")
-                    }
-                },
-                State {
                     name: "showing-stations"
                     when: searchResultsView.count > 0
 
@@ -222,6 +214,14 @@ ApplicationWindow {
 
                     PropertyChanges {
                         statusLabel.text: qsTr("# %0\n%1").arg(SourceController.searchError.title).arg(SourceController.searchError.message)
+                    }
+                },
+                State {
+                    name: "no-default-stations"
+                    when: !SourceController.hasDefaultStations(sourceSelector.currentText) && searchResultsView.count === 0
+
+                    PropertyChanges {
+                        statusLabel.text: qsTr("# Nothing to show\nType something in the search field")
                     }
                 },
                 State {
