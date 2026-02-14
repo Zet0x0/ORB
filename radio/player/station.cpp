@@ -1,8 +1,5 @@
 #include "station.h"
-
-QString Station::qUrlParse(const QString &rawUrl) const {
-    return QUrl::fromUserInput(rawUrl).toString();
-}
+#include "../utilities.h"
 
 void Station::setValid(bool newValid) {
     m_valid = newValid;
@@ -38,7 +35,7 @@ QString Station::streamUrl() const {
 }
 
 void Station::setStreamUrl(QString newStreamUrl) {
-    m_streamUrl = qUrlParse(newStreamUrl);
+    m_streamUrl = Utilities::parseUserInputUrl(newStreamUrl);
 
     setValid(!m_streamUrl.isEmpty());
 }
@@ -48,7 +45,7 @@ QString Station::imageUrl() const {
 }
 
 void Station::setImageUrl(QString newImageUrl) {
-    m_imageUrl = qUrlParse(newImageUrl);
+    m_imageUrl = Utilities::parseUserInputUrl(newImageUrl);
 }
 
 bool Station::operator==(const Station &other) const {

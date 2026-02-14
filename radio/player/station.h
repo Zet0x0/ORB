@@ -19,8 +19,6 @@ private:
     QString m_streamUrl;
     QString m_imageUrl;
 
-    QString qUrlParse(const QString &rawUrl) const;
-
     void setValid(bool newValid);
 
 public:
