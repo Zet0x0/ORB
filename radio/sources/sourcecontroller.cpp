@@ -124,6 +124,8 @@ StationModel *SourceController::stationModel() const {
 }
 
 void SourceController::loadDefaultStations(const QString &sourceName) {
+    setSearchState(SourceController::SearchState::Idle);
+
     if (!sourceExists(sourceName) || !hasDefaultStations(sourceName)) {
         return;
     }
