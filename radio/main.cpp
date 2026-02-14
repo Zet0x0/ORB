@@ -1,11 +1,6 @@
-#include "player/player.h"
-#include "sources/sourcecontroller.h"
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
 #include <QQuickStyle>
-
-#define REGISTER_QML_SINGLETON(type, uri)                                  \
-    qmlRegisterSingletonInstance<type>(uri, 1, 0, #type, type::instance())
 
 int main(int argc, char *argv[]) {
     QQuickStyle::setStyle(QStringLiteral("Fusion"));
@@ -19,10 +14,6 @@ int main(int argc, char *argv[]) {
             QCoreApplication::exit(-1);
         },
         Qt::QueuedConnection);
-
-    // TODO: remove this useless thing
-    REGISTER_QML_SINGLETON(Player, "radio.player");
-    REGISTER_QML_SINGLETON(SourceController, "radio.sources");
 
     // TODO
     // SourceController *sourceController = SourceController::instance();
