@@ -13,14 +13,15 @@ void SourceController::setupSourceResultModelConnections() const {
 }
 
 void SourceController::setupSourceConnections(Source *source) const {
+    connect(source, &Source::stationsDispatched, this,
+            &SourceController::onSourceStationsDispatched);
+    connect(source, &Source::errorOccurred, this,
+            &SourceController::onSourceErrorOccurred);
+
     connect(source, &Source::searchStarted, this,
             &SourceController::onSearchStarted);
     connect(source, &Source::searchCancelled, this,
             &SourceController::onSearchCancelled);
-    connect(source, &Source::searchCompleted, this,
-            &SourceController::onSearchCompleted);
-    connect(source, &Source::searchErrorOccurred, this,
-            &SourceController::onSearchErrorOccurred);
 }
 
 void SourceController::setSearchState(
@@ -68,13 +69,14 @@ void SourceController::onSearchCancelled() {
     setSearchState(SourceController::SearchState::Idle);
 }
 
-void SourceController::onSearchCompleted(const QList<Station> &stations) {
+void
+SourceController::onSourceStationsDispatched(const QList<Station> &stations) {
     m_stationModel->setStations(stations);
 
     setSearchState(SourceController::SearchState::Idle);
 }
 
-void SourceController::onSearchErrorOccurred(const QString &message) {
+void SourceController::onSourceErrorOccurred(const QString &message) {
     setSearchError(tr("Error"), message);
 }
 

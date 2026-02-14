@@ -44,10 +44,11 @@ private:
     void cancelSearch();
 
 private slots:
+    void onSourceStationsDispatched(const QList<Station> &stations);
+    void onSourceErrorOccurred(const QString &message);
+
     void onSearchStarted();
     void onSearchCancelled();
-    void onSearchCompleted(const QList<Station> &stations);
-    void onSearchErrorOccurred(const QString &message);
 
 public:
     bool registerSource(const QString &name, Source *source);

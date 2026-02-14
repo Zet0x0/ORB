@@ -3,7 +3,7 @@
 void NullSource::search(const QString &query) {
     Q_UNUSED(query)
 
-    emit searchErrorOccurred(tr("This source is not searchable"));
+    emit errorOccurred(tr("This source is not searchable"));
 }
 
 void NullSource::cancelSearch() {

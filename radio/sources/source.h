@@ -15,8 +15,9 @@ public:
     virtual void loadDefaultStations();
 
 signals:
+    void stationsDispatched(const QList<Station> &stations);
+    void errorOccurred(const QString &message);
+
     void searchStarted();
     void searchCancelled();
-    void searchCompleted(const QList<Station> &stations);
-    void searchErrorOccurred(const QString &message);
 };
