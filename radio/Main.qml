@@ -164,7 +164,19 @@ ApplicationWindow {
                 id: stationSearchField
 
                 Layout.fillWidth: true
-                enabled: sourceSelector.currentIndex > 0
+                enabled: sourceSelector.currentIndex > 0 || SourceController.searchState === SourceController.Searching
+
+                onSearchTriggered: {
+                    const query = text.trim();
+
+                    if (query.length === 0) {
+                        // TODO: this should make the ui switch to showing the default station list for the source
+
+                        return;
+                    }
+
+                    SourceController.search(sourceSelector.currentValue, text);
+                }
             }
         }
 
@@ -191,22 +203,11 @@ ApplicationWindow {
                     }
                 },
                 State {
-                    name: "empty-query"
-                    when: stationSearchField.text.trim().length === 0
-
-                    PropertyChanges {
-                        statusLabel.text: qsTr("# Nothing to show\nYour search query is empty")
-                    }
-                },
-                State {
                     name: "error"
-
-                    // TODO: use a real variable
-                    // when: results < 0
+                    when: SourceController.searchState === SourceController.Error
 
                     PropertyChanges {
-                        // TODO: use real variables and insert them as needed
-                        statusLabel.text: qsTr("# Error title\nError message")
+                        statusLabel.text: qsTr("# %0\n%1").arg(SourceController.searchError.title).arg(SourceController.searchError.message)
                     }
                 },
                 State {

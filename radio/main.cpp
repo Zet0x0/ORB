@@ -20,6 +20,7 @@ int main(int argc, char *argv[]) {
         },
         Qt::QueuedConnection);
 
+    // TODO: remove this useless thing
     REGISTER_QML_SINGLETON(Player, "radio.player");
     REGISTER_QML_SINGLETON(SourceController, "radio.sources");
 
