@@ -1,6 +1,7 @@
 #include "sourcecontroller.h"
 
-SourceController::SourceController(QObject *parent) : QObject(parent) {
+SourceController::SourceController(QObject *parent)
+    : QObject(parent), m_currentSearchSource(nullptr) {
     registerSource(tr("Not selected"), nullptr);
 }
 
@@ -12,12 +13,20 @@ void SourceController::setSearchState(
 
     m_searchState = newSearchState;
 
+    if (m_searchState != SourceController::SearchState::Searching) {
+        m_currentSearchSource = nullptr;
+    }
+
+    if (m_searchState != SourceController::SearchState::Error) {
+        setSearchError(QString(), QString());
+    }
+
     emit searchStateChanged();
 }
 
 void SourceController::setSearchError(const QString &title,
                                       const QString &message) {
-    if (title == m_searchError.title || message == m_searchError.message) {
+    if (title == m_searchError.title && message == m_searchError.message) {
         return;
     }
 
@@ -26,23 +35,32 @@ void SourceController::setSearchError(const QString &title,
 
     emit searchErrorChanged();
 
-    setSearchState(SourceController::SearchState::Error);
+    if (!title.isEmpty() || !message.isEmpty()) {
+        setSearchState(SourceController::SearchState::Error);
+    }
 }
 
-// TODO
 void SourceController::cancelSearch() {
-    if (m_searchState != SourceController::SearchState::Searching) {
-        return;
+    if (m_currentSearchSource) {
+        m_currentSearchSource->cancelSearch();
     }
 }
 
-void SourceController::clearSearchError() {
-    if (m_searchState != SourceController::SearchState::Error) {
-        return;
-    }
+void SourceController::onSearchStarted() {
+    setSearchState(SourceController::SearchState::Searching);
+}
 
+void SourceController::onSearchCancelled() {
     setSearchState(SourceController::SearchState::Idle);
-    setSearchError(QString(), QString());
+}
+
+// TODO: handle results
+void SourceController::onSearchSuccessful() {
+    setSearchState(SourceController::SearchState::Idle);
+}
+
+void SourceController::onSearchErrorOccurred(const QString &message) {
+    setSearchError(tr("Error"), message);
 }
 
 bool SourceController::registerSource(const QString &name, Source *source) {
@@ -52,6 +70,15 @@ bool SourceController::registerSource(const QString &name, Source *source) {
 
     if (source) {
         source->setParent(this);
+
+        connect(source, &Source::searchStarted, this,
+                &SourceController::onSearchStarted);
+        connect(source, &Source::searchCancelled, this,
+                &SourceController::onSearchCancelled);
+        connect(source, &Source::searchSuccessful, this,
+                &SourceController::onSearchSuccessful);
+        connect(source, &Source::searchErrorOccurred, this,
+                &SourceController::onSearchErrorOccurred);
     }
 
     m_sources[name] = source;
@@ -76,10 +103,8 @@ SearchError SourceController::searchError() const {
     return m_searchError;
 }
 
-// TODO
 void SourceController::search(const QString &sourceName, QString query) {
     cancelSearch();
-    clearSearchError();
 
     if (!sourceExists(sourceName)) {
         setSearchError(tr("Invalid source"),
@@ -96,4 +121,9 @@ void SourceController::search(const QString &sourceName, QString query) {
 
         return;
     }
+
+    Source *source = m_sources[sourceName];
+
+    m_currentSearchSource = source;
+    source->search(query);
 }

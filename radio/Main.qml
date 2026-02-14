@@ -164,7 +164,7 @@ ApplicationWindow {
                 id: stationSearchField
 
                 Layout.fillWidth: true
-                enabled: sourceSelector.currentIndex > 0 || SourceController.searchState === SourceController.Searching
+                enabled: sourceSelector.currentIndex > 0
 
                 onSearchTriggered: {
                     const query = text.trim();

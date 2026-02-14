@@ -36,6 +36,7 @@ private:
     QHash<QString, Source *> m_sources;
     QStringList m_sourcesInsertOrder;
 
+    Source *m_currentSearchSource;
     SourceController::SearchState m_searchState;
     SearchError m_searchError;
 
@@ -45,7 +46,12 @@ private:
     void setSearchError(const QString &title, const QString &message);
 
     void cancelSearch();
-    void clearSearchError();
+
+private slots:
+    void onSearchStarted();
+    void onSearchCancelled();
+    void onSearchSuccessful();
+    void onSearchErrorOccurred(const QString &message);
 
 public:
     bool registerSource(const QString &name, Source *source);
