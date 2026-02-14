@@ -9,7 +9,3 @@ void NullSource::search(const QString &query) {
 void NullSource::cancelSearch() {
     emit searchCancelled();
 }
-
-bool NullSource::hasDefaultStations() {
-    return false;
-}
