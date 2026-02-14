@@ -11,7 +11,7 @@ class Player : public QObject, public Singleton<Player> {
     QML_ELEMENT
     QML_SINGLETON
 
-    Q_PROPERTY(Station *station READ station WRITE setStation NOTIFY
+    Q_PROPERTY(Station station READ station WRITE setStation NOTIFY
                    stationChanged FINAL)
     Q_PROPERTY(
         QString nowPlaying READ nowPlaying NOTIFY nowPlayingChanged FINAL)
@@ -31,7 +31,7 @@ private:
     MpvController *m_mpvController = nullptr;
     QThread *m_workerThread = nullptr;
 
-    Station *m_station = nullptr;
+    Station m_station;
     QString m_nowPlaying;
 
     Player::State m_state = Player::State::Stopped;
@@ -67,8 +67,8 @@ private slots:
 public:
     ~Player();
 
-    Station *station() const;
-    void setStation(Station *newStation);
+    Station station() const;
+    void setStation(const Station &newStation);
     QString nowPlaying() const;
 
     Player::State state() const;

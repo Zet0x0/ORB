@@ -4,30 +4,19 @@ QString Station::qUrlParse(const QString &rawUrl) const {
     return QUrl::fromUserInput(rawUrl).toString();
 }
 
-Station::Station(QObject *parent, const QString &name, const QString &streamUrl,
-                 const QString &imageUrl)
-    : QObject(parent) {
+void Station::setValid(bool newValid) {
+    m_valid = newValid;
+}
+
+Station::Station(const QString &name, const QString &streamUrl,
+                 const QString &imageUrl) {
     setName(name);
     setStreamUrl(streamUrl);
     setImageUrl(imageUrl);
 }
 
-Station::Station(const QString &name, const QString &streamUrl,
-                 const QString &imageUrl)
-    : Station(nullptr, name, streamUrl, imageUrl) {}
-
 bool Station::isValid() const {
     return m_valid;
-}
-
-void Station::setValid(bool newValid) {
-    if (m_valid == newValid) {
-        return;
-    }
-
-    m_valid = newValid;
-
-    emit validChanged();
 }
 
 QString Station::name() const {
@@ -38,16 +27,10 @@ void Station::setName(QString newName) {
     newName = newName.trimmed();
 
     if (newName.isEmpty()) {
-        newName = tr("Unnamed Station");
-    }
-
-    if (m_name == newName) {
-        return;
+        newName = QObject::tr("Unnamed Station");
     }
 
     m_name = newName;
-
-    emit nameChanged();
 }
 
 QString Station::streamUrl() const {
@@ -55,15 +38,7 @@ QString Station::streamUrl() const {
 }
 
 void Station::setStreamUrl(QString newStreamUrl) {
-    newStreamUrl = qUrlParse(newStreamUrl);
-
-    if (m_streamUrl == newStreamUrl) {
-        return;
-    }
-
-    m_streamUrl = newStreamUrl;
-
-    emit streamUrlChanged();
+    m_streamUrl = qUrlParse(newStreamUrl);
 
     setValid(!m_streamUrl.isEmpty());
 }
@@ -73,15 +48,7 @@ QString Station::imageUrl() const {
 }
 
 void Station::setImageUrl(QString newImageUrl) {
-    newImageUrl = qUrlParse(newImageUrl);
-
-    if (m_imageUrl == newImageUrl) {
-        return;
-    }
-
-    m_imageUrl = newImageUrl;
-
-    emit imageUrlChanged();
+    m_imageUrl = qUrlParse(newImageUrl);
 }
 
 bool Station::operator==(const Station &other) const {

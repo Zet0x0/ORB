@@ -3,7 +3,7 @@
 
 Player::Player(QObject *parent)
     : QObject(parent), m_mpvController(new MpvController),
-      m_workerThread(new QThread(this)), m_station(new Station(this)) {
+      m_workerThread(new QThread(this)) {
     connect(m_workerThread, &QThread::finished, m_mpvController,
             &QObject::deleteLater, Qt::QueuedConnection);
 
@@ -16,11 +16,11 @@ Player::Player(QObject *parent)
 
     // TODO: remove when done testing
     setStation(
-        new Station("BigFM", "https://stream.bigfm.de/hiphop/mp3-128/radiode",
-                    "https://static.wixstatic.com/media/"
-                    "d08c94_434ec752494241e6a53fbd10e2783a87~mv2.jpg/v1/fill/"
-                    "w_256,h_256,al_c,q_80,usm_0.66_1.00_0.01,enc_avif,quality_"
-                    "auto/d08c94_434ec752494241e6a53fbd10e2783a87~mv2.jpg"));
+        Station("BigFM", "https://stream.bigfm.de/hiphop/mp3-128/radiode",
+                "https://static.wixstatic.com/media/"
+                "d08c94_434ec752494241e6a53fbd10e2783a87~mv2.jpg/v1/fill/"
+                "w_256,h_256,al_c,q_80,usm_0.66_1.00_0.01,enc_avif,quality_"
+                "auto/d08c94_434ec752494241e6a53fbd10e2783a87~mv2.jpg"));
 
     setupConnections();
     setupObservations();
@@ -156,22 +156,15 @@ Player::~Player() {
     m_workerThread->deleteLater();
 }
 
-Station *Player::station() const {
+Station Player::station() const {
     return m_station;
 }
 
-void Player::setStation(Station *newStation) {
-    if (!newStation) {
-        newStation = new Station;
-    }
-
+void Player::setStation(const Station &newStation) {
     if (m_station == newStation) {
         return;
     }
 
-    newStation->setParent(this);
-
-    m_station->deleteLater();
     m_station = newStation;
 
     emit stationChanged();
@@ -190,7 +183,7 @@ QString Player::elapsed() const {
 }
 
 void Player::play() const {
-    commandAsync({QStringLiteral("loadfile"), m_station->streamUrl()});
+    commandAsync({QStringLiteral("loadfile"), m_station.streamUrl()});
 }
 
 void Player::stop() const {
