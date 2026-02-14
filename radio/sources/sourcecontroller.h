@@ -33,7 +33,8 @@ public:
     Q_ENUM(SearchState)
 
 private:
-    QMap<QString, Source *> m_sources;
+    QHash<QString, Source *> m_sources;
+    QStringList m_sourcesInsertOrder;
 
     SourceController::SearchState m_searchState;
     SearchError m_searchError;

@@ -54,7 +54,8 @@ bool SourceController::registerSource(const QString &name, Source *source) {
         source->setParent(this);
     }
 
-    m_sources.insert(name, source);
+    m_sources[name] = source;
+    m_sourcesInsertOrder << name;
 
     return true;
 }
@@ -64,7 +65,7 @@ bool SourceController::sourceExists(const QString &sourceName) const {
 }
 
 QStringList SourceController::getSources() const {
-    return m_sources.keys();
+    return m_sourcesInsertOrder;
 }
 
 SourceController::SearchState SourceController::searchState() const {
