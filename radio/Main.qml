@@ -170,7 +170,7 @@ ApplicationWindow {
                     const query = text.trim();
 
                     if (query.length === 0) {
-                        // TODO: this should make the ui switch to showing the default station list for the source
+                        SourceController.loadDefaultStations(sourceSelector.currentText);
 
                         return;
                     }
@@ -193,11 +193,27 @@ ApplicationWindow {
                     }
                 },
                 State {
+                    name: "no-default-stations"
+                    when: !SourceController.hasDefaultStations(sourceSelector.currentText) && searchResultsView.count === 0
+
+                    PropertyChanges {
+                        statusLabel.text: qsTr("# Nothing to show\nType something in the search field")
+                    }
+                },
+                State {
                     name: "showing-stations"
                     when: searchResultsView.count > 0
 
                     PropertyChanges {
                         statusLabel.text: qsTr("# You should be seeing the stations,\nnot this message")
+                    }
+                },
+                State {
+                    name: "looking-up"
+                    when: SourceController.searchState === SourceController.Searching
+
+                    PropertyChanges {
+                        statusLabel.text: qsTr("# Looking up stations...")
                     }
                 },
                 State {
@@ -210,7 +226,7 @@ ApplicationWindow {
                 },
                 State {
                     name: "no-results"
-                    when: searchResultsView.count === 0
+                    when: SourceController.hasDefaultStations(sourceSelector.currentText) && searchResultsView.count === 0
 
                     PropertyChanges {
                         statusLabel.text: qsTr("# Nothing found\nCheck your search query")

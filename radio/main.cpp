@@ -1,3 +1,5 @@
+#include "sources/nullsource.h"
+#include "sources/sourcecontroller.h"
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
 #include <QQuickStyle>
@@ -14,6 +16,14 @@ int main(int argc, char *argv[]) {
             QCoreApplication::exit(-1);
         },
         Qt::QueuedConnection);
+
+    // Add sources
+    {
+        SourceController *sourceController = SourceController::instance();
+
+        sourceController->registerSource(QObject::tr("Not selected"),
+                                         new NullSource);
+    }
 
     engine.loadFromModule(QStringLiteral("radio"), QStringLiteral("Main"));
 

@@ -11,6 +11,9 @@ public:
     virtual void search(const QString &query) = 0;
     virtual void cancelSearch() = 0;
 
+    virtual bool hasDefaultStations();
+    virtual void loadDefaultStations();
+
 signals:
     void searchStarted();
     void searchCancelled();

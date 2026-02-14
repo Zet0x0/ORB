@@ -54,11 +54,15 @@ public:
     bool sourceExists(const QString &sourceName) const;
     Q_INVOKABLE QStringList getSources() const;
 
+    Q_INVOKABLE bool hasDefaultStations(const QString &sourceName);
+
     SourceController::SearchState searchState() const;
     SearchError searchError() const;
     SearchResultModel *searchResultModel() const;
 
 public slots:
+    void loadDefaultStations(const QString &sourceName);
+
     void search(const QString &sourceName, QString query);
 
 signals:

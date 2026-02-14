@@ -3,8 +3,6 @@
 SourceController::SourceController(QObject *parent)
     : QObject(parent), m_searchResultModel(new SearchResultModel) {
     setupSourceResultModelConnections();
-
-    registerSource(tr("Not selected"), nullptr);
 }
 
 void SourceController::setupSourceResultModelConnections() const {
@@ -85,11 +83,9 @@ bool SourceController::registerSource(const QString &name, Source *source) {
         return false;
     }
 
-    if (source) {
-        source->setParent(this);
+    source->setParent(this);
 
-        setupSourceConnections(source);
-    }
+    setupSourceConnections(source);
 
     m_sources[name] = source;
     m_sourcesInsertOrder << name;
@@ -105,6 +101,14 @@ QStringList SourceController::getSources() const {
     return m_sourcesInsertOrder;
 }
 
+bool SourceController::hasDefaultStations(const QString &sourceName) {
+    if (!sourceExists(sourceName)) {
+        return false;
+    }
+
+    return m_sources[sourceName]->hasDefaultStations();
+}
+
 SourceController::SearchState SourceController::searchState() const {
     return m_searchState;
 }
@@ -115,6 +119,14 @@ SearchError SourceController::searchError() const {
 
 SearchResultModel *SourceController::searchResultModel() const {
     return m_searchResultModel;
+}
+
+void SourceController::loadDefaultStations(const QString &sourceName) {
+    if (!sourceExists(sourceName) || !hasDefaultStations(sourceName)) {
+        return;
+    }
+
+    m_sources[sourceName]->loadDefaultStations();
 }
 
 void SourceController::search(const QString &sourceName, QString query) {
