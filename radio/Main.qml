@@ -162,12 +162,11 @@ ApplicationWindow {
                 onCurrentValueChanged: {
                     SourceController.setSource(currentValue);
 
-                    stationSearchField.text = "";
                     stationSearchField.engageSearch();
                 }
             }
 
-            SearchField {
+            TextField {
                 id: stationSearchField
 
                 function engageSearch() {
@@ -185,7 +184,18 @@ ApplicationWindow {
                 Layout.fillWidth: true
                 enabled: sourceSelector.currentIndex > 0
 
-                onSearchTriggered: engageSearch()
+                onAccepted: engageSearch()
+                onTextEdited: engageSearch()
+            }
+
+            ToolButton {
+                enabled: stationSearchField.enabled
+                // TODO: use real icons
+                // NOTE: this app might or might not use icon.name
+                // instead of icon.source
+                icon.source: "https://picsum.photos/24/24"
+
+                onClicked: stationSearchField.engageSearch()
             }
         }
 
