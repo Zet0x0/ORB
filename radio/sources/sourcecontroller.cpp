@@ -2,21 +2,24 @@
 
 SourceController::SourceController(QObject *parent)
     : QObject(parent), m_stationModel(new StationModel) {
-    setupSourceResultModelConnections();
+    setupStationModelConnections();
 }
 
-void SourceController::setupSourceResultModelConnections() const {
+void SourceController::setupStationModelConnections() const {
     connect(m_stationModel, &QAbstractListModel::rowsInserted, this,
             &SourceController::stationModelChanged);
     connect(m_stationModel, &QAbstractListModel::modelReset, this,
             &SourceController::stationModelChanged);
 }
 
+void SourceController::undoSourceConnections(Source *source) const {
+    disconnect(source, nullptr, this, nullptr);
+}
+
 void SourceController::setupSourceConnections(Source *source) const {
     connect(source, &Source::stationsDispatched, this,
             &SourceController::onSourceStationsDispatched);
-    connect(source, &Source::errorOccurred, this,
-            &SourceController::onSourceErrorOccurred);
+    connect(source, &Source::errorOccurred, this, &SourceController::setError);
 
     connect(source, &Source::searchStarted, this,
             &SourceController::onSearchStarted);
@@ -24,51 +27,31 @@ void SourceController::setupSourceConnections(Source *source) const {
             &SourceController::onSearchCancelled);
 }
 
+void SourceController::cancelSearch() {
+    m_source->cancelSearch();
+    setSearchState(SearchState::Idle);
+}
+
 void SourceController::setSearchState(const SearchState &newSearchState) {
     if (m_searchState == newSearchState) {
         return;
     }
 
-    m_searchState = newSearchState;
-
-    if (m_searchState != SearchState::Searching) {
-        m_currentSearchSource = nullptr;
+    if (m_searchState == SearchState::Error) {
+        setError(SourceError{});
     }
+
+    m_searchState = newSearchState;
 
     emit searchStateChanged();
 }
 
-void SourceController::setSearchError(const QString &title,
-                                      const QString &message) {
-    if (title == m_searchError.title && message == m_searchError.message) {
-        return;
-    }
-
-    m_searchError.title = title;
-    m_searchError.message = message;
-
-    emit searchErrorChanged();
-
-    if (!title.isEmpty() || !message.isEmpty()) {
-        setSearchState(SearchState::Error);
-    }
-}
-
-void SourceController::cancelSearch() {
-    if (m_currentSearchSource) {
-        m_currentSearchSource->cancelSearch();
-    }
-}
-
+// TODO: account for stations dispatching from a loadDefaultStations call
 void
 SourceController::onSourceStationsDispatched(const QList<Station> &stations) {
     m_stationModel->setStations(stations);
 
     setSearchState(SearchState::Idle);
-}
-
-void SourceController::onSourceErrorOccurred(const QString &message) {
-    setSearchError(tr("Error"), message);
 }
 
 void SourceController::onSearchStarted() {
@@ -79,6 +62,24 @@ void SourceController::onSearchCancelled() {
     setSearchState(SearchState::Idle);
 }
 
+void SourceController::setError(const SourceError &error) {
+    if (m_error == error) {
+        return;
+    }
+
+    m_error = error;
+
+    emit errorChanged();
+
+    if (!m_error.title.isEmpty() || !m_error.message.isEmpty()) {
+        setSearchState(SearchState::Error);
+    }
+}
+
+bool SourceController::sourceExists(const QString &sourceName) const {
+    return m_sources.contains(sourceName);
+}
+
 bool SourceController::registerSource(const QString &name, Source *source) {
     if (sourceExists(name)) {
         return false;
@@ -86,75 +87,67 @@ bool SourceController::registerSource(const QString &name, Source *source) {
 
     source->setParent(this);
 
-    setupSourceConnections(source);
-
     m_sources[name] = source;
     m_sourcesInsertOrder << name;
 
-    return true;
-}
+    if (!m_source) {
+        setSource(name);
+    }
 
-bool SourceController::sourceExists(const QString &sourceName) const {
-    return m_sources.contains(sourceName);
+    return true;
 }
 
 QStringList SourceController::getSources() const {
     return m_sourcesInsertOrder;
 }
 
-bool SourceController::hasDefaultStations(const QString &sourceName) {
-    if (!sourceExists(sourceName)) {
-        return false;
-    }
-
-    return m_sources[sourceName]->hasDefaultStations();
-}
-
 SourceController::SearchState SourceController::searchState() const {
     return m_searchState;
 }
 
-SearchError SourceController::searchError() const {
-    return m_searchError;
+SourceError SourceController::error() const {
+    return m_error;
 }
 
 StationModel *SourceController::stationModel() const {
     return m_stationModel;
 }
 
-void SourceController::loadDefaultStations(const QString &sourceName) {
-    setSearchState(SearchState::Idle);
-
-    if (!sourceExists(sourceName) || !hasDefaultStations(sourceName)) {
-        return;
-    }
-
-    m_sources[sourceName]->loadDefaultStations();
+bool SourceController::canShowDefaultStations() const {
+    return m_source->hasDefaultStations();
 }
 
-void SourceController::search(const QString &sourceName, QString query) {
+void SourceController::setSource(const QString &newSourceName) {
+    Source *newSource = m_sources.value(newSourceName, nullptr);
+
+    if (m_source == newSource) {
+        return;
+    }
+
+    if (m_source) {
+        m_source->cancelSearch();
+        undoSourceConnections(m_source);
+
+        m_stationModel->clear();
+    }
+
+    setupSourceConnections(newSource);
+
+    m_source = newSource;
+}
+
+void SourceController::search(const QString &query) {
     cancelSearch();
-    setSearchError(QString(), QString());
-    m_stationModel->clear();
 
-    if (!sourceExists(sourceName)) {
-        setSearchError(tr("Invalid source"),
-                       tr("An invalid source identifier was passed"));
+    m_source->search(query);
+}
 
+void SourceController::showDefaultStations() {
+    cancelSearch();
+
+    if (!canShowDefaultStations()) {
         return;
     }
 
-    query = query.trimmed();
-
-    if (query.isEmpty()) {
-        // it shouldn't get to this point but let's be precautious
-        setSearchError(tr("Nothing to show"), tr("Your search query is empty"));
-
-        return;
-    }
-
-    Source *source = m_sources[sourceName];
-
-    m_currentSearchSource = source;
-    source->search(query);
+    m_source->loadDefaultStations();
 }

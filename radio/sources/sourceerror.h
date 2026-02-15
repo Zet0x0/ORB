@@ -2,9 +2,9 @@
 
 #include <QQmlEngine>
 
-struct SearchError {
+struct SourceError {
     Q_GADGET
-    QML_NAMED_ELEMENT(searchError)
+    QML_NAMED_ELEMENT(sourceError)
 
     Q_PROPERTY(QString title MEMBER title CONSTANT FINAL)
     Q_PROPERTY(QString message MEMBER message CONSTANT FINAL)
@@ -12,4 +12,6 @@ struct SearchError {
 public:
     QString title;
     QString message;
+
+    bool operator==(const SourceError &other) const;
 };

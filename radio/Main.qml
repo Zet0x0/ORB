@@ -158,25 +158,34 @@ ApplicationWindow {
                 id: sourceSelector
 
                 model: SourceController.getSources()
+
+                onCurrentValueChanged: {
+                    SourceController.setSource(currentValue);
+
+                    stationSearchField.text = "";
+                    stationSearchField.engageSearch();
+                }
             }
 
             SearchField {
                 id: stationSearchField
 
-                Layout.fillWidth: true
-                enabled: sourceSelector.currentIndex > 0
-
-                onSearchTriggered: {
+                function engageSearch() {
                     const query = text.trim();
 
                     if (query.length === 0) {
-                        SourceController.loadDefaultStations(sourceSelector.currentText);
+                        SourceController.showDefaultStations();
 
                         return;
                     }
 
-                    SourceController.search(sourceSelector.currentValue, text);
+                    SourceController.search(text);
                 }
+
+                Layout.fillWidth: true
+                enabled: sourceSelector.currentIndex > 0
+
+                onSearchTriggered: engageSearch()
             }
         }
 
@@ -201,11 +210,11 @@ ApplicationWindow {
                     }
                 },
                 State {
-                    name: "looking-up"
+                    name: "searching"
                     when: SourceController.searchState === SourceController.Searching
 
                     PropertyChanges {
-                        statusLabel.text: qsTr("# Looking up stations...")
+                        statusLabel.text: qsTr("# Searching stations...")
                     }
                 },
                 State {
@@ -213,12 +222,12 @@ ApplicationWindow {
                     when: SourceController.searchState === SourceController.Error
 
                     PropertyChanges {
-                        statusLabel.text: qsTr("# %0\n%1").arg(SourceController.searchError.title).arg(SourceController.searchError.message)
+                        statusLabel.text: qsTr("# %0\n%1").arg(SourceController.error.title).arg(SourceController.error.message)
                     }
                 },
                 State {
                     name: "no-default-stations"
-                    when: !SourceController.hasDefaultStations(sourceSelector.currentText) && stationView.count === 0
+                    when: !SourceController.canShowDefaultStations() && stationView.count === 0
 
                     PropertyChanges {
                         statusLabel.text: qsTr("# Nothing to show\nType something in the search field")
@@ -226,7 +235,7 @@ ApplicationWindow {
                 },
                 State {
                     name: "no-results"
-                    when: SourceController.hasDefaultStations(sourceSelector.currentText) && stationView.count === 0
+                    when: SourceController.canShowDefaultStations() && stationView.count === 0
 
                     PropertyChanges {
                         statusLabel.text: qsTr("# Nothing found\nCheck your search query")

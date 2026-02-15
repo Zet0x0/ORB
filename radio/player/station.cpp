@@ -49,7 +49,7 @@ void Station::setImageUrl(QString newImageUrl) {
 }
 
 bool Station::operator==(const Station &other) const {
-    return (this->name() == other.name() &&
-            this->streamUrl() == other.streamUrl() &&
-            this->imageUrl() == other.imageUrl());
+    return this->name() == other.name() &&
+           this->streamUrl() == other.streamUrl() &&
+           this->imageUrl() == other.imageUrl();
 }

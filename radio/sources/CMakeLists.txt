@@ -9,7 +9,8 @@ qt_add_qml_module(
     sourcecontroller.cpp
     source.h
     source.cpp
-    searcherror.h
+    sourceerror.h
+    sourceerror.cpp
     nullsource.h
     nullsource.cpp)
 

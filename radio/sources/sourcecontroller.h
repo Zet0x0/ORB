@@ -2,8 +2,8 @@
 
 #include "../player/stationModel.h"
 #include "../singleton.h"
-#include "searcherror.h"
 #include "source.h"
+#include "sourceerror.h"
 #include <QQmlEngine>
 
 class SourceController : public QObject, public Singleton<SourceController> {
@@ -13,8 +13,8 @@ class SourceController : public QObject, public Singleton<SourceController> {
 
     Q_PROPERTY(SourceController::SearchState searchState READ searchState NOTIFY
                    searchStateChanged FINAL)
-    Q_PROPERTY(SearchError searchError READ searchError NOTIFY
-                   searchErrorChanged FINAL)
+    Q_PROPERTY(SourceError error READ error NOTIFY errorChanged FINAL)
+
     Q_PROPERTY(StationModel *stationModel READ stationModel NOTIFY
                    stationModelChanged FINAL)
 
@@ -28,46 +28,50 @@ private:
     QHash<QString, Source *> m_sources;
     QStringList m_sourcesInsertOrder;
 
-    Source *m_currentSearchSource = nullptr;
+    Source *m_source = nullptr;
     SearchState m_searchState;
-    SearchError m_searchError;
+    SourceError m_error;
+
     StationModel *m_stationModel = nullptr;
 
     explicit SourceController(QObject *parent = nullptr);
 
-    void setupSourceResultModelConnections() const;
+    void setupStationModelConnections() const;
+
+    void undoSourceConnections(Source *source) const;
     void setupSourceConnections(Source *source) const;
 
-    void setSearchState(const SearchState &newSearchState);
-    void setSearchError(const QString &title, const QString &message);
-
     void cancelSearch();
+    void setSearchState(const SearchState &newSearchState);
 
 private slots:
     void onSourceStationsDispatched(const QList<Station> &stations);
-    void onSourceErrorOccurred(const QString &message);
-
     void onSearchStarted();
     void onSearchCancelled();
 
+    void setError(const SourceError &error);
+
 public:
-    bool registerSource(const QString &name, Source *source);
     bool sourceExists(const QString &sourceName) const;
+    bool registerSource(const QString &name, Source *source);
     Q_INVOKABLE QStringList getSources() const;
 
-    Q_INVOKABLE bool hasDefaultStations(const QString &sourceName);
-
     SearchState searchState() const;
-    SearchError searchError() const;
+    SourceError error() const;
+
     StationModel *stationModel() const;
 
-public slots:
-    void loadDefaultStations(const QString &sourceName);
+    Q_INVOKABLE bool canShowDefaultStations() const;
 
-    void search(const QString &sourceName, QString query);
+public slots:
+    void setSource(const QString &newSourceName);
+    void search(const QString &query);
+
+    void showDefaultStations();
 
 signals:
     void searchStateChanged();
-    void searchErrorChanged();
+    void errorChanged();
+
     void stationModelChanged();
 };
