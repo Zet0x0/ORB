@@ -12,6 +12,8 @@ qt_add_qml_module(
     sourceerror.h
     sourceerror.cpp
     nullsource.h
-    nullsource.cpp)
+    nullsource.cpp
+    stationmodel.h
+    stationmodel.cpp)
 
 target_link_libraries(sources PRIVATE sourcesplugin)

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "station.h"
+#include "../player/station.h"
 #include <QAbstractListModel>
 #include <QQmlEngine>
 
@@ -20,12 +20,13 @@ public:
     };
     Q_ENUM(StationRoles)
 
-    int rowCount(const QModelIndex &parent = QModelIndex()) const override;
+    Q_INVOKABLE int
+    rowCount(const QModelIndex &parent = QModelIndex()) const override;
 
-    QVariant data(const QModelIndex &index,
-                  int role = StationRoles::NameRole) const override;
+    Q_INVOKABLE QVariant data(const QModelIndex &index,
+                              int role = StationRoles::NameRole) const override;
 
-    Qt::ItemFlags flags(const QModelIndex &index) const override;
+    Q_INVOKABLE Qt::ItemFlags flags(const QModelIndex &index) const override;
 
     QHash<int, QByteArray> roleNames() const override;
 

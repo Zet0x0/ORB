@@ -1,9 +1,9 @@
 #pragma once
 
-#include "../player/stationModel.h"
 #include "../singleton.h"
 #include "source.h"
 #include "sourceerror.h"
+#include "stationmodel.h"
 #include <QQmlEngine>
 
 class SourceController : public QObject, public Singleton<SourceController> {

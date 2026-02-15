@@ -9,9 +9,7 @@ qt_add_qml_module(
     player.cpp
     mpvproperties.h
     station.h
-    station.cpp
-    stationmodel.h
-    stationmodel.cpp)
+    station.cpp)
 
 target_link_libraries(
     player
