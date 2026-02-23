@@ -46,7 +46,6 @@ void SourceController::setSearchState(const SearchState &newSearchState) {
     emit searchStateChanged();
 }
 
-// TODO: account for stations dispatching from a loadDefaultStations call
 void
 SourceController::onSourceStationsDispatched(const QList<Station> &stations) {
     m_stationModel->setStations(stations);

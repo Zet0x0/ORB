@@ -12,14 +12,8 @@ QVariant StationModel::data(const QModelIndex &index, int role) const {
     }
 
     switch (role) {
-    case StationRoles::IsValidRole:
-        return m_stations[index.row()].isValid();
-    case StationRoles::NameRole:
-        return m_stations[index.row()].name();
-    case StationRoles::StreamUrlRole:
-        return m_stations[index.row()].streamUrl();
-    case StationRoles::ImageUrlRole:
-        return m_stations[index.row()].imageUrl();
+    case StationRoles::StationRole:
+        return QVariant::fromValue(m_stations[index.row()]);
 
     default:
         return QVariant();
@@ -34,10 +28,7 @@ Qt::ItemFlags StationModel::flags(const QModelIndex &index) const {
 
 QHash<int, QByteArray> StationModel::roleNames() const {
     static const QHash<int, QByteArray> roles{
-        {StationRoles::IsValidRole, QByteArrayLiteral("valid")},
-        {StationRoles::NameRole, QByteArrayLiteral("name")},
-        {StationRoles::StreamUrlRole, QByteArrayLiteral("streamUrl")},
-        {StationRoles::ImageUrlRole, QByteArrayLiteral("imageUrl")}};
+        {StationRoles::StationRole, QByteArrayLiteral("station")}};
 
     return roles;
 }

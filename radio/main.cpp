@@ -1,4 +1,5 @@
 #include "sources/nullsource.h"
+#include "sources/radiorecord.h"
 #include "sources/sourcecontroller.h"
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
@@ -23,6 +24,8 @@ int main(int argc, char *argv[]) {
 
         sourceController->registerSource(QObject::tr("Not selected"),
                                          new NullSource);
+        sourceController->registerSource(QObject::tr("Radio Record"),
+                                         new RadioRecord);
     }
 
     engine.loadFromModule(QStringLiteral("radio"), QStringLiteral("Main"));

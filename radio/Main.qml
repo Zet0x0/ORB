@@ -21,35 +21,10 @@ ApplicationWindow {
         RowLayout {
             id: playerStatus
 
-            StackLayout {
-                Layout.fillHeight: false
-                Layout.fillWidth: false
+            StationImage {
                 Layout.preferredHeight: playerStatus.height
                 Layout.preferredWidth: playerStatus.height
-                currentIndex: (stationImage.status === Image.Error) ? 0 : stationImage.status
-
-                // Image.Null
-                // Image.Error
-                Image {
-                    fillMode: Image.PreserveAspectCrop
-                    // TODO: use real placeholder image
-                    source: "https://picsum.photos/256/128"
-                }
-
-                // Image.Ready
-                Image {
-                    id: stationImage
-
-                    asynchronous: true
-                    cache: false
-                    fillMode: Image.PreserveAspectCrop
-                    source: Player.station.imageUrl
-                }
-
-                // Image.Loading
-                BusyIndicator {
-                    running: StackLayout.isCurrentItem
-                }
+                imageUrl: Player.station.imageUrl
             }
 
             ColumnLayout {
@@ -277,7 +252,16 @@ ApplicationWindow {
                 id: stationView
 
                 clip: true
+                delegate: stationDelegate
                 model: SourceController.stationModel
+                spacing: 5
+
+                Component {
+                    id: stationDelegate
+
+                    StationDelegate {
+                    }
+                }
             }
         }
     }

@@ -26,10 +26,16 @@ public:
     Q_ENUM(State)
 
 private:
-    enum class AsyncCommandId { None, Stop };
+    enum class AsyncCommandId { None, Stop, StopAndSetStation };
 
     MpvController *m_mpvController = nullptr;
     QThread *m_workerThread = nullptr;
+
+    // TODO: probably add a AsyncCommand struct to pass through asyncCommand,
+    // with custom properties and stuff (utilize union also?) - instead of
+    // having these 2 variables
+    Station m_pendingStation;
+    bool m_pendingPlay = false;
 
     Station m_station;
     QString m_nowPlaying;
@@ -54,6 +60,8 @@ private:
     QString formatTime(const double &time) const;
     void setElapsed(const QString &newElapsed);
 
+    void stop(AsyncCommandId id) const;
+
 private slots:
     void onPropertyChanged(const QString &property, const QVariant &value);
 
@@ -67,13 +75,14 @@ public:
     ~Player();
 
     Station station() const;
-    void setStation(const Station &newStation);
     QString nowPlaying() const;
 
     State state() const;
     QString elapsed() const;
 
 public slots:
+    void setStation(const Station &newStation, const bool &play = false);
+
     void play() const;
     void stop() const;
 

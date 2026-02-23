@@ -14,14 +14,6 @@ Player::Player(QObject *parent)
     QMetaObject::invokeMethod(m_mpvController, &MpvController::init,
                               Qt::BlockingQueuedConnection);
 
-    // TODO: remove when done testing
-    setStation(
-        Station("BigFM", "https://stream.bigfm.de/hiphop/mp3-128/radiode",
-                "https://static.wixstatic.com/media/"
-                "d08c94_434ec752494241e6a53fbd10e2783a87~mv2.jpg/v1/fill/"
-                "w_256,h_256,al_c,q_80,usm_0.66_1.00_0.01,enc_avif,quality_"
-                "auto/d08c94_434ec752494241e6a53fbd10e2783a87~mv2.jpg"));
-
     setupConnections();
     setupObservations();
 }
@@ -104,6 +96,10 @@ void Player::setElapsed(const QString &newElapsed) {
     emit elapsedChanged();
 }
 
+void Player::stop(AsyncCommandId id) const {
+    commandAsync({QStringLiteral("stop")}, id);
+}
+
 void Player::onPropertyChanged(const QString &property, const QVariant &value) {
     if (property == MpvProperties::NowPlaying) {
         setNowPlaying(value.toString());
@@ -113,14 +109,24 @@ void Player::onPropertyChanged(const QString &property, const QVariant &value) {
 }
 
 void Player::onAsyncReply(const QVariant &data, mpv_event event) {
-    switch (static_cast<AsyncCommandId>(event.reply_userdata)) {
-    case AsyncCommandId::None: {
-        break;
-    }
-    case AsyncCommandId::Stop: {
+    const AsyncCommandId id = static_cast<AsyncCommandId>(event.reply_userdata);
+
+    if (id == AsyncCommandId::Stop || id == AsyncCommandId::StopAndSetStation) {
         if (event.error > -1) {
             setState(State::Stopped);
         }
+    }
+
+    switch (id) {
+    case AsyncCommandId::None:
+    case AsyncCommandId::Stop: {
+        break;
+    }
+
+    case AsyncCommandId::StopAndSetStation: {
+        setStation(m_pendingStation, m_pendingPlay);
+        m_pendingStation = Station{};
+        m_pendingPlay = false;
 
         break;
     }
@@ -159,16 +165,6 @@ Station Player::station() const {
     return m_station;
 }
 
-void Player::setStation(const Station &newStation) {
-    if (m_station == newStation) {
-        return;
-    }
-
-    m_station = newStation;
-
-    emit stationChanged();
-}
-
 QString Player::nowPlaying() const {
     return m_nowPlaying;
 }
@@ -181,10 +177,32 @@ QString Player::elapsed() const {
     return m_elapsed;
 }
 
+void Player::setStation(const Station &newStation, const bool &play) {
+    if (m_station == newStation) {
+        return;
+    }
+
+    if (m_state == State::Playing) {
+        m_pendingStation = newStation;
+        m_pendingPlay = play;
+        stop(AsyncCommandId::StopAndSetStation);
+
+        return;
+    }
+
+    m_station = newStation;
+
+    emit stationChanged();
+
+    if (play) {
+        this->play();
+    }
+}
+
 void Player::play() const {
     commandAsync({QStringLiteral("loadfile"), m_station.streamUrl()});
 }
 
 void Player::stop() const {
-    commandAsync({QStringLiteral("stop")}, AsyncCommandId::Stop);
+    stop(AsyncCommandId::Stop);
 }
