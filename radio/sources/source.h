@@ -13,7 +13,7 @@ public:
     explicit Source(QObject *parent = nullptr);
 
     virtual void search(const QString &query) = 0;
-    virtual void cancelSearch();
+    virtual void cancelSearch() = 0;
 
     virtual bool hasDefaultStations() const;
     virtual void loadDefaultStations();

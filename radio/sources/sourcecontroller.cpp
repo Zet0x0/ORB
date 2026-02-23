@@ -125,7 +125,7 @@ void SourceController::setSource(const QString &newSourceName) {
     }
 
     if (m_source) {
-        m_source->cancelSearch();
+        cancelSearch();
         undoSourceConnections(m_source);
 
         m_stationModel->clear();

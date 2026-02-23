@@ -5,3 +5,5 @@ void NullSource::search(const QString &query) {
 
     raiseError(tr("Search error"), tr("This source is not searchable"));
 }
+
+void NullSource::cancelSearch() {}

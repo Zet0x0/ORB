@@ -11,8 +11,6 @@ void Source::raiseError(const QString &title, const QString &message) {
 
 Source::Source(QObject *parent) : QObject(parent) {}
 
-void Source::cancelSearch() {}
-
 bool Source::hasDefaultStations() const {
     return false;
 }
