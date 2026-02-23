@@ -2,17 +2,15 @@
 
 #include <QQmlEngine>
 
-class Station : public QObject {
-    Q_OBJECT
-    QML_ELEMENT
+struct Station {
+    Q_GADGET
+    QML_NAMED_ELEMENT(station)
 
-    Q_PROPERTY(bool valid READ isValid NOTIFY validChanged FINAL)
+    Q_PROPERTY(bool valid READ isValid FINAL)
 
-    Q_PROPERTY(QString name READ name WRITE setName NOTIFY nameChanged FINAL)
-    Q_PROPERTY(QString streamUrl READ streamUrl WRITE setStreamUrl NOTIFY
-                   streamUrlChanged FINAL)
-    Q_PROPERTY(QString imageUrl READ imageUrl WRITE setImageUrl NOTIFY
-                   imageUrlChanged FINAL)
+    Q_PROPERTY(QString name READ name WRITE setName FINAL)
+    Q_PROPERTY(QString streamUrl READ streamUrl WRITE setStreamUrl FINAL)
+    Q_PROPERTY(QString imageUrl READ imageUrl WRITE setImageUrl FINAL)
 
 private:
     bool m_valid = false;
@@ -21,18 +19,14 @@ private:
     QString m_streamUrl;
     QString m_imageUrl;
 
-    QString qUrlParse(const QString &rawUrl);
+    void setValid(bool newValid);
 
 public:
-    explicit Station(QObject *parent, const QString &name = QString(),
-                     const QString &streamUrl = QString(),
-                     const QString &imageUrl = QString());
-    explicit Station(const QString &name = QString(),
-                     const QString &streamUrl = QString(),
-                     const QString &imageUrl = QString());
+    Station(const QString &name = QString(),
+            const QString &streamUrl = QString(),
+            const QString &imageUrl = QString());
 
     bool isValid() const;
-    void setValid(bool newValid);
 
     QString name() const;
     void setName(QString newName);
@@ -42,11 +36,4 @@ public:
     void setImageUrl(QString newImageUrl);
 
     bool operator==(const Station &other) const;
-
-signals:
-    void validChanged();
-
-    void nameChanged();
-    void streamUrlChanged();
-    void imageUrlChanged();
 };

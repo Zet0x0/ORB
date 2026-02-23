@@ -11,13 +11,15 @@ class Player : public QObject, public Singleton<Player> {
     QML_ELEMENT
     QML_SINGLETON
 
-    Q_PROPERTY(Station *station READ station WRITE setStation NOTIFY
+    Q_PROPERTY(Station station READ station WRITE setStation NOTIFY
                    stationChanged FINAL)
     Q_PROPERTY(
         QString nowPlaying READ nowPlaying NOTIFY nowPlayingChanged FINAL)
 
     Q_PROPERTY(Player::State state READ state NOTIFY stateChanged FINAL)
     Q_PROPERTY(QString elapsed READ elapsed NOTIFY elapsedChanged FINAL)
+
+    friend class Singleton<Player>;
 
 public:
     enum class State { Stopped, Loading, Playing };
@@ -29,28 +31,27 @@ private:
     MpvController *m_mpvController = nullptr;
     QThread *m_workerThread = nullptr;
 
-    Station *m_station = nullptr;
+    Station m_station;
     QString m_nowPlaying;
 
-    Player::State m_state = Player::State::Stopped;
+    State m_state = State::Stopped;
     QString m_elapsed = QStringLiteral("00:00:00");
 
-    friend class Singleton<Player>;
     explicit Player(QObject *parent = nullptr);
 
-    void setupConnections();
+    void setupConnections() const;
+    void setupObservations() const;
 
-    void setupObservations();
     void observeProperty(const QString &property, mpv_format format,
-                         uint64_t id = 0);
+                         uint64_t id = 0) const;
 
     void commandAsync(const QStringList &params,
-                      Player::AsyncCommandId id = Player::AsyncCommandId::None);
+                      AsyncCommandId id = AsyncCommandId::None) const;
 
     void setNowPlaying(QString newNowPlaying);
 
-    void setState(const Player::State &newState);
-    QString formatTime(const double &time);
+    void setState(const State &newState);
+    QString formatTime(const double &time) const;
     void setElapsed(const QString &newElapsed);
 
 private slots:
@@ -65,16 +66,16 @@ private slots:
 public:
     ~Player();
 
-    Station *station() const;
-    void setStation(Station *newStation);
+    Station station() const;
+    void setStation(const Station &newStation);
     QString nowPlaying() const;
 
-    Player::State state() const;
+    State state() const;
     QString elapsed() const;
 
 public slots:
-    void play();
-    void stop();
+    void play() const;
+    void stop() const;
 
 signals:
     void stationChanged();

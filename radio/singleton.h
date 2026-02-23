@@ -10,7 +10,10 @@ public:
         return instance;
     } // C++ access
 
-    static T *create(QQmlEngine *, QJSEngine *) {
+    static T *create(QQmlEngine *qmlEngine, QJSEngine *jsEngine) {
+        Q_UNUSED(qmlEngine)
+        Q_UNUSED(jsEngine)
+
         return instance();
     } // QML access
 };

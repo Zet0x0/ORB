@@ -2,6 +2,7 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import radio.player
+import radio.sources
 
 ApplicationWindow {
     height: 480
@@ -156,26 +157,45 @@ ApplicationWindow {
             ComboBox {
                 id: sourceSelector
 
-                // TODO: this should probably be removed
-                // along with the QML's ListModel that's
-                // currently set as ComboBox's model
-                textRole: "text"
-                valueRole: "value"
+                model: SourceController.getSources()
 
-                // TODO: retrieve the model from backend instead
-                model: ListModel {
-                    ListElement {
-                        text: "Not selected"
-                        value: -1
-                    }
+                onCurrentValueChanged: {
+                    SourceController.setSource(currentValue);
+
+                    stationSearchField.engageSearch();
                 }
             }
 
-            SearchField {
+            TextField {
                 id: stationSearchField
 
+                function engageSearch() {
+                    const query = text.trim();
+
+                    if (query.length === 0) {
+                        SourceController.showDefaultStations();
+
+                        return;
+                    }
+
+                    SourceController.search(text);
+                }
+
                 Layout.fillWidth: true
-                enabled: sourceSelector.currentValue !== -1
+                enabled: sourceSelector.currentIndex > 0
+
+                onAccepted: engageSearch()
+                onTextEdited: engageSearch()
+            }
+
+            ToolButton {
+                enabled: stationSearchField.enabled
+                // TODO: use real icons
+                // NOTE: this app might or might not use icon.name
+                // instead of icon.source
+                icon.source: "https://picsum.photos/24/24"
+
+                onClicked: stationSearchField.engageSearch()
             }
         }
 
@@ -185,7 +205,7 @@ ApplicationWindow {
             states: [
                 State {
                     name: "no-source"
-                    when: sourceSelector.currentValue === -1
+                    when: sourceSelector.currentIndex === 0
 
                     PropertyChanges {
                         statusLabel.text: qsTr("# Nothing to show\nStart by [selecting a source](#sourceSelector)")
@@ -193,38 +213,39 @@ ApplicationWindow {
                 },
                 State {
                     name: "showing-stations"
-
-                    // TODO: use a real variable
-                    // when: results > 0
+                    when: stationView.count > 0
 
                     PropertyChanges {
                         statusLabel.text: qsTr("# You should be seeing the stations,\nnot this message")
                     }
                 },
                 State {
-                    name: "empty-query"
-                    when: stationSearchField.text.trim().length === 0
+                    name: "searching"
+                    when: SourceController.searchState === SourceController.Searching
 
                     PropertyChanges {
-                        statusLabel.text: qsTr("# Nothing to show\nYour search query is empty")
+                        statusLabel.text: qsTr("# Searching stations...")
                     }
                 },
                 State {
                     name: "error"
-
-                    // TODO: use a real variable
-                    // when: results < 0
+                    when: SourceController.searchState === SourceController.Error
 
                     PropertyChanges {
-                        // TODO: use real variables and insert them as needed
-                        statusLabel.text: qsTr("# Error title\nError message")
+                        statusLabel.text: qsTr("# %0\n%1").arg(SourceController.error.title).arg(SourceController.error.message)
+                    }
+                },
+                State {
+                    name: "no-default-stations"
+                    when: !SourceController.canShowDefaultStations() && stationView.count === 0
+
+                    PropertyChanges {
+                        statusLabel.text: qsTr("# Nothing to show\nType something in the search field")
                     }
                 },
                 State {
                     name: "no-results"
-
-                    // TODO: use a real variable
-                    // when: results === 0
+                    when: SourceController.canShowDefaultStations() && stationView.count === 0
 
                     PropertyChanges {
                         statusLabel.text: qsTr("# Nothing found\nCheck your search query")
@@ -252,8 +273,11 @@ ApplicationWindow {
                 }
             }
 
-            // TODO: show the results in this ListView
             ListView {
+                id: stationView
+
+                clip: true
+                model: SourceController.stationModel
             }
         }
     }

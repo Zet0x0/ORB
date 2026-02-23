@@ -1,11 +1,8 @@
 #pragma once
 
-#include <QObject>
+#include <QString>
 
-class MpvProperties : public QObject {
-    Q_OBJECT
-
-public:
-    static const QString NowPlaying;
-    static const QString Elapsed;
+namespace MpvProperties {
+static const QString NowPlaying = QStringLiteral("media-title");
+static const QString Elapsed = QStringLiteral("time-pos");
 };
