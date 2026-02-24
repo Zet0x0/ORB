@@ -160,7 +160,6 @@ ApplicationWindow {
                 enabled: sourceSelector.currentIndex > 0
 
                 onAccepted: engageSearch()
-                onTextEdited: engageSearch()
             }
 
             ToolButton {
