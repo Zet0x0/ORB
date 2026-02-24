@@ -12,10 +12,10 @@ bool RadioRecord::parseJson(QRestReply &reply, QJsonDocument *json) {
     const std::optional jsonDocument = reply.readJson(&jsonError);
 
     if (jsonError.error != QJsonParseError::NoError) {
-        emit errorOccurred(SourceError{
-            tr("Parse Error"), tr("%0 (offset %1)")
-                                   .arg(jsonError.errorString(),
-                                        QString::number(jsonError.offset))});
+        raiseError(tr("Parse Error"),
+                   tr("%0 (offset %1)")
+                       .arg(jsonError.errorString(),
+                            QString::number(jsonError.offset)));
 
         return false;
     }
@@ -51,8 +51,7 @@ void RadioRecord::handleStationsEndpointResult(const QJsonDocument &json) {
     }
 
     if (stations.isEmpty()) {
-        emit errorOccurred(
-            SourceError{tr("Search Error"), tr("No default stations found")});
+        raiseError(tr("Search Error"), tr("No default stations found"));
 
         return;
     }
@@ -64,8 +63,7 @@ void RadioRecord::handleStationsEndpointResult(const QJsonDocument &json) {
 
 void RadioRecord::onSearchRequestFinished(QRestReply &reply) {
     if (!reply.isSuccess()) {
-        emit errorOccurred(
-            SourceError{tr("Search Error"), reply.errorString()});
+        raiseError(tr("Search Error"), reply.errorString());
 
         return;
     }
@@ -81,8 +79,7 @@ void RadioRecord::onSearchRequestFinished(QRestReply &reply) {
     if (path.endsWith(Api::Paths::Stations)) {
         handleStationsEndpointResult(json);
     } else {
-        emit errorOccurred(
-            SourceError{tr("Search Error"), tr("Unhandled path %0").arg(path)});
+        raiseError(tr("Search Error"), tr("Unhandled path %0").arg(path));
     }
 }
 
