@@ -17,6 +17,11 @@ StackLayout {
         fillMode: Image.PreserveAspectCrop
         // TODO: use real placeholder image
         source: "https://picsum.photos/256/128"
+
+        sourceSize {
+            height: control.height
+            width: control.width
+        }
     }
 
     // Image.Ready
@@ -27,6 +32,11 @@ StackLayout {
         cache: false
         fillMode: Image.PreserveAspectCrop
         source: control.imageUrl
+
+        sourceSize {
+            height: control.height
+            width: control.width
+        }
     }
 
     // Image.Loading
