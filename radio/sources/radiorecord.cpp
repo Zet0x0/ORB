@@ -23,8 +23,11 @@ void RadioRecord::handleStationsEndpointResult(const QJsonDocument &json) {
             continue;
         }
 
+        const QString title =
+            rawStationObject.value(QStringLiteral("title")).toString();
+
         Station station{
-            rawStationObject.value(QStringLiteral("title")).toString(),
+            title.isEmpty() ? title : tr("Radio Record - %0").arg(title),
             rawStationObject.value(QStringLiteral("stream_hls")).toString(),
             rawStationObject.value(QStringLiteral("icon_gray")).toString()};
 
