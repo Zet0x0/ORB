@@ -9,3 +9,7 @@ QString Utilities::parseUserInputUrl(const QString &userInput) {
 qint64 Utilities::currentTimestampUtc() {
     return QDateTime::currentSecsSinceEpoch();
 }
+
+QString Utilities::pathFromRestReply(QRestReply &reply) {
+    return reply.networkReply()->request().url().path();
+}

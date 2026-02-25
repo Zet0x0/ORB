@@ -1,4 +1,5 @@
 #include "radiorecord.h"
+#include "../utilities.h"
 #include <QJsonArray>
 #include <QJsonObject>
 
@@ -60,7 +61,7 @@ void RadioRecord::onSearchRequestFinished(QRestReply &reply) {
         return;
     }
 
-    const QString path = reply.networkReply()->url().path();
+    const QString path = Utilities::pathFromRestReply(reply);
 
     if (path.endsWith(RadioRecordConstants::StationsPath)) {
         handleStationsEndpointResult(json);
