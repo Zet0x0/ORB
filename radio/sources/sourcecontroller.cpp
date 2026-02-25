@@ -38,6 +38,17 @@ void SourceController::setSearchState(const SearchState &newSearchState) {
 }
 
 void
+SourceController::setCanShowDefaultStations(bool newCanShowDefaultStations) {
+    if (m_canShowDefaultStations == newCanShowDefaultStations) {
+        return;
+    }
+
+    m_canShowDefaultStations = newCanShowDefaultStations;
+
+    emit canShowDefaultStationsChanged();
+}
+
+void
 SourceController::onSourceStationsDispatched(const QList<Station> &stations) {
     m_stationModel->setStations(stations);
 
@@ -103,10 +114,6 @@ StationModel *SourceController::stationModel() const {
     return m_stationModel;
 }
 
-bool SourceController::canShowDefaultStations() const {
-    return m_source->hasDefaultStations();
-}
-
 void SourceController::setSource(const QString &newSourceName) {
     Source *newSource = m_sources.value(newSourceName, nullptr);
 
@@ -122,6 +129,7 @@ void SourceController::setSource(const QString &newSourceName) {
     }
 
     setupSourceConnections(newSource);
+    setCanShowDefaultStations(newSource->hasDefaultStations());
 
     m_source = newSource;
 }
@@ -130,6 +138,10 @@ void SourceController::search(const QString &query) {
     cancelSearch();
 
     m_source->search(query);
+}
+
+bool SourceController::canShowDefaultStations() const {
+    return m_canShowDefaultStations;
 }
 
 void SourceController::showDefaultStations() {
