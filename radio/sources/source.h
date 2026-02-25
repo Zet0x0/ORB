@@ -23,6 +23,8 @@ protected:
     void cacheDefaultStations(const QList<Station> &stations);
     const QList<Station> &getCachedDefaultStations();
 
+    virtual void handleSearch(const QString &query) = 0;
+
     virtual void handleLoadDefaultStations();
 
 private:
@@ -43,7 +45,7 @@ private:
 public:
     explicit Source();
 
-    virtual void search(const QString &query) = 0;
+    void search(const QString &query);
     virtual void cancelSearch() = 0;
 
     virtual bool hasDefaultStations() const;

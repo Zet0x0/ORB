@@ -15,9 +15,6 @@ class SourceController : public QObject, public Singleton<SourceController> {
                    searchStateChanged FINAL)
     Q_PROPERTY(SourceError error READ error NOTIFY errorChanged FINAL)
 
-    Q_PROPERTY(StationModel *stationModel READ stationModel NOTIFY
-                   stationModelChanged FINAL)
-
     friend class Singleton<SourceController>;
 
 public:
@@ -35,8 +32,6 @@ private:
     StationModel *m_stationModel = nullptr;
 
     explicit SourceController(QObject *parent = nullptr);
-
-    void setupStationModelConnections() const;
 
     void undoSourceConnections(Source *source) const;
     void setupSourceConnections(Source *source) const;
@@ -59,7 +54,7 @@ public:
     SearchState searchState() const;
     SourceError error() const;
 
-    StationModel *stationModel() const;
+    Q_INVOKABLE StationModel *stationModel() const;
 
     Q_INVOKABLE bool canShowDefaultStations() const;
 
@@ -72,6 +67,4 @@ public slots:
 signals:
     void searchStateChanged();
     void errorChanged();
-
-    void stationModelChanged();
 };

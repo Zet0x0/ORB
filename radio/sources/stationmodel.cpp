@@ -34,11 +34,11 @@ QHash<int, QByteArray> StationModel::roleNames() const {
 }
 
 void StationModel::setStations(const QList<Station> &stations) {
-    beginInsertRows(QModelIndex(), 0, stations.size() - 1);
+    beginResetModel();
 
     m_stations = stations;
 
-    endInsertRows();
+    endResetModel();
 }
 
 void StationModel::clear() {

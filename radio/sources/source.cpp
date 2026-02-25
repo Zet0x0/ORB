@@ -45,6 +45,12 @@ Source::Source()
       m_restAccessManager(
           new QRestAccessManager(m_networkAccessManager, this)) {}
 
+void Source::search(const QString &query) {
+    emit searchStarted();
+
+    handleSearch(query);
+}
+
 bool Source::hasDefaultStations() const {
     return false;
 }

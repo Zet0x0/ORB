@@ -109,6 +109,7 @@ ApplicationWindow {
                 }
 
                 RowLayout {
+                    // NOTE: this is play/stop
                     ToolButton {
                         enabled: Player.station.valid
                         // TODO: use real icons
@@ -162,6 +163,7 @@ ApplicationWindow {
                 onAccepted: engageSearch()
             }
 
+            // NOTE: this is Search
             ToolButton {
                 enabled: stationSearchField.enabled
                 // TODO: use real icons
@@ -170,6 +172,20 @@ ApplicationWindow {
                 icon.source: "https://picsum.photos/24/24"
 
                 onClicked: stationSearchField.engageSearch()
+            }
+
+            // NOTE: this is Reset search
+            ToolButton {
+                enabled: stationSearchField.enabled
+                // TODO: use real icons
+                // NOTE: this app might or might not use icon.name
+                // instead of icon.source
+                icon.source: "https://picsum.photos/24/24"
+
+                onClicked: {
+                    stationSearchField.clear();
+                    stationSearchField.engageSearch();
+                }
             }
         }
 
@@ -186,14 +202,6 @@ ApplicationWindow {
                     }
                 },
                 State {
-                    name: "showing-stations"
-                    when: stationView.count > 0
-
-                    PropertyChanges {
-                        statusLabel.text: qsTr("# You should be seeing the stations,\nnot this message")
-                    }
-                },
-                State {
                     name: "searching"
                     when: SourceController.searchState === SourceController.Searching
 
@@ -207,6 +215,14 @@ ApplicationWindow {
 
                     PropertyChanges {
                         statusLabel.text: qsTr("# %0\n%1").arg(SourceController.error.title).arg(SourceController.error.message)
+                    }
+                },
+                State {
+                    name: "showing-stations"
+                    when: stationView.count > 0
+
+                    PropertyChanges {
+                        statusLabel.text: qsTr("# You should be seeing the stations,\nnot this message")
                     }
                 },
                 State {
@@ -252,7 +268,7 @@ ApplicationWindow {
 
                 clip: true
                 delegate: stationDelegate
-                model: SourceController.stationModel
+                model: SourceController.stationModel()
                 spacing: 5
 
                 Component {

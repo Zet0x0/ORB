@@ -6,7 +6,8 @@
 namespace RadioRecordConstants {
 const QString BaseApiUrl = QStringLiteral("https://www.radiorecord.ru/api");
 
-const QString StationsPath = QStringLiteral("/stations");
+const QString DefaultStationsPath = QStringLiteral("/stations/");
+const QString SearchPath = QStringLiteral("/search/");
 }
 
 class RadioRecord : public Source {
@@ -15,15 +16,22 @@ class RadioRecord : public Source {
 private:
     QNetworkRequestFactory m_api{{RadioRecordConstants::BaseApiUrl}};
 
+    QJsonArray extractStationsFromJson(const QJsonDocument &json) const;
+
+    void processStationIntoList(const QJsonObject &rawStation,
+                                QList<Station> *stations) const;
+
+    void handleSearch(const QString &query) override;
+
     void handleLoadDefaultStations() override;
 
     void handleStationsEndpointResult(const QJsonDocument &json);
+    void handleSearchEndpointResult(const QJsonDocument &json);
 
 private slots:
     void onSearchRequestFinished(QRestReply &reply);
 
 public:
-    void search(const QString &query) override;
     void cancelSearch() override;
 
     bool hasDefaultStations() const override;

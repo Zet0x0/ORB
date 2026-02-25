@@ -1,16 +1,7 @@
 #include "sourcecontroller.h"
 
 SourceController::SourceController(QObject *parent)
-    : QObject(parent), m_stationModel(new StationModel) {
-    setupStationModelConnections();
-}
-
-void SourceController::setupStationModelConnections() const {
-    connect(m_stationModel, &QAbstractListModel::rowsInserted, this,
-            &SourceController::stationModelChanged);
-    connect(m_stationModel, &QAbstractListModel::modelReset, this,
-            &SourceController::stationModelChanged);
-}
+    : QObject(parent), m_stationModel(new StationModel) {}
 
 void SourceController::undoSourceConnections(Source *source) const {
     disconnect(source, nullptr, this, nullptr);
