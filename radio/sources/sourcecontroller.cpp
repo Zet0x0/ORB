@@ -114,6 +114,10 @@ StationModel *SourceController::stationModel() const {
     return m_stationModel;
 }
 
+bool SourceController::canShowDefaultStations() const {
+    return m_canShowDefaultStations;
+}
+
 void SourceController::setSource(const QString &newSourceName) {
     Source *newSource = m_sources.value(newSourceName, nullptr);
 
@@ -138,10 +142,6 @@ void SourceController::search(const QString &query) {
     cancelSearch();
 
     m_source->search(query);
-}
-
-bool SourceController::canShowDefaultStations() const {
-    return m_canShowDefaultStations;
 }
 
 void SourceController::showDefaultStations() {
