@@ -31,9 +31,6 @@ private:
     MpvController *m_mpvController = nullptr;
     QThread *m_workerThread = nullptr;
 
-    // TODO: probably add a AsyncCommand struct to pass through asyncCommand,
-    // with custom properties and stuff (utilize union also?) - instead of
-    // having these 2 variables
     Station m_pendingStation;
     bool m_pendingPlay = false;
 
