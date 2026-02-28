@@ -47,15 +47,15 @@ void RadioRecord::handleSearch(const QString &query) {
     multiPart->append(keywordsPart);
     multiPart->append(filtersPart);
 
-    QNetworkReply *reply = m_restAccessManager->post(
+    m_runningReply = m_restAccessManager->post(
         m_api.createRequest(RadioRecordConstants::SearchPath), multiPart, this,
         &RadioRecord::onSearchRequestFinished);
 
-    multiPart->setParent(reply);
+    multiPart->setParent(m_runningReply);
 }
 
 void RadioRecord::handleLoadDefaultStations() {
-    m_restAccessManager->get(
+    m_runningReply = m_restAccessManager->get(
         m_api.createRequest(RadioRecordConstants::DefaultStationsPath), this,
         &RadioRecord::onSearchRequestFinished);
 }
@@ -114,8 +114,15 @@ void RadioRecord::onSearchRequestFinished(QRestReply &reply) {
     }
 }
 
-// TODO
-void RadioRecord::cancelSearch() {}
+void RadioRecord::cancelSearch() {
+    if (!m_runningReply) {
+        return;
+    }
+
+    m_runningReply->abort();
+
+    emit searchCancelled();
+}
 
 bool RadioRecord::hasDefaultStations() const {
     return true;

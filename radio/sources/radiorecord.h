@@ -16,6 +16,8 @@ class RadioRecord : public Source {
 private:
     QNetworkRequestFactory m_api{{RadioRecordConstants::BaseApiUrl}};
 
+    QNetworkReply *m_runningReply = nullptr;
+
     QJsonArray extractStationsFromJson(const QJsonDocument &json) const;
 
     void processStationIntoList(const QJsonObject &rawStation,
