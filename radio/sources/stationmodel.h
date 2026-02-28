@@ -12,19 +12,15 @@ private:
     QList<Station> m_stations;
 
 public:
-    enum StationRoles {
-        IsValidRole = Qt::UserRole,
-        NameRole,
-        StreamUrlRole,
-        ImageUrlRole
-    };
+    enum StationRoles { StationRole = Qt::UserRole };
     Q_ENUM(StationRoles)
 
     Q_INVOKABLE int
     rowCount(const QModelIndex &parent = QModelIndex()) const override;
 
-    Q_INVOKABLE QVariant data(const QModelIndex &index,
-                              int role = StationRoles::NameRole) const override;
+    Q_INVOKABLE QVariant
+    data(const QModelIndex &index,
+         int role = StationRoles::StationRole) const override;
 
     Q_INVOKABLE Qt::ItemFlags flags(const QModelIndex &index) const override;
 

@@ -21,35 +21,10 @@ ApplicationWindow {
         RowLayout {
             id: playerStatus
 
-            StackLayout {
-                Layout.fillHeight: false
-                Layout.fillWidth: false
+            StationImage {
                 Layout.preferredHeight: playerStatus.height
                 Layout.preferredWidth: playerStatus.height
-                currentIndex: (stationImage.status === Image.Error) ? 0 : stationImage.status
-
-                // Image.Null
-                // Image.Error
-                Image {
-                    fillMode: Image.PreserveAspectCrop
-                    // TODO: use real placeholder image
-                    source: "https://picsum.photos/256/128"
-                }
-
-                // Image.Ready
-                Image {
-                    id: stationImage
-
-                    asynchronous: true
-                    cache: false
-                    fillMode: Image.PreserveAspectCrop
-                    source: Player.station.imageUrl
-                }
-
-                // Image.Loading
-                BusyIndicator {
-                    running: StackLayout.isCurrentItem
-                }
+                imageUrl: Player.station.imageUrl
             }
 
             ColumnLayout {
@@ -134,6 +109,7 @@ ApplicationWindow {
                 }
 
                 RowLayout {
+                    // NOTE: this is play/stop
                     ToolButton {
                         enabled: Player.station.valid
                         // TODO: use real icons
@@ -185,9 +161,9 @@ ApplicationWindow {
                 enabled: sourceSelector.currentIndex > 0
 
                 onAccepted: engageSearch()
-                onTextEdited: engageSearch()
             }
 
+            // NOTE: this is Search
             ToolButton {
                 enabled: stationSearchField.enabled
                 // TODO: use real icons
@@ -196,6 +172,20 @@ ApplicationWindow {
                 icon.source: "https://picsum.photos/24/24"
 
                 onClicked: stationSearchField.engageSearch()
+            }
+
+            // NOTE: this is Reset search
+            ToolButton {
+                enabled: stationSearchField.enabled
+                // TODO: use real icons
+                // NOTE: this app might or might not use icon.name
+                // instead of icon.source
+                icon.source: "https://picsum.photos/24/24"
+
+                onClicked: {
+                    stationSearchField.clear();
+                    stationSearchField.engageSearch();
+                }
             }
         }
 
@@ -209,14 +199,6 @@ ApplicationWindow {
 
                     PropertyChanges {
                         statusLabel.text: qsTr("# Nothing to show\nStart by [selecting a source](#sourceSelector)")
-                    }
-                },
-                State {
-                    name: "showing-stations"
-                    when: stationView.count > 0
-
-                    PropertyChanges {
-                        statusLabel.text: qsTr("# You should be seeing the stations,\nnot this message")
                     }
                 },
                 State {
@@ -236,8 +218,16 @@ ApplicationWindow {
                     }
                 },
                 State {
+                    name: "showing-stations"
+                    when: stationView.count > 0
+
+                    PropertyChanges {
+                        statusLabel.text: qsTr("# You should be seeing the stations,\nnot this message")
+                    }
+                },
+                State {
                     name: "no-default-stations"
-                    when: !SourceController.canShowDefaultStations() && stationView.count === 0
+                    when: !SourceController.canShowDefaultStations && stationView.count === 0
 
                     PropertyChanges {
                         statusLabel.text: qsTr("# Nothing to show\nType something in the search field")
@@ -245,7 +235,7 @@ ApplicationWindow {
                 },
                 State {
                     name: "no-results"
-                    when: SourceController.canShowDefaultStations() && stationView.count === 0
+                    when: SourceController.canShowDefaultStations && stationView.count === 0
 
                     PropertyChanges {
                         statusLabel.text: qsTr("# Nothing found\nCheck your search query")
@@ -277,7 +267,16 @@ ApplicationWindow {
                 id: stationView
 
                 clip: true
-                model: SourceController.stationModel
+                delegate: stationDelegate
+                model: SourceController.stationModel()
+                spacing: 5
+
+                Component {
+                    id: stationDelegate
+
+                    StationDelegate {
+                    }
+                }
             }
         }
     }

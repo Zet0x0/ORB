@@ -1,16 +1,7 @@
 #include "sourcecontroller.h"
 
 SourceController::SourceController(QObject *parent)
-    : QObject(parent), m_stationModel(new StationModel) {
-    setupStationModelConnections();
-}
-
-void SourceController::setupStationModelConnections() const {
-    connect(m_stationModel, &QAbstractListModel::rowsInserted, this,
-            &SourceController::stationModelChanged);
-    connect(m_stationModel, &QAbstractListModel::modelReset, this,
-            &SourceController::stationModelChanged);
-}
+    : QObject(parent), m_stationModel(new StationModel) {}
 
 void SourceController::undoSourceConnections(Source *source) const {
     disconnect(source, nullptr, this, nullptr);
@@ -46,7 +37,17 @@ void SourceController::setSearchState(const SearchState &newSearchState) {
     emit searchStateChanged();
 }
 
-// TODO: account for stations dispatching from a loadDefaultStations call
+void
+SourceController::setCanShowDefaultStations(bool newCanShowDefaultStations) {
+    if (m_canShowDefaultStations == newCanShowDefaultStations) {
+        return;
+    }
+
+    m_canShowDefaultStations = newCanShowDefaultStations;
+
+    emit canShowDefaultStationsChanged();
+}
+
 void
 SourceController::onSourceStationsDispatched(const QList<Station> &stations) {
     m_stationModel->setStations(stations);
@@ -114,7 +115,7 @@ StationModel *SourceController::stationModel() const {
 }
 
 bool SourceController::canShowDefaultStations() const {
-    return m_source->hasDefaultStations();
+    return m_canShowDefaultStations;
 }
 
 void SourceController::setSource(const QString &newSourceName) {
@@ -132,6 +133,7 @@ void SourceController::setSource(const QString &newSourceName) {
     }
 
     setupSourceConnections(newSource);
+    setCanShowDefaultStations(newSource->hasDefaultStations());
 
     m_source = newSource;
 }

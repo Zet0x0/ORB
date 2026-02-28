@@ -1,6 +1,13 @@
 qt_add_executable(radio main.cpp singleton.h utilities.h utilities.cpp)
 
-qt_add_qml_module(radio URI radio QML_FILES Main.qml)
+qt_add_qml_module(
+    radio
+    URI
+    radio
+    QML_FILES
+    Main.qml
+    StationImage.qml
+    StationDelegate.qml)
 
 add_subdirectory(player)
 add_subdirectory(sources)
