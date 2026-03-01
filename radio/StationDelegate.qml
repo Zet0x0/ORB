@@ -25,10 +25,18 @@ Frame {
             margins: 8
         }
 
-        StationImage {
+        Control {
             Layout.preferredHeight: Math.max(layout.height, 48)
             Layout.preferredWidth: Math.max(layout.height, 48)
-            imageUrl: control.station.imageUrl
+            padding: (background as Rectangle).border.width
+
+            background: Rectangle {
+                border.color: mouseArea.containsMouse ? palette.accent : palette.base
+                color: palette.window
+            }
+            contentItem: StationImage {
+                imageUrl: control.station.imageUrl
+            }
         }
 
         Label {
