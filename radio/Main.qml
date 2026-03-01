@@ -263,17 +263,39 @@ ApplicationWindow {
                 }
             }
 
-            ListView {
-                id: stationView
+            RowLayout {
+                ListView {
+                    id: stationView
 
-                boundsBehavior: Flickable.StopAtBounds
-                clip: true
-                model: SourceController.stationModel()
-                pixelAligned: true
-                spacing: 5
+                    Layout.fillHeight: true
+                    Layout.fillWidth: true
+                    ScrollBar.vertical: stationViewScrollBar
+                    boundsBehavior: Flickable.StopAtBounds
+                    clip: true
+                    model: SourceController.stationModel()
+                    pixelAligned: true
+                    spacing: 5
 
-                delegate: StationDelegate {
-                    width: ListView.view.width
+                    delegate: StationDelegate {
+                        width: ListView.view.width
+                    }
+                }
+
+                ScrollBar {
+                    id: stationViewScrollBar
+
+                    Layout.fillHeight: true
+                    minimumSize: 0.1
+                    padding: 0
+                    policy: visible ? ScrollBar.AlwaysOn : ScrollBar.AlwaysOff
+                    visible: stationView.contentHeight > stationView.height
+
+                    contentItem: Rectangle {
+                        color: stationViewScrollBar.pressed ? palette.midlight : palette.light
+                        implicitHeight: 100
+                        implicitWidth: 6
+                        radius: Math.floor(width / 2)
+                    }
                 }
             }
         }
