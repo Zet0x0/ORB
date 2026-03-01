@@ -9,7 +9,7 @@ StackLayout {
 
     Layout.fillHeight: false
     Layout.fillWidth: false
-    currentIndex: (stationImage.status === Image.Error) ? 0 : stationImage.status
+    currentIndex: stationImage.status === Image.Error ? 0 : stationImage.status
 
     // Image.Null
     // Image.Error
@@ -29,7 +29,6 @@ StackLayout {
         id: stationImage
 
         asynchronous: true
-        cache: false
         fillMode: Image.PreserveAspectCrop
         source: control.imageUrl
 

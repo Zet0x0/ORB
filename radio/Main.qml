@@ -77,7 +77,7 @@ ApplicationWindow {
                         elide: Text.ElideMiddle
                         font.italic: state !== "showing-name"
                         textFormat: Text.PlainText
-                        width: Math.min(parent.width - ((elapsedLabel.visible) ? elapsedLabel.width + parent.spacing : 0), implicitWidth)
+                        width: Math.min(parent.width - (elapsedLabel.visible ? elapsedLabel.width + parent.spacing : 0), implicitWidth)
 
                         states: [
                             State {
@@ -115,7 +115,7 @@ ApplicationWindow {
                         // TODO: use real icons
                         // NOTE: this app might or might not use icon.name
                         // instead of icon.source
-                        icon.source: (Player.state === Player.Stopped) ? "https://picsum.photos/24/24" : "https://picsum.photos/24/24"
+                        icon.source: Player.state === Player.Stopped ? "https://picsum.photos/24/24" : "https://picsum.photos/24/24"
 
                         onClicked: {
                             if (Player.state === Player.Stopped) {
@@ -190,7 +190,7 @@ ApplicationWindow {
         }
 
         StackLayout {
-            currentIndex: (state === "showing-stations") ? 1 : 0
+            currentIndex: state === "showing-stations" ? 1 : 0
 
             states: [
                 State {
@@ -263,18 +263,57 @@ ApplicationWindow {
                 }
             }
 
-            ListView {
-                id: stationView
+            RowLayout {
+                ListView {
+                    id: stationView
 
-                clip: true
-                delegate: stationDelegate
-                model: SourceController.stationModel()
-                spacing: 5
+                    Layout.fillHeight: true
+                    Layout.fillWidth: true
+                    ScrollBar.vertical: stationViewScrollBar
+                    activeFocusOnTab: true
+                    boundsBehavior: Flickable.StopAtBounds
+                    clip: true
+                    highlightFollowsCurrentItem: false
+                    keyNavigationWraps: true
+                    model: SourceController.stationModel()
+                    pixelAligned: true
+                    spacing: 5
 
-                Component {
-                    id: stationDelegate
+                    delegate: StationDelegate {
+                        width: ListView.view.width
+                    }
+                    highlight: Rectangle {
+                        color: "transparent"
+                        height: ListView.view.currentItem?.height ?? 0
+                        visible: (!(ListView.view.currentItem as StationDelegate)?.hovered ?? false) && ListView.view.activeFocus
+                        width: ListView.view.currentItem?.width ?? 0
+                        y: ListView.view.currentItem?.y ?? 0
+                        z: 2
 
-                    StationDelegate {
+                        border {
+                            color: palette.highlight
+                            width: 4
+                        }
+                    }
+
+                    onCountChanged: currentIndex = count === 0 ? -1 : 0
+                    onCurrentItemChanged: positionViewAtIndex(currentIndex, ListView.Contain)
+                }
+
+                ScrollBar {
+                    id: stationViewScrollBar
+
+                    Layout.fillHeight: true
+                    minimumSize: 0.1
+                    padding: 0
+                    policy: visible ? ScrollBar.AlwaysOn : ScrollBar.AlwaysOff
+                    visible: stationView.contentHeight > stationView.height
+
+                    contentItem: Rectangle {
+                        color: stationViewScrollBar.pressed ? palette.midlight : palette.light
+                        implicitHeight: 100
+                        implicitWidth: 6
+                        radius: Math.floor(width / 2)
                     }
                 }
             }

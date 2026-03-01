@@ -3,56 +3,75 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import radio.player
 
-Rectangle {
+Frame {
     id: control
 
     required property station station
 
-    border.width: 1
-    color: "#00000000"
-    height: layout.implicitHeight + layout.anchors.topMargin + layout.anchors.bottomMargin
-    width: ListView.view.width
+    function handleInteraction() {
+        if (Player.station === control.station) {
+            if (Player.state === Player.Stopped) {
+                Player.play();
+            } else {
+                Player.stop();
+            }
+        } else {
+            Player.setStation(control.station, true);
+        }
+    }
+
+    contentHeight: layout.implicitHeight + layout.anchors.topMargin + layout.anchors.bottomMargin
+    contentWidth: layout.implicitWidth + layout.anchors.leftMargin + layout.anchors.rightMargin
+    padding: 0
+
+    background: Rectangle {
+        border.color: control.hovered ? palette.accent : palette.base
+        color: control.hovered ? palette.highlight : palette.window
+    }
+
+    Keys.onSpacePressed: handleInteraction()
 
     RowLayout {
         id: layout
 
         anchors {
             fill: parent
-            margins: 8
+            margins: 8 + (control.background as Rectangle).border.width
         }
 
-        StationImage {
-            Layout.preferredHeight: layout.height
-            Layout.preferredWidth: layout.height
-            imageUrl: control.station.imageUrl
-        }
+        Control {
+            Layout.preferredHeight: Math.max(layout.height, 48)
+            Layout.preferredWidth: Math.max(layout.height, 48)
+            padding: (background as Rectangle).border.width
 
-        ColumnLayout {
-            Label {
-                Layout.fillWidth: true
-                elide: Text.ElideMiddle
-                text: control.station.name
-                textFormat: Text.PlainText
+            background: Rectangle {
+                border.color: control.hovered ? palette.accent : palette.base
+                color: palette.window
             }
-
-            ToolButton {
-                // TODO: use real icons
-                // NOTE: this app might or might not use icon.name
-                // instead of icon.source
-                icon.source: (Player.state === Player.Stopped || Player.station !== control.station) ? "https://picsum.photos/24/24" : "https://picsum.photos/20/20"
-
-                onClicked: {
-                    if (Player.station === control.station) {
-                        if (Player.state === Player.Stopped) {
-                            Player.play();
-                        } else {
-                            Player.stop();
-                        }
-                    } else {
-                        Player.setStation(control.station, true);
-                    }
-                }
+            contentItem: StationImage {
+                imageUrl: control.station.imageUrl
             }
         }
+
+        Label {
+            Layout.fillHeight: true
+            Layout.fillWidth: true
+            Layout.maximumHeight: layout.height
+            color: control.hovered ? palette.highlightedText : palette.windowText
+            elide: Text.ElideRight
+            text: control.station.name
+            textFormat: Text.PlainText
+            verticalAlignment: Qt.AlignVCenter
+            wrapMode: Text.Wrap
+        }
+    }
+
+    MouseArea {
+        id: mouseArea
+
+        anchors.fill: parent
+        cursorShape: Qt.PointingHandCursor
+
+        onClicked: control.handleInteraction()
     }
 }
