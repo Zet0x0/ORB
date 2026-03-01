@@ -22,11 +22,12 @@ Frame {
 
     contentHeight: layout.implicitHeight + layout.anchors.topMargin + layout.anchors.bottomMargin
     contentWidth: layout.implicitWidth + layout.anchors.leftMargin + layout.anchors.rightMargin
+    hoverEnabled: enabled
     padding: 0
 
     background: Rectangle {
-        border.color: control.hovered ? palette.accent : palette.base
-        color: control.hovered ? palette.highlight : palette.window
+        border.color: enabled ? (control.hovered ? palette.active.accent : palette.active.base) : palette.disabled.base
+        color: enabled ? (control.hovered ? palette.active.highlight : palette.active.window) : palette.disabled.window
     }
 
     Keys.onSpacePressed: handleInteraction()
@@ -45,8 +46,8 @@ Frame {
             padding: (background as Rectangle).border.width
 
             background: Rectangle {
-                border.color: control.hovered ? palette.accent : palette.base
-                color: palette.window
+                border.color: enabled ? (control.hovered ? palette.active.accent : palette.active.base) : palette.disabled.base
+                color: enabled ? palette.active.window : palette.disabled.window
             }
             contentItem: StationImage {
                 imageUrl: control.station.imageUrl
@@ -57,7 +58,7 @@ Frame {
             Layout.fillHeight: true
             Layout.fillWidth: true
             Layout.maximumHeight: layout.height
-            color: control.hovered ? palette.highlightedText : palette.windowText
+            color: enabled ? (control.hovered ? palette.active.highlightedText : palette.active.windowText) : palette.disabled.windowText
             elide: Text.ElideRight
             text: control.station.name
             textFormat: Text.PlainText

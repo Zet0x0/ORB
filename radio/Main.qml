@@ -34,9 +34,9 @@ ApplicationWindow {
                     id: nowPlayingLabel
 
                     Layout.fillWidth: true
+                    color: enabled && state === "showing-info" ? palette.active.windowText : palette.disabled.windowText
                     elide: Text.ElideMiddle
-                    enabled: state === "showing-info"
-                    font.italic: !enabled
+                    font.italic: state !== "showing-info"
                     textFormat: Text.PlainText
 
                     states: [
@@ -102,7 +102,7 @@ ApplicationWindow {
                     Label {
                         id: elapsedLabel
 
-                        enabled: false
+                        color: palette.disabled.windowText
                         text: Player.elapsed
                         visible: Player.state === Player.Playing
                     }
@@ -291,7 +291,7 @@ ApplicationWindow {
                         z: 2
 
                         border {
-                            color: palette.highlight
+                            color: enabled ? palette.active.highlight : palette.disabled.highlight
                             width: 4
                         }
                     }
@@ -310,7 +310,7 @@ ApplicationWindow {
                     visible: stationView.contentHeight > stationView.height
 
                     contentItem: Rectangle {
-                        color: stationViewScrollBar.pressed ? palette.midlight : palette.light
+                        color: enabled ? (stationViewScrollBar.pressed ? palette.active.midlight : palette.active.light) : palette.disabled.light
                         implicitHeight: 100
                         implicitWidth: 6
                         radius: Math.floor(width / 2)
