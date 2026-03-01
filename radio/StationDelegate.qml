@@ -22,7 +22,7 @@ Frame {
 
         anchors {
             fill: parent
-            margins: 8
+            margins: 8 + (control.background as Rectangle).border.width
         }
 
         Control {
