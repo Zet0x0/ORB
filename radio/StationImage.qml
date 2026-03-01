@@ -29,7 +29,6 @@ StackLayout {
         id: stationImage
 
         asynchronous: true
-        cache: false
         fillMode: Image.PreserveAspectCrop
         source: control.imageUrl
 
