@@ -3,15 +3,19 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import radio.player
 
-Rectangle {
+Frame {
     id: control
 
     required property station station
 
-    border.width: 1
-    color: "#00000000"
-    height: layout.implicitHeight + layout.anchors.topMargin + layout.anchors.bottomMargin
-    width: ListView.view.width
+    contentHeight: layout.implicitHeight + layout.anchors.topMargin + layout.anchors.bottomMargin
+    contentWidth: layout.implicitWidth + layout.anchors.leftMargin + layout.anchors.rightMargin
+    padding: 0
+
+    background: Rectangle {
+        border.color: mouseArea.containsMouse ? palette.accent : palette.base
+        color: mouseArea.containsMouse ? palette.highlight : palette.window
+    }
 
     RowLayout {
         id: layout
@@ -27,31 +31,31 @@ Rectangle {
             imageUrl: control.station.imageUrl
         }
 
-        ColumnLayout {
-            Label {
-                Layout.fillWidth: true
-                elide: Text.ElideMiddle
-                text: control.station.name
-                textFormat: Text.PlainText
-            }
+        Label {
+            Layout.fillWidth: true
+            color: mouseArea.containsMouse ? palette.highlightedText : palette.windowText
+            elide: Text.ElideMiddle
+            text: control.station.name
+            textFormat: Text.PlainText
+        }
+    }
 
-            ToolButton {
-                // TODO: use real icons
-                // NOTE: this app might or might not use icon.name
-                // instead of icon.source
-                icon.source: (Player.state === Player.Stopped || Player.station !== control.station) ? "https://picsum.photos/24/24" : "https://picsum.photos/20/20"
+    MouseArea {
+        id: mouseArea
 
-                onClicked: {
-                    if (Player.station === control.station) {
-                        if (Player.state === Player.Stopped) {
-                            Player.play();
-                        } else {
-                            Player.stop();
-                        }
-                    } else {
-                        Player.setStation(control.station, true);
-                    }
+        anchors.fill: parent
+        cursorShape: Qt.PointingHandCursor
+        hoverEnabled: true
+
+        onClicked: {
+            if (Player.station === control.station) {
+                if (Player.state === Player.Stopped) {
+                    Player.play();
+                } else {
+                    Player.stop();
                 }
+            } else {
+                Player.setStation(control.station, true);
             }
         }
     }
