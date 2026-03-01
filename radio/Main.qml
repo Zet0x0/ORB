@@ -266,8 +266,10 @@ ApplicationWindow {
             ListView {
                 id: stationView
 
+                boundsBehavior: Flickable.StopAtBounds
                 clip: true
                 model: SourceController.stationModel()
+                pixelAligned: true
                 spacing: 5
 
                 delegate: StationDelegate {
