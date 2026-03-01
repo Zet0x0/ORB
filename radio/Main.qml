@@ -270,9 +270,9 @@ ApplicationWindow {
                     Layout.fillHeight: true
                     Layout.fillWidth: true
                     ScrollBar.vertical: stationViewScrollBar
+                    activeFocusOnTab: true
                     boundsBehavior: Flickable.StopAtBounds
                     clip: true
-                    focusPolicy: Qt.StrongFocus
                     highlightFollowsCurrentItem: false
                     keyNavigationWraps: true
                     model: SourceController.stationModel()
