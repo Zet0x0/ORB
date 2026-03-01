@@ -267,15 +267,11 @@ ApplicationWindow {
                 id: stationView
 
                 clip: true
-                delegate: stationDelegate
                 model: SourceController.stationModel()
                 spacing: 5
 
-                Component {
-                    id: stationDelegate
-
-                    StationDelegate {
-                    }
+                delegate: StationDelegate {
+                    width: ListView.view.width
                 }
             }
         }
