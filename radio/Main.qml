@@ -291,7 +291,7 @@ ApplicationWindow {
                         z: 2
 
                         border {
-                            color: palette.highlight
+                            color: enabled ? palette.active.highlight : palette.disabled.highlight
                             width: 4
                         }
                     }
@@ -310,7 +310,7 @@ ApplicationWindow {
                     visible: stationView.contentHeight > stationView.height
 
                     contentItem: Rectangle {
-                        color: stationViewScrollBar.pressed ? palette.midlight : palette.light
+                        color: enabled ? (stationViewScrollBar.pressed ? palette.active.midlight : palette.active.light) : palette.disabled.light
                         implicitHeight: 100
                         implicitWidth: 6
                         radius: Math.floor(width / 2)
