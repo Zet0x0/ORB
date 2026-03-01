@@ -26,8 +26,8 @@ Frame {
         }
 
         StationImage {
-            Layout.preferredHeight: layout.height
-            Layout.preferredWidth: layout.height
+            Layout.preferredHeight: Math.max(layout.height, 48)
+            Layout.preferredWidth: Math.max(layout.height, 48)
             imageUrl: control.station.imageUrl
         }
 
