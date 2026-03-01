@@ -77,7 +77,7 @@ ApplicationWindow {
                         elide: Text.ElideMiddle
                         font.italic: state !== "showing-name"
                         textFormat: Text.PlainText
-                        width: Math.min(parent.width - ((elapsedLabel.visible) ? elapsedLabel.width + parent.spacing : 0), implicitWidth)
+                        width: Math.min(parent.width - (elapsedLabel.visible ? elapsedLabel.width + parent.spacing : 0), implicitWidth)
 
                         states: [
                             State {
@@ -115,7 +115,7 @@ ApplicationWindow {
                         // TODO: use real icons
                         // NOTE: this app might or might not use icon.name
                         // instead of icon.source
-                        icon.source: (Player.state === Player.Stopped) ? "https://picsum.photos/24/24" : "https://picsum.photos/24/24"
+                        icon.source: Player.state === Player.Stopped ? "https://picsum.photos/24/24" : "https://picsum.photos/24/24"
 
                         onClicked: {
                             if (Player.state === Player.Stopped) {
@@ -190,7 +190,7 @@ ApplicationWindow {
         }
 
         StackLayout {
-            currentIndex: (state === "showing-stations") ? 1 : 0
+            currentIndex: state === "showing-stations" ? 1 : 0
 
             states: [
                 State {
