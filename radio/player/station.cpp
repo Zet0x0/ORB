@@ -27,7 +27,7 @@ void Station::setName(QString newName) {
         newName = QObject::tr("Unnamed Station");
     }
 
-    m_name = newName;
+    m_name = Utilities::escapeControlCharacters(newName);
 }
 
 QString Station::streamUrl() const {

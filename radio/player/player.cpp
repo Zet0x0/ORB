@@ -1,4 +1,5 @@
 #include "player.h"
+#include "../utilities.h"
 #include "mpvproperties.h"
 
 Player::Player(QObject *parent)
@@ -142,9 +143,10 @@ void Player::onAsyncReply(const QVariant &data, mpv_event event) {
     }
 
     case AsyncCommandId::GetFilenameAndFilterNowPlaying: {
-        setNowPlaying(data.toString() == m_pendingNowPlaying
-                          ? QString()
-                          : m_pendingNowPlaying);
+        setNowPlaying(
+            data.toString() == m_pendingNowPlaying
+                ? QString()
+                : Utilities::escapeControlCharacters(m_pendingNowPlaying));
 
         m_pendingNowPlaying.clear();
 
