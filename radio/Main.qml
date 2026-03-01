@@ -272,6 +272,9 @@ ApplicationWindow {
                     ScrollBar.vertical: stationViewScrollBar
                     boundsBehavior: Flickable.StopAtBounds
                     clip: true
+                    focusPolicy: Qt.StrongFocus
+                    highlightFollowsCurrentItem: false
+                    keyNavigationWraps: true
                     model: SourceController.stationModel()
                     pixelAligned: true
                     spacing: 5
@@ -279,6 +282,21 @@ ApplicationWindow {
                     delegate: StationDelegate {
                         width: ListView.view.width
                     }
+                    highlight: Rectangle {
+                        color: "transparent"
+                        height: ListView.view.currentItem.height
+                        visible: !(ListView.view.currentItem as StationDelegate).hovered && ListView.view.activeFocus
+                        width: ListView.view.currentItem.width
+                        y: ListView.view.currentItem.y
+                        z: 2
+
+                        border {
+                            color: palette.highlight
+                            width: 4
+                        }
+                    }
+
+                    onCurrentItemChanged: positionViewAtIndex(currentIndex, ListView.Contain)
                 }
 
                 ScrollBar {

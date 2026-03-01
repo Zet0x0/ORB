@@ -8,14 +8,28 @@ Frame {
 
     required property station station
 
+    function handleInteraction() {
+        if (Player.station === control.station) {
+            if (Player.state === Player.Stopped) {
+                Player.play();
+            } else {
+                Player.stop();
+            }
+        } else {
+            Player.setStation(control.station, true);
+        }
+    }
+
     contentHeight: layout.implicitHeight + layout.anchors.topMargin + layout.anchors.bottomMargin
     contentWidth: layout.implicitWidth + layout.anchors.leftMargin + layout.anchors.rightMargin
     padding: 0
 
     background: Rectangle {
-        border.color: mouseArea.containsMouse ? palette.accent : palette.base
-        color: mouseArea.containsMouse ? palette.highlight : palette.window
+        border.color: control.hovered ? palette.accent : palette.base
+        color: control.hovered ? palette.highlight : palette.window
     }
+
+    Keys.onSpacePressed: handleInteraction()
 
     RowLayout {
         id: layout
@@ -31,7 +45,7 @@ Frame {
             padding: (background as Rectangle).border.width
 
             background: Rectangle {
-                border.color: mouseArea.containsMouse ? palette.accent : palette.base
+                border.color: control.hovered ? palette.accent : palette.base
                 color: palette.window
             }
             contentItem: StationImage {
@@ -43,7 +57,7 @@ Frame {
             Layout.fillHeight: true
             Layout.fillWidth: true
             Layout.maximumHeight: layout.height
-            color: mouseArea.containsMouse ? palette.highlightedText : palette.windowText
+            color: control.hovered ? palette.highlightedText : palette.windowText
             elide: Text.ElideRight
             text: control.station.name
             textFormat: Text.PlainText
@@ -57,18 +71,7 @@ Frame {
 
         anchors.fill: parent
         cursorShape: Qt.PointingHandCursor
-        hoverEnabled: true
 
-        onClicked: {
-            if (Player.station === control.station) {
-                if (Player.state === Player.Stopped) {
-                    Player.play();
-                } else {
-                    Player.stop();
-                }
-            } else {
-                Player.setStation(control.station, true);
-            }
-        }
+        onClicked: control.handleInteraction()
     }
 }
