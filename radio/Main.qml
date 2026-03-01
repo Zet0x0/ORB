@@ -34,9 +34,9 @@ ApplicationWindow {
                     id: nowPlayingLabel
 
                     Layout.fillWidth: true
+                    color: enabled && state === "showing-info" ? palette.active.windowText : palette.disabled.windowText
                     elide: Text.ElideMiddle
-                    enabled: state === "showing-info"
-                    font.italic: !enabled
+                    font.italic: state !== "showing-info"
                     textFormat: Text.PlainText
 
                     states: [
@@ -102,7 +102,7 @@ ApplicationWindow {
                     Label {
                         id: elapsedLabel
 
-                        enabled: false
+                        color: palette.disabled.windowText
                         text: Player.elapsed
                         visible: Player.state === Player.Playing
                     }
