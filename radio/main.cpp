@@ -6,7 +6,7 @@
 #include <QQuickStyle>
 
 int main(int argc, char *argv[]) {
-    QQuickStyle::setStyle(QStringLiteral("Fusion"));
+    QQuickStyle::setFallbackStyle(QStringLiteral("Fusion"));
 
     QGuiApplication app(argc, argv);
     QQmlApplicationEngine engine;
