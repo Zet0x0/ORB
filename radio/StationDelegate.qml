@@ -32,11 +32,15 @@ Frame {
         }
 
         Label {
+            Layout.fillHeight: true
             Layout.fillWidth: true
+            Layout.maximumHeight: layout.height
             color: mouseArea.containsMouse ? palette.highlightedText : palette.windowText
-            elide: Text.ElideMiddle
+            elide: Text.ElideRight
             text: control.station.name
             textFormat: Text.PlainText
+            verticalAlignment: Qt.AlignVCenter
+            wrapMode: Text.Wrap
         }
     }
 
