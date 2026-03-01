@@ -22,6 +22,7 @@ Frame {
 
     contentHeight: layout.implicitHeight + layout.anchors.topMargin + layout.anchors.bottomMargin
     contentWidth: layout.implicitWidth + layout.anchors.leftMargin + layout.anchors.rightMargin
+    hoverEnabled: enabled
     padding: 0
 
     background: Rectangle {
