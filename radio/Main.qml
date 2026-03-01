@@ -284,10 +284,10 @@ ApplicationWindow {
                     }
                     highlight: Rectangle {
                         color: "transparent"
-                        height: ListView.view.currentItem.height
-                        visible: !(ListView.view.currentItem as StationDelegate).hovered && ListView.view.activeFocus
-                        width: ListView.view.currentItem.width
-                        y: ListView.view.currentItem.y
+                        height: ListView.view.currentItem?.height ?? 0
+                        visible: (!(ListView.view.currentItem as StationDelegate)?.hovered ?? false) && ListView.view.activeFocus
+                        width: ListView.view.currentItem?.width ?? 0
+                        y: ListView.view.currentItem?.y ?? 0
                         z: 2
 
                         border {
@@ -296,6 +296,7 @@ ApplicationWindow {
                         }
                     }
 
+                    onCountChanged: currentIndex = count === 0 ? -1 : 0
                     onCurrentItemChanged: positionViewAtIndex(currentIndex, ListView.Contain)
                 }
 
