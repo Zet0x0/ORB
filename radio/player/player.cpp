@@ -44,6 +44,13 @@ void Player::observeProperty(const QString &property, mpv_format format,
                               Qt::QueuedConnection, property, format, id);
 }
 
+void Player::getPropertyAsync(const QString &property,
+                              AsyncCommandId id) const {
+    QMetaObject::invokeMethod(m_mpvController, &MpvController::getPropertyAsync,
+                              Qt::QueuedConnection, property,
+                              static_cast<int>(id));
+}
+
 void Player::commandAsync(const QStringList &params, AsyncCommandId id) const {
     QMetaObject::invokeMethod(m_mpvController, &MpvController::commandAsync,
                               Qt::QueuedConnection, params,
@@ -102,7 +109,10 @@ void Player::stop(AsyncCommandId id) const {
 
 void Player::onPropertyChanged(const QString &property, const QVariant &value) {
     if (property == MpvProperties::NowPlaying) {
-        setNowPlaying(value.toString());
+        m_pendingNowPlaying = value.toString();
+
+        getPropertyAsync(MpvProperties::Filename,
+                         AsyncCommandId::GetFilenameAndFilterNowPlaying);
     } else if (property == MpvProperties::Elapsed) {
         setElapsed(formatTime(value.toDouble()));
     }
@@ -127,6 +137,16 @@ void Player::onAsyncReply(const QVariant &data, mpv_event event) {
         setStation(m_pendingStation, m_pendingPlay);
         m_pendingStation = Station{};
         m_pendingPlay = false;
+
+        break;
+    }
+
+    case AsyncCommandId::GetFilenameAndFilterNowPlaying: {
+        setNowPlaying(data.toString() == m_pendingNowPlaying
+                          ? QString()
+                          : m_pendingNowPlaying);
+
+        m_pendingNowPlaying.clear();
 
         break;
     }

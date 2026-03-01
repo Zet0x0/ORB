@@ -26,11 +26,17 @@ public:
     Q_ENUM(State)
 
 private:
-    enum class AsyncCommandId { None, Stop, StopAndSetStation };
+    enum class AsyncCommandId {
+        None,
+        Stop,
+        StopAndSetStation,
+        GetFilenameAndFilterNowPlaying
+    };
 
     MpvController *m_mpvController = nullptr;
     QThread *m_workerThread = nullptr;
 
+    QString m_pendingNowPlaying;
     Station m_pendingStation;
     bool m_pendingPlay = false;
 
@@ -47,6 +53,7 @@ private:
 
     void observeProperty(const QString &property, mpv_format format,
                          uint64_t id = 0) const;
+    void getPropertyAsync(const QString &property, AsyncCommandId id) const;
 
     void commandAsync(const QStringList &params,
                       AsyncCommandId id = AsyncCommandId::None) const;
