@@ -16,6 +16,6 @@
 
 `Extra CMake Modules` is obtainable using KDE's [`Craft`](https://develop.kde.org/docs/getting-started/building/craft/#craft-setup-on-windows)
 
-Follow the entire **Craft setup on Windows** section, then execute `craft ecm` in your command line to install ECM
+Follow the entire **Craft setup on Windows** section, then execute `craft extra-cmake-modules` in your command line to install ECM
 
 Then set the `ECM_DIR` variable for cmake to be equal to where your ECM cmake files (`ECMConfig.cmake`, `ECMConfigVersion.cmake`) are located at - by default it's `C:\CraftRoot\share\ECM\cmake`
