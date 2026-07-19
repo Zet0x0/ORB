@@ -6,6 +6,7 @@ project(
     LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_AUTORCC ON)
 
 include("cmake/DownloadLibmpv.cmake")
 

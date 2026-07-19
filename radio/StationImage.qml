@@ -13,14 +13,14 @@ StackLayout {
 
     // Image.Null
     // Image.Error
-    Image {
-        fillMode: Image.PreserveAspectCrop
-        // TODO: use real placeholder image
-        source: "https://picsum.photos/256/128"
+    ToolButton {
+        enabled: false
 
-        sourceSize {
-            height: control.height
-            width: control.width
+        icon {
+            color: palette.active.text
+            height: Math.floor(parent.height / 2)
+            name: "radio"
+            width: Math.floor(parent.width / 2)
         }
     }
 
@@ -33,8 +33,8 @@ StackLayout {
         source: control.imageUrl
 
         sourceSize {
-            height: control.height
-            width: control.width
+            height: parent.height
+            width: parent.width
         }
     }
 

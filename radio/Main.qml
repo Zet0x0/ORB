@@ -109,13 +109,8 @@ ApplicationWindow {
                 }
 
                 RowLayout {
-                    // NOTE: this is play/stop
                     ToolButton {
                         enabled: Player.station.valid
-                        // TODO: use real icons
-                        // NOTE: this app might or might not use icon.name
-                        // instead of icon.source
-                        icon.source: Player.state === Player.Stopped ? "https://picsum.photos/24/24" : "https://picsum.photos/24/24"
 
                         onClicked: {
                             if (Player.state === Player.Stopped) {
@@ -123,6 +118,11 @@ ApplicationWindow {
                             } else {
                                 Player.stop();
                             }
+                        }
+
+                        icon {
+                            color: enabled ? palette.active.text : palette.disabled.text
+                            name: Player.state === Player.Stopped ? "player-play" : "player-stop"
                         }
                     }
                 }
@@ -163,28 +163,28 @@ ApplicationWindow {
                 onAccepted: engageSearch()
             }
 
-            // NOTE: this is Search
             ToolButton {
                 enabled: stationSearchField.enabled
-                // TODO: use real icons
-                // NOTE: this app might or might not use icon.name
-                // instead of icon.source
-                icon.source: "https://picsum.photos/24/24"
 
                 onClicked: stationSearchField.engageSearch()
+
+                icon {
+                    color: enabled ? palette.active.text : palette.disabled.text
+                    name: "search"
+                }
             }
 
-            // NOTE: this is Reset search
             ToolButton {
                 enabled: stationSearchField.enabled
-                // TODO: use real icons
-                // NOTE: this app might or might not use icon.name
-                // instead of icon.source
-                icon.source: "https://picsum.photos/24/24"
 
                 onClicked: {
                     stationSearchField.clear();
                     stationSearchField.engageSearch();
+                }
+
+                icon {
+                    color: enabled ? palette.active.text : palette.disabled.text
+                    name: "x"
                 }
             }
         }
