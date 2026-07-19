@@ -20,107 +20,36 @@ ApplicationWindow {
         }
 
         RowLayout {
-            id: playerStatus
-
             StationImage {
-                Layout.preferredHeight: playerStatus.height
-                Layout.preferredWidth: playerStatus.height
+                Layout.fillHeight: false
+                Layout.fillWidth: false
+                Layout.preferredHeight: parent.height
+                Layout.preferredWidth: parent.height
                 imageUrl: Player.station.imageUrl
             }
 
             ColumnLayout {
                 Layout.fillWidth: true
 
-                Label {
-                    id: nowPlayingLabel
-
+                NowPlayingLabel {
                     Layout.fillWidth: true
-                    color: enabled && state === "showing-info" ? palette.active.windowText : palette.disabled.windowText
-                    elide: Text.ElideMiddle
-                    font.italic: state !== "showing-info"
-                    textFormat: Text.PlainText
-
-                    states: [
-                        State {
-                            name: "playback-stopped"
-                            when: !Player.station.valid || Player.state === Player.Stopped
-
-                            PropertyChanges {
-                                nowPlayingLabel.text: qsTr("Not playing anything currently")
-                            }
-                        },
-                        State {
-                            name: "no-info"
-                            when: Player.nowPlaying === ""
-
-                            PropertyChanges {
-                                nowPlayingLabel.text: qsTr("No song information available")
-                            }
-                        },
-                        State {
-                            name: "showing-info"
-                            when: Player.nowPlaying !== ""
-
-                            PropertyChanges {
-                                nowPlayingLabel.text: Player.nowPlaying
-                            }
-                        }
-                    ]
                 }
 
                 Row {
                     Layout.fillWidth: true
                     spacing: parent.spacing
 
-                    Label {
-                        id: stationNameLabel
-
-                        elide: Text.ElideMiddle
-                        font.italic: state !== "showing-name"
-                        textFormat: Text.PlainText
+                    StationNameLabel {
                         width: Math.min(parent.width - (elapsedLabel.visible ? elapsedLabel.width + parent.spacing : 0), implicitWidth)
-
-                        states: [
-                            State {
-                                name: "no-station"
-                                when: !Player.station.valid
-
-                                PropertyChanges {
-                                    stationNameLabel.text: qsTr("No station selected")
-                                }
-                            },
-                            State {
-                                name: "showing-name"
-                                when: Player.station.valid
-
-                                PropertyChanges {
-                                    stationNameLabel.text: Player.station.name
-                                }
-                            }
-                        ]
                     }
 
-                    Label {
+                    ElapsedLabel {
                         id: elapsedLabel
-
-                        color: palette.disabled.windowText
-                        text: Player.elapsed
-                        visible: Player.state === Player.Playing
                     }
                 }
 
                 RowLayout {
-                    IconButton {
-                        enabled: Player.station.valid
-                        icon.name: Player.state === Player.Stopped ? "player-play" : "player-stop"
-
-                        onClicked: {
-                            if (Player.state === Player.Stopped) {
-                                Player.play();
-                            } else {
-                                Player.stop();
-                            }
-                        }
+                    PlayButton {
                     }
                 }
             }
@@ -139,44 +68,11 @@ ApplicationWindow {
                 }
             }
 
-            TextField {
+            StationSearchField {
                 id: stationSearchField
 
-                function engageSearch() {
-                    const query = text.trim();
-
-                    if (query.length === 0) {
-                        SourceController.showDefaultStations();
-
-                        return;
-                    }
-
-                    SourceController.search(text);
-                }
-
                 Layout.fillWidth: true
-                enabled: sourceSelector.currentIndex > 0
-                rightPadding: leftPadding + clearSearchFieldButton.width
-
-                onAccepted: engageSearch()
-
-                IconButton {
-                    id: clearSearchFieldButton
-
-                    enabled: stationSearchField.enabled
-                    icon.name: "x"
-                    implicitHeight: parent.height
-
-                    onClicked: {
-                        stationSearchField.clear();
-                        stationSearchField.engageSearch();
-                    }
-
-                    anchors {
-                        right: parent.right
-                        top: parent.top
-                    }
-                }
+                sourceSelector: sourceSelector
             }
 
             IconButton {
@@ -187,134 +83,8 @@ ApplicationWindow {
             }
         }
 
-        StackLayout {
-            currentIndex: state === "showing-stations" ? 1 : 0
-
-            states: [
-                State {
-                    name: "no-source"
-                    when: sourceSelector.currentIndex === 0
-
-                    PropertyChanges {
-                        statusLabel.text: qsTr("# Nothing to show\nStart by [selecting a source](#sourceSelector)")
-                    }
-                },
-                State {
-                    name: "searching"
-                    when: SourceController.searchState === SourceController.Searching
-
-                    PropertyChanges {
-                        statusLabel.text: qsTr("# Searching stations...")
-                    }
-                },
-                State {
-                    name: "error"
-                    when: SourceController.searchState === SourceController.Error
-
-                    PropertyChanges {
-                        statusLabel.text: qsTr("# %0\n%1").arg(SourceController.error.title).arg(SourceController.error.message)
-                    }
-                },
-                State {
-                    name: "showing-stations"
-                    when: stationView.count > 0
-
-                    PropertyChanges {
-                        statusLabel.text: qsTr("# You should be seeing the stations,\nnot this message")
-                    }
-                },
-                State {
-                    name: "no-default-stations"
-                    when: !SourceController.canShowDefaultStations && stationView.count === 0
-
-                    PropertyChanges {
-                        statusLabel.text: qsTr("# Nothing to show\nType something in the search field")
-                    }
-                },
-                State {
-                    name: "no-results"
-                    when: SourceController.canShowDefaultStations && stationView.count === 0
-
-                    PropertyChanges {
-                        statusLabel.text: qsTr("# Nothing found\nCheck your search query")
-                    }
-                }
-            ]
-
-            Label {
-                id: statusLabel
-
-                horizontalAlignment: Qt.AlignHCenter
-                textFormat: Text.MarkdownText
-                verticalAlignment: Qt.AlignVCenter
-
-                onLinkActivated: link => {
-                    if (link === "#sourceSelector") {
-                        sourceSelector.focus = true;
-                        sourceSelector.focusReason = Qt.TabFocusReason;
-                    }
-                }
-
-                HoverHandler {
-                    cursorShape: Qt.PointingHandCursor
-                    enabled: statusLabel.hoveredLink
-                }
-            }
-
-            RowLayout {
-                ListView {
-                    id: stationView
-
-                    Layout.fillHeight: true
-                    Layout.fillWidth: true
-                    ScrollBar.vertical: stationViewScrollBar
-                    activeFocusOnTab: true
-                    boundsBehavior: Flickable.StopAtBounds
-                    clip: true
-                    highlightFollowsCurrentItem: false
-                    keyNavigationWraps: true
-                    model: SourceController.stationModel()
-                    pixelAligned: true
-                    spacing: 5
-
-                    delegate: StationDelegate {
-                        width: ListView.view.width
-                    }
-                    highlight: Rectangle {
-                        color: "transparent"
-                        height: ListView.view.currentItem?.height ?? 0
-                        visible: (!(ListView.view.currentItem as StationDelegate)?.hovered ?? false) && ListView.view.activeFocus
-                        width: ListView.view.currentItem?.width ?? 0
-                        y: ListView.view.currentItem?.y ?? 0
-                        z: 2
-
-                        border {
-                            color: enabled ? palette.active.highlight : palette.disabled.highlight
-                            width: 4
-                        }
-                    }
-
-                    onCountChanged: currentIndex = count === 0 ? -1 : 0
-                    onCurrentItemChanged: positionViewAtIndex(currentIndex, ListView.Contain)
-                }
-
-                ScrollBar {
-                    id: stationViewScrollBar
-
-                    Layout.fillHeight: true
-                    minimumSize: 0.1
-                    padding: 0
-                    policy: visible ? ScrollBar.AlwaysOn : ScrollBar.AlwaysOff
-                    visible: stationView.contentHeight > stationView.height
-
-                    contentItem: Rectangle {
-                        color: enabled ? (stationViewScrollBar.pressed ? palette.active.midlight : palette.active.light) : palette.disabled.light
-                        implicitHeight: 100
-                        implicitWidth: 6
-                        radius: Math.floor(width / 2)
-                    }
-                }
-            }
+        StationSearch {
+            sourceSelector: sourceSelector
         }
     }
 }
