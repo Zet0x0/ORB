@@ -110,8 +110,9 @@ ApplicationWindow {
                 }
 
                 RowLayout {
-                    ToolButton {
+                    IconButton {
                         enabled: Player.station.valid
+                        icon.name: Player.state === Player.Stopped ? "player-play" : "player-stop"
 
                         onClicked: {
                             if (Player.state === Player.Stopped) {
@@ -119,11 +120,6 @@ ApplicationWindow {
                             } else {
                                 Player.stop();
                             }
-                        }
-
-                        icon {
-                            color: enabled ? palette.active.text : palette.disabled.text
-                            name: Player.state === Player.Stopped ? "player-play" : "player-stop"
                         }
                     }
                 }
@@ -164,28 +160,20 @@ ApplicationWindow {
                 onAccepted: engageSearch()
             }
 
-            ToolButton {
+            IconButton {
                 enabled: stationSearchField.enabled
+                icon.name: "search"
 
                 onClicked: stationSearchField.engageSearch()
-
-                icon {
-                    color: enabled ? palette.active.text : palette.disabled.text
-                    name: "search"
-                }
             }
 
-            ToolButton {
+            IconButton {
                 enabled: stationSearchField.enabled
+                icon.name: "x"
 
                 onClicked: {
                     stationSearchField.clear();
                     stationSearchField.engageSearch();
-                }
-
-                icon {
-                    color: enabled ? palette.active.text : palette.disabled.text
-                    name: "x"
                 }
             }
         }
