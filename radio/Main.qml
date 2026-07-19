@@ -2,6 +2,7 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import radio.player
+import radio.qml_components
 import radio.sources
 
 ApplicationWindow {
