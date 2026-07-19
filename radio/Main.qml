@@ -156,8 +156,27 @@ ApplicationWindow {
 
                 Layout.fillWidth: true
                 enabled: sourceSelector.currentIndex > 0
+                rightPadding: leftPadding + clearSearchFieldButton.width
 
                 onAccepted: engageSearch()
+
+                IconButton {
+                    id: clearSearchFieldButton
+
+                    enabled: stationSearchField.enabled
+                    icon.name: "x"
+                    implicitHeight: parent.height
+
+                    onClicked: {
+                        stationSearchField.clear();
+                        stationSearchField.engageSearch();
+                    }
+
+                    anchors {
+                        right: parent.right
+                        top: parent.top
+                    }
+                }
             }
 
             IconButton {
@@ -165,16 +184,6 @@ ApplicationWindow {
                 icon.name: "search"
 
                 onClicked: stationSearchField.engageSearch()
-            }
-
-            IconButton {
-                enabled: stationSearchField.enabled
-                icon.name: "x"
-
-                onClicked: {
-                    stationSearchField.clear();
-                    stationSearchField.engageSearch();
-                }
             }
         }
 
