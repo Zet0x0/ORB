@@ -2,6 +2,7 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import radio.player
+import radio.qml_components
 import radio.sources
 
 ApplicationWindow {
@@ -109,8 +110,9 @@ ApplicationWindow {
                 }
 
                 RowLayout {
-                    ToolButton {
+                    IconButton {
                         enabled: Player.station.valid
+                        icon.name: Player.state === Player.Stopped ? "player-play" : "player-stop"
 
                         onClicked: {
                             if (Player.state === Player.Stopped) {
@@ -118,11 +120,6 @@ ApplicationWindow {
                             } else {
                                 Player.stop();
                             }
-                        }
-
-                        icon {
-                            color: enabled ? palette.active.text : palette.disabled.text
-                            name: Player.state === Player.Stopped ? "player-play" : "player-stop"
                         }
                     }
                 }
@@ -159,33 +156,34 @@ ApplicationWindow {
 
                 Layout.fillWidth: true
                 enabled: sourceSelector.currentIndex > 0
+                rightPadding: leftPadding + clearSearchFieldButton.width
 
                 onAccepted: engageSearch()
+
+                IconButton {
+                    id: clearSearchFieldButton
+
+                    enabled: stationSearchField.enabled
+                    icon.name: "x"
+                    implicitHeight: parent.height
+
+                    onClicked: {
+                        stationSearchField.clear();
+                        stationSearchField.engageSearch();
+                    }
+
+                    anchors {
+                        right: parent.right
+                        top: parent.top
+                    }
+                }
             }
 
-            ToolButton {
+            IconButton {
                 enabled: stationSearchField.enabled
+                icon.name: "search"
 
                 onClicked: stationSearchField.engageSearch()
-
-                icon {
-                    color: enabled ? palette.active.text : palette.disabled.text
-                    name: "search"
-                }
-            }
-
-            ToolButton {
-                enabled: stationSearchField.enabled
-
-                onClicked: {
-                    stationSearchField.clear();
-                    stationSearchField.engageSearch();
-                }
-
-                icon {
-                    color: enabled ? palette.active.text : palette.disabled.text
-                    name: "x"
-                }
             }
         }
 
