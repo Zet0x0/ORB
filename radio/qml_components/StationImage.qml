@@ -7,8 +7,6 @@ StackLayout {
 
     required property string imageUrl
 
-    Layout.fillHeight: false
-    Layout.fillWidth: false
     currentIndex: stationImage.status === Image.Error ? 0 : stationImage.status
 
     // Image.Null

@@ -7,6 +7,12 @@ qt_add_qml_module(
     QML_FILES
     StationImage.qml
     StationDelegate.qml
-    IconButton.qml)
+    IconButton.qml
+    PlayButton.qml
+    ElapsedLabel.qml
+    StationSearchField.qml
+    StationNameLabel.qml
+    NowPlayingLabel.qml
+    StationSearch.qml)
 
 target_link_libraries(qml_components PRIVATE qml_componentsplugin)
