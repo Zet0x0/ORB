@@ -2,6 +2,7 @@
 #include "sources/radiorecord.h"
 #include "sources/sourcecontroller.h"
 #include <QGuiApplication>
+#include <QIcon>
 #include <QQmlApplicationEngine>
 #include <QQuickStyle>
 
@@ -10,6 +11,8 @@ int main(int argc, char *argv[]) {
 
     QGuiApplication app(argc, argv);
     QQmlApplicationEngine engine;
+
+    QIcon::setThemeName("unnamed-radio-app");
 
     QObject::connect(
         &engine, &QQmlApplicationEngine::objectCreationFailed, &app,

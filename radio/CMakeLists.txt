@@ -1,4 +1,8 @@
-qt_add_executable(radio main.cpp singleton.h utilities.h utilities.cpp)
+set(SOURCES main.cpp singleton.h utilities.h utilities.cpp)
+qt_add_big_resources(SOURCES icons.qrc)
+list(APPEND SOURCES icons.qrc)
+
+qt_add_executable(radio ${SOURCES})
 
 qt_add_qml_module(
     radio

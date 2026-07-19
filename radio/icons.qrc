@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/">
+        <file>icons/unnamed-radio-app/index.theme</file>
+        <file>icons/unnamed-radio-app/24x24</file>
+    </qresource>
+</RCC>
