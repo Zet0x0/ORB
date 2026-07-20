@@ -12,7 +12,7 @@ int main(int argc, char *argv[]) {
     QGuiApplication app(argc, argv);
     QQmlApplicationEngine engine;
 
-    QIcon::setThemeName("unnamed-radio-app");
+    QIcon::setThemeName("orb");
 
     QObject::connect(
         &engine, &QQmlApplicationEngine::objectCreationFailed, &app,
