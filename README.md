@@ -1,4 +1,4 @@
-# Unnamed Radio App
+# ORB - **O**nline **R**adio **B**rowser & Player
 
 ## Supported Platforms
 
