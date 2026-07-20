@@ -1,0 +1,9 @@
+[Icon Theme]
+Name=orb
+Comment=Icon theme for ORB, using Tabler Icons v3.45.0
+
+Directories=24x24
+
+[24x24]
+Size=24
+Type=Scalable

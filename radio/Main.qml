@@ -9,7 +9,7 @@ ApplicationWindow {
     height: 480
     minimumHeight: 480
     minimumWidth: 640
-    title: qsTr("Unnamed Radio App")
+    title: qsTr("ORB")
     visible: true
     width: 640
 
