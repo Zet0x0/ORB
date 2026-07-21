@@ -9,6 +9,8 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_AUTORCC ON)
 
+set(BUILD_SHARED_LIBS ON)
+
 include("cmake/DownloadLibmpv.cmake")
 
 find_package(Qt6 REQUIRED COMPONENTS Quick QuickControls2)
@@ -38,7 +40,9 @@ set(CMAKE_INSTALL_BINDIR ".")
 include(GNUInstallDirs)
 install(TARGETS ORB RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}")
 install(FILES "${Libmpv_RUNTIME_DLL}" DESTINATION "${CMAKE_INSTALL_BINDIR}")
-install(FILES "$<TARGET_FILE:MpvQt>" DESTINATION "${CMAKE_INSTALL_BINDIR}")
+if(BUILD_SHARED_LIBS)
+    install(FILES "$<TARGET_FILE:MpvQt>" DESTINATION "${CMAKE_INSTALL_BINDIR}")
+endif()
 
 qt_generate_deploy_app_script(
     TARGET
