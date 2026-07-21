@@ -1,5 +1,5 @@
-#include "sources/nullsource.h"
-#include "sources/radiorecord.h"
+#include "sources/providers/nullsource.h"
+#include "sources/providers/radiorecord.h"
 #include "sources/sourcecontroller.h"
 #include <QGuiApplication>
 #include <QIcon>

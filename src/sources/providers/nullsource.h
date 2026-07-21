@@ -1,6 +1,6 @@
 #pragma once
 
-#include "source.h"
+#include "../source.h"
 
 class NullSource : public Source {
     Q_OBJECT

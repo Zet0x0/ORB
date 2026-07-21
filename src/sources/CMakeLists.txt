@@ -13,11 +13,11 @@ qt_add_qml_module(
     source.cpp
     sourceerror.h
     sourceerror.cpp
-    nullsource.h
-    nullsource.cpp
     stationmodel.h
     stationmodel.cpp
-    radiorecord.h
-    radiorecord.cpp
     station.h
-    station.cpp)
+    station.cpp
+    providers/nullsource.h
+    providers/nullsource.cpp
+    providers/radiorecord.h
+    providers/radiorecord.cpp)
