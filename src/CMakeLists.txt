@@ -22,11 +22,11 @@ list(APPEND SOURCES icons.qrc)
 qt_add_executable(ORB ${SOURCES})
 qt_add_qml_module(ORB URI orb QML_FILES Main.qml)
 
-add_subdirectory(player)
 add_subdirectory(sources)
+add_subdirectory(player)
 add_subdirectory(qml_components)
 
-target_link_libraries(ORB PRIVATE Qt6::Quick Qt6::QuickControls2 player sources
+target_link_libraries(ORB PRIVATE Qt6::Quick Qt6::QuickControls2 sources player
                                   qml_components)
 
 set_target_properties(

@@ -1,7 +1,7 @@
 #pragma once
 
 #include "../singleton.h"
-#include "station.h"
+#include "../sources/station.h"
 #include <MpvController>
 #include <QQmlEngine>
 #include <QThread>

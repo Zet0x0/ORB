@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../player/station.h"
+#include "station.h"
 #include <QAbstractListModel>
 #include <QQmlEngine>
 

@@ -9,11 +9,6 @@ qt_add_qml_module(
     SOURCES
     player.h
     player.cpp
-    mpvproperties.h
-    station.h
-    station.cpp)
+    mpvproperties.h)
 
-target_link_libraries(
-    player
-    PUBLIC MpvQt::MpvQt
-    PRIVATE playerplugin)
+target_link_libraries(player PUBLIC MpvQt::MpvQt PRIVATE sources)

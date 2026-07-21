@@ -18,6 +18,6 @@ qt_add_qml_module(
     stationmodel.h
     stationmodel.cpp
     radiorecord.h
-    radiorecord.cpp)
-
-target_link_libraries(sources PRIVATE sourcesplugin)
+    radiorecord.cpp
+    station.h
+    station.cpp)

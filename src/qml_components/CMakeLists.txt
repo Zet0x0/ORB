@@ -15,6 +15,5 @@ qt_add_qml_module(
     StationSearchField.qml
     StationNameLabel.qml
     NowPlayingLabel.qml
-    StationSearch.qml)
-
-target_link_libraries(qml_components PRIVATE qml_componentsplugin)
+    StationSearch.qml
+    NO_PLUGIN)
