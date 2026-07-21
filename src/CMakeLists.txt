@@ -19,12 +19,13 @@ qt_standard_project_setup(REQUIRES 6.10)
 
 add_subdirectory("external/mpvqt" EXCLUDE_FROM_ALL)
 
-set(SOURCES ORB.rc main.cpp singleton.h utilities.h utilities.cpp)
+set(SOURCES ORB.rc main.cpp)
 qt_add_big_resources(SOURCES icons/icons.qrc)
 list(APPEND SOURCES icons/icons.qrc)
 qt_add_executable(ORB ${SOURCES})
 qt_add_qml_module(ORB URI orb QML_FILES Main.qml)
 
+add_subdirectory(common)
 add_subdirectory(sources)
 add_subdirectory(player)
 add_subdirectory(qml_components)

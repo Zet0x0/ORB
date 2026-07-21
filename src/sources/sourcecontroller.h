@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../singleton.h"
+#include "../common/singleton.h"
 #include "source.h"
 #include "sourceerror.h"
 #include "stationmodel.h"

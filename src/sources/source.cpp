@@ -1,5 +1,5 @@
 #include "source.h"
-#include "../utilities.h"
+#include "../common/utilities.h"
 #include <QJsonDocument>
 #include <QJsonParseError>
 

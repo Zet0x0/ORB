@@ -21,3 +21,5 @@ qt_add_qml_module(
     providers/nullsource.cpp
     providers/radiorecord.h
     providers/radiorecord.cpp)
+
+target_link_libraries(sources PRIVATE common)

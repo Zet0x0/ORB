@@ -1,5 +1,5 @@
 #include "station.h"
-#include "../utilities.h"
+#include "../common/utilities.h"
 
 void Station::setValid(bool newValid) {
     m_valid = newValid;

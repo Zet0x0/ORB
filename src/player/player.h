@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../singleton.h"
+#include "../common/singleton.h"
 #include "../sources/station.h"
 #include <MpvController>
 #include <QQmlEngine>

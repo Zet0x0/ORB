@@ -1,5 +1,5 @@
 #include "player.h"
-#include "../utilities.h"
+#include "../common/utilities.h"
 #include "mpvproperties.h"
 
 Player::Player(QObject *parent)
