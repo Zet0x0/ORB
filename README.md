@@ -9,8 +9,8 @@
 ## Building Prerequisites
 
 - [`Qt`](https://www.qt.io/development/download-open-source) (MinGW) >= 6.10 with following Additional Libraries: `Qt Image Formats`
-- [`MpvQt`](https://invent.kde.org/libraries/mpvqt) >= 1.1.1 (_pulled automatically by git submodule_)
-- [`Extra CMake Modules`](https://invent.kde.org/frameworks/extra-cmake-modules) >= 6.15.0
+- [`MpvQt`](https://invent.kde.org/libraries/mpvqt) >= 1.2.0 (_pulled automatically by git submodule_)
+- [`Extra CMake Modules`](https://invent.kde.org/frameworks/extra-cmake-modules) >= 6.15.0 (or whatever MpvQt will require the least)
 
 ### `Extra CMake Modules` on Windows
 
