@@ -1,4 +1,4 @@
-set(SOURCES main.cpp singleton.h utilities.h utilities.cpp)
+set(SOURCES windows/ORB.rc main.cpp singleton.h utilities.h utilities.cpp)
 qt_add_big_resources(SOURCES icons.qrc)
 list(APPEND SOURCES icons.qrc)
 
