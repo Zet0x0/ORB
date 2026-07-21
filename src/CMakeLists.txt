@@ -19,9 +19,9 @@ qt_standard_project_setup(REQUIRES 6.10)
 
 add_subdirectory("external/mpvqt" EXCLUDE_FROM_ALL)
 
-set(SOURCES windows/ORB.rc main.cpp singleton.h utilities.h utilities.cpp)
-qt_add_big_resources(SOURCES icons.qrc)
-list(APPEND SOURCES icons.qrc)
+set(SOURCES ORB.rc main.cpp singleton.h utilities.h utilities.cpp)
+qt_add_big_resources(SOURCES icons/icons.qrc)
+list(APPEND SOURCES icons/icons.qrc)
 qt_add_executable(ORB ${SOURCES})
 qt_add_qml_module(ORB URI orb QML_FILES Main.qml)
 

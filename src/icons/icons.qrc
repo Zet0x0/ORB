@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/icons">
+        <file>orb/index.theme</file>
+        <file>orb/24x24</file>
+    </qresource>
+</RCC>
