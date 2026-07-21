@@ -1,6 +1,6 @@
 import QtQuick
 import QtQuick.Controls
-import radio.player
+import orb.player
 
 Label {
     color: palette.disabled.windowText

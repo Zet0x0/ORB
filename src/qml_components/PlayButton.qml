@@ -1,5 +1,5 @@
 import QtQuick
-import radio.player
+import orb.player
 
 IconButton {
     enabled: Player.station.valid

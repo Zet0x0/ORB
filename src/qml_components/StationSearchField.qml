@@ -1,6 +1,6 @@
 import QtQuick
 import QtQuick.Controls
-import radio.sources
+import orb.sources
 
 TextField {
     id: control

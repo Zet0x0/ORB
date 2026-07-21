@@ -1,7 +1,7 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
-import radio.player
+import orb.player
 
 Frame {
     id: control

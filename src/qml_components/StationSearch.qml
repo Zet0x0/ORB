@@ -1,7 +1,7 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
-import radio.sources
+import orb.sources
 
 StackLayout {
     id: control

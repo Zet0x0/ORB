@@ -31,7 +31,7 @@ int main(int argc, char *argv[]) {
                                          new RadioRecord);
     }
 
-    engine.loadFromModule(QStringLiteral("radio"), QStringLiteral("Main"));
+    engine.loadFromModule(QStringLiteral("orb"), QStringLiteral("Main"));
 
     return app.exec();
 }

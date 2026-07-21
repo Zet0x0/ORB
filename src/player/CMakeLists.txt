@@ -3,7 +3,9 @@ add_library(player STATIC)
 qt_add_qml_module(
     player
     URI
-    radio.player
+    orb.player
+    OUTPUT_DIRECTORY
+    "${CMAKE_BINARY_DIR}/orb/player"
     SOURCES
     player.h
     player.cpp

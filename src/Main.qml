@@ -1,9 +1,9 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
-import radio.player
-import radio.qml_components
-import radio.sources
+import orb.player
+import orb.qml_components
+import orb.sources
 
 ApplicationWindow {
     height: 480
