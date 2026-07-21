@@ -5,6 +5,7 @@ project(
     VERSION 0.1.0
     LANGUAGES CXX)
 
+set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_AUTORCC ON)
 
@@ -12,9 +13,9 @@ include("cmake/DownloadLibmpv.cmake")
 
 find_package(Qt6 REQUIRED COMPONENTS Quick QuickControls2)
 
-add_subdirectory("external/mpvqt")
-
 qt_standard_project_setup(REQUIRES 6.10)
+
+add_subdirectory("external/mpvqt" EXCLUDE_FROM_ALL)
 
 set(SOURCES windows/ORB.rc main.cpp singleton.h utilities.h utilities.cpp)
 qt_add_big_resources(SOURCES icons.qrc)
@@ -33,9 +34,21 @@ set_target_properties(
     ORB PROPERTIES WIN32_EXECUTABLE TRUE RUNTIME_OUTPUT_DIRECTORY
                                          "${CMAKE_CURRENT_BINARY_DIR}/bin")
 
+set(CMAKE_INSTALL_BINDIR ".")
 include(GNUInstallDirs)
-install(
-    TARGETS ORB
-    BUNDLE DESTINATION "."
-    LIBRARY DESTINATION "${CMAKE_INSTALL_LIBDIR}"
-    RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}")
+install(TARGETS ORB RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}")
+install(FILES "${Libmpv_RUNTIME_DLL}" DESTINATION "${CMAKE_INSTALL_BINDIR}")
+install(FILES "$<TARGET_FILE:MpvQt>" DESTINATION "${CMAKE_INSTALL_BINDIR}")
+
+qt_generate_deploy_app_script(
+    TARGET
+    ORB
+    OUTPUT_SCRIPT
+    deploy_script
+    NO_UNSUPPORTED_PLATFORM_ERROR
+    DEPLOY_TOOL_OPTIONS
+    --qmldir
+    "${CMAKE_CURRENT_SOURCE_DIR}")
+
+install(SCRIPT "cmake/DeploySettings.cmake")
+install(SCRIPT "${deploy_script}")
