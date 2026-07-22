@@ -1,3 +1,6 @@
 [submodule "external/mpvqt"]
     path = src/external/mpvqt
     url = https://invent.kde.org/libraries/mpvqt.git
+[submodule "external/tabler-icons"]
+    path = src/external/tabler-icons
+    url = https://github.com/tabler/tabler-icons
