@@ -21,6 +21,6 @@ qint64 Utilities::currentTimestampUtc() {
     return QDateTime::currentSecsSinceEpoch();
 }
 
-QString Utilities::pathFromRestReply(QRestReply &reply) {
+QString Utilities::requestPathFromRestReply(QRestReply &reply) {
     return reply.networkReply()->request().url().path();
 }

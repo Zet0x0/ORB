@@ -8,5 +8,5 @@ QString escapeControlCharacters(QString string);
 
 qint64 currentTimestampUtc();
 
-QString pathFromRestReply(QRestReply &reply);
+QString requestPathFromRestReply(QRestReply &reply);
 }

@@ -103,7 +103,7 @@ void RadioRecord::onSearchRequestFinished(QRestReply &reply) {
         return;
     }
 
-    const QString path = Utilities::pathFromRestReply(reply);
+    const QString path = Utilities::requestPathFromRestReply(reply);
 
     if (path.endsWith(RadioRecordConstants::DefaultStationsPath)) {
         handleStationsEndpointResult(json);
