@@ -12,6 +12,7 @@ set(CMAKE_AUTORCC ON)
 set(BUILD_SHARED_LIBS ON)
 
 include("cmake/DownloadLibmpv.cmake")
+include("cmake/DownloadTablerIcons.cmake")
 
 find_package(Qt6 REQUIRED COMPONENTS Quick QuickControls2)
 

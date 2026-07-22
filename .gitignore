@@ -81,3 +81,6 @@ CMakeLists.txt.user*
 .rcc/
 .uic/
 build*/
+
+# Downloaded by cmake/DownloadTablerIcons.cmake
+/src/external/tabler-icons/
