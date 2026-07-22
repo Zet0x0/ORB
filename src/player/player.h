@@ -5,6 +5,7 @@
 #include <MpvController>
 #include <QQmlEngine>
 #include <QThread>
+#include <optional>
 
 class Player : public QObject, public Singleton<Player> {
     Q_OBJECT
@@ -33,12 +34,16 @@ private:
         ResolvingNowPlaying
     };
 
+    struct PendingStationChange {
+        Station station;
+        bool play = false;
+    };
+
     MpvController *m_mpvController = nullptr;
     QThread *m_workerThread = nullptr;
 
-    QString m_pendingNowPlaying;
-    Station m_pendingStation;
-    bool m_pendingPlay = false;
+    std::optional<QString> m_pendingNowPlaying;
+    std::optional<PendingStationChange> m_pendingStationChange;
 
     Station m_station;
     QString m_nowPlaying;
@@ -61,10 +66,10 @@ private:
     void setNowPlaying(QString newNowPlaying);
 
     void setState(const State &newState);
-    QString formatTime(const double &time) const;
+    QString formatTime(double time) const;
     void setElapsed(const QString &newElapsed);
 
-    void stop(AsyncReplyId id) const;
+    void sendStop(AsyncReplyId id) const;
 
 private slots:
     void onPropertyChanged(const QString &property, const QVariant &value);
@@ -85,7 +90,7 @@ public:
     QString elapsed() const;
 
 public slots:
-    void setStation(const Station &newStation, const bool &play = false);
+    void setStation(const Station &newStation, bool play = false);
 
     void play() const;
     void stop() const;

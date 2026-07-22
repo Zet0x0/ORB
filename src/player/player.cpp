@@ -1,6 +1,7 @@
 #include "player.h"
 #include "../common/utilities.h"
 #include "mpvproperties.h"
+#include <utility>
 
 Player::Player(QObject *parent)
     : QObject(parent), m_mpvController(new MpvController),
@@ -81,7 +82,7 @@ void Player::setState(const State &newState) {
 }
 
 // taken from MpvQt examples & slightly modified
-QString Player::formatTime(const double &time) const {
+QString Player::formatTime(double time) const {
     const int totalNumberOfSeconds = static_cast<int>(time);
 
     const int seconds = totalNumberOfSeconds % 60;
@@ -104,16 +105,19 @@ void Player::setElapsed(const QString &newElapsed) {
     emit elapsedChanged();
 }
 
-void Player::stop(AsyncReplyId id) const {
+void Player::sendStop(AsyncReplyId id) const {
     commandAsync({QStringLiteral("stop")}, id);
 }
 
 void Player::onPropertyChanged(const QString &property, const QVariant &value) {
     if (property == MpvProperties::NowPlaying) {
+        const bool alreadyResolving = m_pendingNowPlaying.has_value();
         m_pendingNowPlaying = value.toString();
 
-        getPropertyAsync(MpvProperties::Filename,
-                         AsyncReplyId::ResolvingNowPlaying);
+        if (!alreadyResolving) {
+            getPropertyAsync(MpvProperties::Filename,
+                             AsyncReplyId::ResolvingNowPlaying);
+        }
     } else if (property == MpvProperties::Elapsed) {
         setElapsed(formatTime(value.toDouble()));
     }
@@ -121,35 +125,52 @@ void Player::onPropertyChanged(const QString &property, const QVariant &value) {
 
 void Player::onAsyncReply(const QVariant &data, mpv_event event) {
     const AsyncReplyId id = static_cast<AsyncReplyId>(event.reply_userdata);
-
-    if (id == AsyncReplyId::Stopping ||
-        id == AsyncReplyId::StoppingForStationChange) {
-        if (event.error > -1) {
-            setState(State::Stopped);
-        }
-    }
+    const int error = event.error;
+    const bool succeeded = error > -1;
 
     switch (id) {
-    case AsyncReplyId::None:
+    case AsyncReplyId::None: {
+        break;
+    }
+
     case AsyncReplyId::Stopping: {
+        if (succeeded) {
+            setState(State::Stopped);
+        } else {
+            // TODO: replace with UI error message
+            qWarning() << "mpv stop command failed:" << error;
+        }
+
         break;
     }
 
     case AsyncReplyId::StoppingForStationChange: {
-        setStation(m_pendingStation, m_pendingPlay);
-        m_pendingStation = Station{};
-        m_pendingPlay = false;
+        const std::optional<PendingStationChange> pending =
+            std::exchange(m_pendingStationChange, std::nullopt);
+
+        if (succeeded) {
+            setState(State::Stopped);
+
+            if (pending) {
+                setStation(pending->station, pending->play);
+            }
+        } else {
+            // TODO: replace with UI error message
+            qWarning() << "mpv stop command failed:" << error;
+        }
 
         break;
     }
 
     case AsyncReplyId::ResolvingNowPlaying: {
-        setNowPlaying(
-            data.toString() == m_pendingNowPlaying
-                ? QString()
-                : Utilities::escapeControlCharacters(m_pendingNowPlaying));
+        const QString pendingNowPlaying =
+            std::exchange(m_pendingNowPlaying, std::nullopt)
+                .value_or(QString());
 
-        m_pendingNowPlaying.clear();
+        setNowPlaying(
+            data.toString() == pendingNowPlaying
+                ? QString()
+                : Utilities::escapeControlCharacters(pendingNowPlaying));
 
         break;
     }
@@ -158,9 +179,7 @@ void Player::onAsyncReply(const QVariant &data, mpv_event event) {
 
 void Player::onEndFile(QString reason) {
     if (reason == QStringLiteral("eof") || reason == QStringLiteral("error")) {
-        // TODO: remove this qCritical when some
-        // proper error handling involving the UI
-        // is done here
+        // TODO: replace with UI error message
         qCritical() << "playback error";
     }
 
@@ -178,10 +197,6 @@ void Player::onFileLoaded() {
 Player::~Player() {
     m_workerThread->quit();
     m_workerThread->wait();
-
-    mpv_terminate_destroy(m_mpvController->mpv());
-
-    m_workerThread->deleteLater();
 }
 
 Station Player::station() const {
@@ -200,15 +215,18 @@ QString Player::elapsed() const {
     return m_elapsed;
 }
 
-void Player::setStation(const Station &newStation, const bool &play) {
+void Player::setStation(const Station &newStation, bool play) {
     if (m_station == newStation) {
         return;
     }
 
     if (m_state == State::Playing) {
-        m_pendingStation = newStation;
-        m_pendingPlay = play;
-        stop(AsyncReplyId::StoppingForStationChange);
+        const bool alreadyStopping = m_pendingStationChange.has_value();
+        m_pendingStationChange = PendingStationChange{newStation, play};
+
+        if (!alreadyStopping) {
+            sendStop(AsyncReplyId::StoppingForStationChange);
+        }
 
         return;
     }
@@ -227,5 +245,5 @@ void Player::play() const {
 }
 
 void Player::stop() const {
-    stop(AsyncReplyId::Stopping);
+    sendStop(AsyncReplyId::Stopping);
 }
