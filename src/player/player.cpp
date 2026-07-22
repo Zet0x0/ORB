@@ -36,12 +36,12 @@ void Player::setupConnections() const {
 }
 
 void Player::setupObservations() const {
-    observeProperty(MpvProperties::NowPlaying, MPV_FORMAT_STRING);
-    observeProperty(MpvProperties::Elapsed, MPV_FORMAT_DOUBLE);
+    observePropertyAsync(MpvProperties::NowPlaying, MPV_FORMAT_STRING);
+    observePropertyAsync(MpvProperties::Elapsed, MPV_FORMAT_DOUBLE);
 }
 
-void Player::observeProperty(const QString &property, mpv_format format,
-                             AsyncReplyId id) const {
+void Player::observePropertyAsync(const QString &property, mpv_format format,
+                                  AsyncReplyId id) const {
     QMetaObject::invokeMethod(m_mpvController, &MpvController::observeProperty,
                               Qt::QueuedConnection, property, format,
                               static_cast<uint64_t>(id));

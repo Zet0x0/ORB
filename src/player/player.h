@@ -56,8 +56,8 @@ private:
     void setupConnections() const;
     void setupObservations() const;
 
-    void observeProperty(const QString &property, mpv_format format,
-                         AsyncReplyId id = AsyncReplyId::None) const;
+    void observePropertyAsync(const QString &property, mpv_format format,
+                              AsyncReplyId id = AsyncReplyId::None) const;
     void getPropertyAsync(const QString &property, AsyncReplyId id) const;
 
     void commandAsync(const QStringList &params,
