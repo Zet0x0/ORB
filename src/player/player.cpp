@@ -1,6 +1,7 @@
 #include "player.h"
 #include "../common/utilities.h"
 #include "mpvproperties.h"
+#include <utility>
 
 Player::Player(QObject *parent)
     : QObject(parent), m_mpvController(new MpvController),
@@ -40,19 +41,19 @@ void Player::setupObservations() const {
 }
 
 void Player::observeProperty(const QString &property, mpv_format format,
-                             uint64_t id) const {
+                             AsyncReplyId id) const {
     QMetaObject::invokeMethod(m_mpvController, &MpvController::observeProperty,
-                              Qt::QueuedConnection, property, format, id);
+                              Qt::QueuedConnection, property, format,
+                              static_cast<uint64_t>(id));
 }
 
-void Player::getPropertyAsync(const QString &property,
-                              AsyncCommandId id) const {
+void Player::getPropertyAsync(const QString &property, AsyncReplyId id) const {
     QMetaObject::invokeMethod(m_mpvController, &MpvController::getPropertyAsync,
                               Qt::QueuedConnection, property,
                               static_cast<int>(id));
 }
 
-void Player::commandAsync(const QStringList &params, AsyncCommandId id) const {
+void Player::commandAsync(const QStringList &params, AsyncReplyId id) const {
     QMetaObject::invokeMethod(m_mpvController, &MpvController::commandAsync,
                               Qt::QueuedConnection, params,
                               static_cast<int>(id));
@@ -81,7 +82,7 @@ void Player::setState(const State &newState) {
 }
 
 // taken from MpvQt examples & slightly modified
-QString Player::formatTime(const double &time) const {
+QString Player::formatTime(double time) const {
     const int totalNumberOfSeconds = static_cast<int>(time);
 
     const int seconds = totalNumberOfSeconds % 60;
@@ -104,51 +105,72 @@ void Player::setElapsed(const QString &newElapsed) {
     emit elapsedChanged();
 }
 
-void Player::stop(AsyncCommandId id) const {
+void Player::sendStop(AsyncReplyId id) const {
     commandAsync({QStringLiteral("stop")}, id);
 }
 
 void Player::onPropertyChanged(const QString &property, const QVariant &value) {
     if (property == MpvProperties::NowPlaying) {
+        const bool alreadyResolving = m_pendingNowPlaying.has_value();
         m_pendingNowPlaying = value.toString();
 
-        getPropertyAsync(MpvProperties::Filename,
-                         AsyncCommandId::GetFilenameAndFilterNowPlaying);
+        if (!alreadyResolving) {
+            getPropertyAsync(MpvProperties::Filename,
+                             AsyncReplyId::ResolvingNowPlaying);
+        }
     } else if (property == MpvProperties::Elapsed) {
         setElapsed(formatTime(value.toDouble()));
     }
 }
 
 void Player::onAsyncReply(const QVariant &data, mpv_event event) {
-    const AsyncCommandId id = static_cast<AsyncCommandId>(event.reply_userdata);
-
-    if (id == AsyncCommandId::Stop || id == AsyncCommandId::StopAndSetStation) {
-        if (event.error > -1) {
-            setState(State::Stopped);
-        }
-    }
+    const AsyncReplyId id = static_cast<AsyncReplyId>(event.reply_userdata);
+    const int error = event.error;
+    const bool succeeded = error > -1;
 
     switch (id) {
-    case AsyncCommandId::None:
-    case AsyncCommandId::Stop: {
+    case AsyncReplyId::None: {
         break;
     }
 
-    case AsyncCommandId::StopAndSetStation: {
-        setStation(m_pendingStation, m_pendingPlay);
-        m_pendingStation = Station{};
-        m_pendingPlay = false;
+    case AsyncReplyId::Stopping: {
+        if (succeeded) {
+            setState(State::Stopped);
+        } else {
+            // TODO: replace with UI error message
+            qWarning() << "mpv stop command failed:" << error;
+        }
 
         break;
     }
 
-    case AsyncCommandId::GetFilenameAndFilterNowPlaying: {
+    case AsyncReplyId::StoppingForStationChange: {
+        const std::optional<PendingStationChange> pending =
+            std::exchange(m_pendingStationChange, std::nullopt);
+
+        if (succeeded) {
+            setState(State::Stopped);
+
+            if (pending) {
+                setStation(pending->station, pending->play);
+            }
+        } else {
+            // TODO: replace with UI error message
+            qWarning() << "mpv stop command failed:" << error;
+        }
+
+        break;
+    }
+
+    case AsyncReplyId::ResolvingNowPlaying: {
+        const QString pendingNowPlaying =
+            std::exchange(m_pendingNowPlaying, std::nullopt)
+                .value_or(QString());
+
         setNowPlaying(
-            data.toString() == m_pendingNowPlaying
+            data.toString() == pendingNowPlaying
                 ? QString()
-                : Utilities::escapeControlCharacters(m_pendingNowPlaying));
-
-        m_pendingNowPlaying.clear();
+                : Utilities::escapeControlCharacters(pendingNowPlaying));
 
         break;
     }
@@ -157,9 +179,7 @@ void Player::onAsyncReply(const QVariant &data, mpv_event event) {
 
 void Player::onEndFile(QString reason) {
     if (reason == QStringLiteral("eof") || reason == QStringLiteral("error")) {
-        // TODO: remove this qCritical when some
-        // proper error handling involving the UI
-        // is done here
+        // TODO: replace with UI error message
         qCritical() << "playback error";
     }
 
@@ -177,10 +197,6 @@ void Player::onFileLoaded() {
 Player::~Player() {
     m_workerThread->quit();
     m_workerThread->wait();
-
-    mpv_terminate_destroy(m_mpvController->mpv());
-
-    m_workerThread->deleteLater();
 }
 
 Station Player::station() const {
@@ -199,15 +215,18 @@ QString Player::elapsed() const {
     return m_elapsed;
 }
 
-void Player::setStation(const Station &newStation, const bool &play) {
+void Player::setStation(const Station &newStation, bool play) {
     if (m_station == newStation) {
         return;
     }
 
     if (m_state == State::Playing) {
-        m_pendingStation = newStation;
-        m_pendingPlay = play;
-        stop(AsyncCommandId::StopAndSetStation);
+        const bool alreadyStopping = m_pendingStationChange.has_value();
+        m_pendingStationChange = PendingStationChange{newStation, play};
+
+        if (!alreadyStopping) {
+            sendStop(AsyncReplyId::StoppingForStationChange);
+        }
 
         return;
     }
@@ -226,5 +245,5 @@ void Player::play() const {
 }
 
 void Player::stop() const {
-    stop(AsyncCommandId::Stop);
+    sendStop(AsyncReplyId::Stopping);
 }
