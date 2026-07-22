@@ -3,15 +3,30 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import orb.player
 import orb.qml_components
+import orb.settings
 import orb.sources
 
 ApplicationWindow {
-    height: 480
+    height: Settings.window.height
     minimumHeight: 480
     minimumWidth: 640
     title: qsTr("ORB")
     visible: true
-    width: 640
+    width: Settings.window.width
+
+    Component.onCompleted: {
+        if (Settings.window.x >= 0 && Settings.window.y >= 0) {
+            x = Settings.window.x;
+            y = Settings.window.y;
+        }
+    }
+    Component.onDestruction: {
+        Settings.window.x = x;
+        Settings.window.y = y;
+
+        Settings.window.width = width;
+        Settings.window.height = height;
+    }
 
     ColumnLayout {
         anchors {
