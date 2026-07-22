@@ -2,7 +2,7 @@
 #include <QDateTime>
 #include <QUrl>
 
-QString Utilities::parseUserInputUrl(const QString &userInput) {
+QString Utilities::normalizeUserInputUrl(const QString &userInput) {
     return QUrl::fromUserInput(userInput).toString();
 }
 

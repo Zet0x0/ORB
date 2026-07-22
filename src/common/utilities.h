@@ -3,7 +3,7 @@
 #include <QRestReply>
 
 namespace Utilities {
-QString parseUserInputUrl(const QString &userInput);
+QString normalizeUserInputUrl(const QString &userInput);
 QString escapeControlCharacters(QString string);
 
 qint64 currentTimestampUtc();
