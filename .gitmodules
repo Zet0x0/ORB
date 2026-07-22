@@ -4,3 +4,4 @@
 [submodule "external/tabler-icons"]
     path = src/external/tabler-icons
     url = https://github.com/tabler/tabler-icons
+    shallow = true
