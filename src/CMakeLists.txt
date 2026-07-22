@@ -16,7 +16,7 @@ include("cmake/DownloadTablerIcons.cmake")
 
 find_package(Qt6 REQUIRED COMPONENTS Quick QuickControls2)
 
-qt_standard_project_setup(REQUIRES 6.10)
+qt_standard_project_setup(REQUIRES 6.11)
 
 add_subdirectory("external/mpvqt" EXCLUDE_FROM_ALL)
 
