@@ -1,7 +1,6 @@
 #include "player.h"
 #include "../common/utilities.h"
 #include "mpvproperties.h"
-#include <utility>
 
 Player::Player(QObject *parent)
     : QObject(parent), m_mpvController(new MpvController),

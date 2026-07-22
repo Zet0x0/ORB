@@ -25,9 +25,11 @@ int main(int argc, char *argv[]) {
     {
         SourceController *sourceController = SourceController::instance();
 
-        sourceController->registerSource(QObject::tr("Not selected"),
+        sourceController->registerSource(QStringLiteral("none"),
+                                         QObject::tr("Not selected"),
                                          new NullSource);
-        sourceController->registerSource(QObject::tr("Radio Record"),
+        sourceController->registerSource(QStringLiteral("radio-record"),
+                                         QObject::tr("Radio Record"),
                                          new RadioRecord);
     }
 

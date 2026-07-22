@@ -77,29 +77,40 @@ void SourceController::setError(const SourceError &error) {
     }
 }
 
-bool SourceController::sourceExists(const QString &sourceName) const {
-    return m_sources.contains(sourceName);
+bool SourceController::sourceExists(const QString &key) const {
+    return m_sources.contains(key);
 }
 
-bool SourceController::registerSource(const QString &name, Source *source) {
-    if (sourceExists(name)) {
+bool SourceController::registerSource(const QString &key,
+                                      const QString &displayName,
+                                      Source *source) {
+    if (sourceExists(key)) {
         return false;
     }
 
     source->setParent(this);
 
-    m_sources[name] = source;
-    m_sourcesInsertOrder << name;
+    m_sources[key] = source;
+    m_sourceDisplayNames[key] = displayName;
+    m_sourcesInsertOrder << key;
 
     if (!m_source) {
-        setSource(name);
+        setSource(key);
     }
 
     return true;
 }
 
-QStringList SourceController::getSources() const {
-    return m_sourcesInsertOrder;
+QVariantList SourceController::getSources() const {
+    QVariantList sources;
+
+    for (const QString &key : m_sourcesInsertOrder) {
+        sources << QVariantMap{
+            {QStringLiteral("key"), key},
+            {QStringLiteral("name"), m_sourceDisplayNames.value(key)}};
+    }
+
+    return sources;
 }
 
 SourceController::SearchState SourceController::searchState() const {

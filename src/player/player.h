@@ -5,7 +5,6 @@
 #include <MpvController>
 #include <QQmlEngine>
 #include <QThread>
-#include <optional>
 
 class Player : public QObject, public Singleton<Player> {
     Q_OBJECT
