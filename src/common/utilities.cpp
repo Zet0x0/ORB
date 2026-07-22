@@ -14,7 +14,7 @@ QString Utilities::escapeControlCharacters(QString string) {
         .replace('\v', "\\v")
         .replace('\f', "\\f")
         .replace('\r', "\\r")
-        .replace('\e', "\\e");
+        .replace('\x1b', "\\e");
 }
 
 qint64 Utilities::currentTimestampUtc() {
