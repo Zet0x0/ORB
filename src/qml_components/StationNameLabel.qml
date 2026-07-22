@@ -2,6 +2,7 @@ import QtQuick
 import QtQuick.Controls
 import orb.player
 
+// TODO: sliding label OR elide
 Label {
     id: control
 

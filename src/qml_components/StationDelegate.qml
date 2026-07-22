@@ -55,6 +55,7 @@ Frame {
             }
         }
 
+        // TODO: sliding label OR elide
         Label {
             Layout.fillHeight: true
             Layout.fillWidth: true
