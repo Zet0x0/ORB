@@ -6,6 +6,8 @@ qt_add_qml_module(
     orb.player
     OUTPUT_DIRECTORY
     "${CMAKE_BINARY_DIR}/orb/player"
+    DEPENDENCIES
+    orb.sources
     SOURCES
     player.h
     player.cpp
