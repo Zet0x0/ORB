@@ -26,7 +26,7 @@ if(NOT EXISTS "${MPV_RELEASE_JSON_PATH}")
 
     if(NOT _code EQUAL 0)
         file(REMOVE "${_json_tmp}")
-        message(FATAL_ERROR "Failed to fetch latest mpv release info.")
+        message(FATAL_ERROR "Failed to fetch latest mpv release info")
     endif()
 
     file(RENAME "${_json_tmp}" "${MPV_RELEASE_JSON_PATH}")
