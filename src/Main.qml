@@ -49,8 +49,7 @@ ApplicationWindow {
                 }
 
                 RowLayout {
-                    PlayButton {
-                    }
+                    PlayButton {}
                 }
             }
         }
