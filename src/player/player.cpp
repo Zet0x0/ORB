@@ -152,7 +152,7 @@ void Player::onAsyncReply(const QVariant &data, mpv_event event) {
             setState(State::Stopped);
 
             if (pending) {
-                setStation(pending->station, pending->play);
+                setStation(pending->station, pending->shouldPlay);
             }
         } else {
             // TODO: replace with UI error message

@@ -36,7 +36,7 @@ private:
 
     struct PendingStationChange {
         Station station;
-        bool play = false;
+        bool shouldPlay = false;
     };
 
     MpvController *m_mpvController = nullptr;
