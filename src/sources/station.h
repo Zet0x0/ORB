@@ -35,5 +35,8 @@ public:
     QString imageUrl() const;
     void setImageUrl(QString newImageUrl);
 
+    QVariantMap toMap() const;
+    static Station fromMap(const QVariantMap &map);
+
     bool operator==(const Station &other) const;
 };

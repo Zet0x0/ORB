@@ -48,6 +48,18 @@ void Station::setImageUrl(QString newImageUrl) {
     m_imageUrl = Utilities::normalizeUserInputUrl(newImageUrl);
 }
 
+QVariantMap Station::toMap() const {
+    return {{QStringLiteral("name"), m_name},
+            {QStringLiteral("streamUrl"), m_streamUrl},
+            {QStringLiteral("imageUrl"), m_imageUrl}};
+}
+
+Station Station::fromMap(const QVariantMap &map) {
+    return Station(map.value(QStringLiteral("name")).toString(),
+                   map.value(QStringLiteral("streamUrl")).toString(),
+                   map.value(QStringLiteral("imageUrl")).toString());
+}
+
 bool Station::operator==(const Station &other) const {
     return this->name() == other.name() &&
            this->streamUrl() == other.streamUrl() &&

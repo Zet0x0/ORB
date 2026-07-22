@@ -19,6 +19,8 @@ ApplicationWindow {
             x = Settings.window.x;
             y = Settings.window.y;
         }
+
+        Player.station = Settings.player.lastStation;
     }
     Component.onDestruction: {
         Settings.window.x = x;
@@ -26,6 +28,10 @@ ApplicationWindow {
 
         Settings.window.width = width;
         Settings.window.height = height;
+
+        Settings.player.lastStation = Player.station;
+
+        Settings.sources.lastSearchSource = sourceSelector.currentValue;
     }
 
     ColumnLayout {
@@ -82,9 +88,6 @@ ApplicationWindow {
                     if (currentIndex === -1) {
                         currentIndex = 0;
                     }
-                }
-                Component.onDestruction: {
-                    Settings.sources.lastSearchSource = currentValue;
                 }
                 onCurrentValueChanged: {
                     SourceController.setSource(currentValue);

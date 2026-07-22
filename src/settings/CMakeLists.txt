@@ -6,6 +6,8 @@ qt_add_qml_module(
     orb.settings
     OUTPUT_DIRECTORY
     "${CMAKE_BINARY_DIR}/orb/settings"
+    DEPENDENCIES
+    orb.sources
     SOURCES
     settings.h
     settings.cpp
@@ -16,6 +18,8 @@ qt_add_qml_module(
     windowsettings.h
     windowsettings.cpp
     sourcessettings.h
-    sourcessettings.cpp)
+    sourcessettings.cpp
+    playersettings.h
+    playersettings.cpp)
 
-target_link_libraries(settings PRIVATE common)
+target_link_libraries(settings PRIVATE sources common)
