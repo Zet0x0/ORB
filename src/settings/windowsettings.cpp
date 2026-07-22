@@ -23,7 +23,7 @@ void WindowSettings::setX(int newX) {
     }
 
     m_x = newX;
-    SettingsIO::writeInt(m_settings, QStringLiteral("x"), m_x);
+    SettingsIO::write(m_settings, QStringLiteral("x"), m_x);
 
     emit xChanged();
 }
@@ -38,7 +38,7 @@ void WindowSettings::setY(int newY) {
     }
 
     m_y = newY;
-    SettingsIO::writeInt(m_settings, QStringLiteral("y"), m_y);
+    SettingsIO::write(m_settings, QStringLiteral("y"), m_y);
 
     emit yChanged();
 }
@@ -53,7 +53,7 @@ void WindowSettings::setWidth(int newWidth) {
     }
 
     m_width = newWidth;
-    SettingsIO::writeInt(m_settings, QStringLiteral("width"), m_width);
+    SettingsIO::write(m_settings, QStringLiteral("width"), m_width);
 
     emit widthChanged();
 }
@@ -68,7 +68,7 @@ void WindowSettings::setHeight(int newHeight) {
     }
 
     m_height = newHeight;
-    SettingsIO::writeInt(m_settings, QStringLiteral("height"), m_height);
+    SettingsIO::write(m_settings, QStringLiteral("height"), m_height);
 
     emit heightChanged();
 }

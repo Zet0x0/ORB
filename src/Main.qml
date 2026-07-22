@@ -73,10 +73,19 @@ ApplicationWindow {
             ComboBox {
                 id: sourceSelector
 
+                currentValue: Settings.sources.lastSearchSource
                 model: SourceController.getSources()
                 textRole: "name"
                 valueRole: "key"
 
+                Component.onCompleted: {
+                    if (currentIndex === -1) {
+                        currentIndex = 0;
+                    }
+                }
+                Component.onDestruction: {
+                    Settings.sources.lastSearchSource = currentValue;
+                }
                 onCurrentValueChanged: {
                     SourceController.setSource(currentValue);
 

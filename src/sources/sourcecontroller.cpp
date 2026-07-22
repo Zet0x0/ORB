@@ -132,6 +132,10 @@ bool SourceController::canShowDefaultStations() const {
 void SourceController::setSource(const QString &newSourceName) {
     Source *newSource = m_sources.value(newSourceName, nullptr);
 
+    if (!newSource) {
+        newSource = m_sources.value(QStringLiteral("none"), nullptr);
+    }
+
     if (!newSource || m_source == newSource) {
         return;
     }

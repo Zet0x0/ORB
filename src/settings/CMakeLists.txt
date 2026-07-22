@@ -9,11 +9,13 @@ qt_add_qml_module(
     SOURCES
     settings.h
     settings.cpp
-    windowsettings.h
-    windowsettings.cpp
     settingsfactory.h
     settingsfactory.cpp
     settingsio.h
-    settingsio.cpp)
+    settingsio.cpp
+    windowsettings.h
+    windowsettings.cpp
+    sourcessettings.h
+    sourcessettings.cpp)
 
 target_link_libraries(settings PRIVATE common)
