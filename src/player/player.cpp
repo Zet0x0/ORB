@@ -40,19 +40,19 @@ void Player::setupObservations() const {
 }
 
 void Player::observeProperty(const QString &property, mpv_format format,
-                             uint64_t id) const {
+                             AsyncReplyId id) const {
     QMetaObject::invokeMethod(m_mpvController, &MpvController::observeProperty,
-                              Qt::QueuedConnection, property, format, id);
+                              Qt::QueuedConnection, property, format,
+                              static_cast<uint64_t>(id));
 }
 
-void Player::getPropertyAsync(const QString &property,
-                              AsyncCommandId id) const {
+void Player::getPropertyAsync(const QString &property, AsyncReplyId id) const {
     QMetaObject::invokeMethod(m_mpvController, &MpvController::getPropertyAsync,
                               Qt::QueuedConnection, property,
                               static_cast<int>(id));
 }
 
-void Player::commandAsync(const QStringList &params, AsyncCommandId id) const {
+void Player::commandAsync(const QStringList &params, AsyncReplyId id) const {
     QMetaObject::invokeMethod(m_mpvController, &MpvController::commandAsync,
                               Qt::QueuedConnection, params,
                               static_cast<int>(id));
@@ -104,7 +104,7 @@ void Player::setElapsed(const QString &newElapsed) {
     emit elapsedChanged();
 }
 
-void Player::stop(AsyncCommandId id) const {
+void Player::stop(AsyncReplyId id) const {
     commandAsync({QStringLiteral("stop")}, id);
 }
 
@@ -113,28 +113,29 @@ void Player::onPropertyChanged(const QString &property, const QVariant &value) {
         m_pendingNowPlaying = value.toString();
 
         getPropertyAsync(MpvProperties::Filename,
-                         AsyncCommandId::GetFilenameAndFilterNowPlaying);
+                         AsyncReplyId::ResolvingNowPlaying);
     } else if (property == MpvProperties::Elapsed) {
         setElapsed(formatTime(value.toDouble()));
     }
 }
 
 void Player::onAsyncReply(const QVariant &data, mpv_event event) {
-    const AsyncCommandId id = static_cast<AsyncCommandId>(event.reply_userdata);
+    const AsyncReplyId id = static_cast<AsyncReplyId>(event.reply_userdata);
 
-    if (id == AsyncCommandId::Stop || id == AsyncCommandId::StopAndSetStation) {
+    if (id == AsyncReplyId::Stopping ||
+        id == AsyncReplyId::StoppingForStationChange) {
         if (event.error > -1) {
             setState(State::Stopped);
         }
     }
 
     switch (id) {
-    case AsyncCommandId::None:
-    case AsyncCommandId::Stop: {
+    case AsyncReplyId::None:
+    case AsyncReplyId::Stopping: {
         break;
     }
 
-    case AsyncCommandId::StopAndSetStation: {
+    case AsyncReplyId::StoppingForStationChange: {
         setStation(m_pendingStation, m_pendingPlay);
         m_pendingStation = Station{};
         m_pendingPlay = false;
@@ -142,7 +143,7 @@ void Player::onAsyncReply(const QVariant &data, mpv_event event) {
         break;
     }
 
-    case AsyncCommandId::GetFilenameAndFilterNowPlaying: {
+    case AsyncReplyId::ResolvingNowPlaying: {
         setNowPlaying(
             data.toString() == m_pendingNowPlaying
                 ? QString()
@@ -207,7 +208,7 @@ void Player::setStation(const Station &newStation, const bool &play) {
     if (m_state == State::Playing) {
         m_pendingStation = newStation;
         m_pendingPlay = play;
-        stop(AsyncCommandId::StopAndSetStation);
+        stop(AsyncReplyId::StoppingForStationChange);
 
         return;
     }
@@ -226,5 +227,5 @@ void Player::play() const {
 }
 
 void Player::stop() const {
-    stop(AsyncCommandId::Stop);
+    stop(AsyncReplyId::Stopping);
 }
