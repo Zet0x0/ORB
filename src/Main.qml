@@ -59,6 +59,8 @@ ApplicationWindow {
                 id: sourceSelector
 
                 model: SourceController.getSources()
+                textRole: "name"
+                valueRole: "key"
 
                 onCurrentValueChanged: {
                     SourceController.setSource(currentValue);

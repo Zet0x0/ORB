@@ -5,9 +5,9 @@
 template <typename T> class Singleton {
 public:
     static T *instance() {
-        static T *instance = new T;
+        static T *singleton = new T;
 
-        return instance;
+        return singleton;
     } // C++ access
 
     static T *create(QQmlEngine *qmlEngine, QJSEngine *jsEngine) {

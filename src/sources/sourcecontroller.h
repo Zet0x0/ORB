@@ -27,6 +27,7 @@ public:
 
 private:
     QHash<QString, Source *> m_sources;
+    QHash<QString, QString> m_sourceDisplayNames;
     QStringList m_sourcesInsertOrder;
 
     Source *m_source = nullptr;
@@ -55,9 +56,10 @@ private slots:
     void setError(const SourceError &error);
 
 public:
-    bool sourceExists(const QString &sourceName) const;
-    bool registerSource(const QString &name, Source *source);
-    Q_INVOKABLE QStringList getSources() const;
+    bool sourceExists(const QString &key) const;
+    bool registerSource(const QString &key, const QString &displayName,
+                        Source *source);
+    Q_INVOKABLE QVariantList getSources() const;
 
     SearchState searchState() const;
     SourceError error() const;

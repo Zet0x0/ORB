@@ -35,7 +35,7 @@ QString Station::streamUrl() const {
 }
 
 void Station::setStreamUrl(QString newStreamUrl) {
-    m_streamUrl = Utilities::parseUserInputUrl(newStreamUrl);
+    m_streamUrl = Utilities::normalizeUserInputUrl(newStreamUrl);
 
     setValid(!m_streamUrl.isEmpty());
 }
@@ -45,7 +45,7 @@ QString Station::imageUrl() const {
 }
 
 void Station::setImageUrl(QString newImageUrl) {
-    m_imageUrl = Utilities::parseUserInputUrl(newImageUrl);
+    m_imageUrl = Utilities::normalizeUserInputUrl(newImageUrl);
 }
 
 bool Station::operator==(const Station &other) const {

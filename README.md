@@ -9,8 +9,16 @@
 ## Building Prerequisites
 
 - [`Qt`](https://www.qt.io/development/download-open-source) (MinGW) >= 6.11 with following Additional Libraries: `Qt Image Formats`
-- [`MpvQt`](https://invent.kde.org/libraries/mpvqt) >= 1.2.0 (_pulled automatically by git submodule_)
+- [`MpvQt`](https://invent.kde.org/libraries/mpvqt) >= 1.2.0 (_pulled automatically by git submodule, see below_)
 - [`Extra CMake Modules`](https://invent.kde.org/frameworks/extra-cmake-modules) >= 6.15.0 (or whatever MpvQt will require the least)
+
+### Getting the source
+
+`MpvQt` is vendored as a git submodule, so clone with `--recursive`:
+
+```sh
+git clone --recursive https://github.com/Zet0x0/ORB.git
+```
 
 ### `Extra CMake Modules` on Windows
 

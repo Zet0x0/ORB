@@ -1,7 +1,6 @@
 #include "player.h"
 #include "../common/utilities.h"
 #include "mpvproperties.h"
-#include <utility>
 
 Player::Player(QObject *parent)
     : QObject(parent), m_mpvController(new MpvController),
@@ -36,12 +35,12 @@ void Player::setupConnections() const {
 }
 
 void Player::setupObservations() const {
-    observeProperty(MpvProperties::NowPlaying, MPV_FORMAT_STRING);
-    observeProperty(MpvProperties::Elapsed, MPV_FORMAT_DOUBLE);
+    observePropertyAsync(MpvProperties::NowPlaying, MPV_FORMAT_STRING);
+    observePropertyAsync(MpvProperties::Elapsed, MPV_FORMAT_DOUBLE);
 }
 
-void Player::observeProperty(const QString &property, mpv_format format,
-                             AsyncReplyId id) const {
+void Player::observePropertyAsync(const QString &property, mpv_format format,
+                                  AsyncReplyId id) const {
     QMetaObject::invokeMethod(m_mpvController, &MpvController::observeProperty,
                               Qt::QueuedConnection, property, format,
                               static_cast<uint64_t>(id));
@@ -152,7 +151,7 @@ void Player::onAsyncReply(const QVariant &data, mpv_event event) {
             setState(State::Stopped);
 
             if (pending) {
-                setStation(pending->station, pending->play);
+                setStation(pending->station, pending->shouldPlay);
             }
         } else {
             // TODO: replace with UI error message

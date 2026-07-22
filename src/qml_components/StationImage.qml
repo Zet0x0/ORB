@@ -7,7 +7,16 @@ StackLayout {
 
     required property string imageUrl
 
-    currentIndex: stationImage.status === Image.Error ? 0 : stationImage.status
+    currentIndex: {
+        switch (stationImage.status) {
+        case Image.Ready:
+            return 1;
+        case Image.Loading:
+            return 2;
+        default:
+            return 0; // Image.Null, Image.Error, or any other unexpected value
+        }
+    }
 
     // Image.Null
     // Image.Error

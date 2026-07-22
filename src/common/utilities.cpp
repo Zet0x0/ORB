@@ -2,7 +2,7 @@
 #include <QDateTime>
 #include <QUrl>
 
-QString Utilities::parseUserInputUrl(const QString &userInput) {
+QString Utilities::normalizeUserInputUrl(const QString &userInput) {
     return QUrl::fromUserInput(userInput).toString();
 }
 
@@ -14,13 +14,13 @@ QString Utilities::escapeControlCharacters(QString string) {
         .replace('\v', "\\v")
         .replace('\f', "\\f")
         .replace('\r', "\\r")
-        .replace('\e', "\\e");
+        .replace('\x1b', "\\e");
 }
 
-qint64 Utilities::currentTimestampUtc() {
+qint64 Utilities::currentTimestamp() {
     return QDateTime::currentSecsSinceEpoch();
 }
 
-QString Utilities::pathFromRestReply(QRestReply &reply) {
+QString Utilities::requestPathFromRestReply(QRestReply &reply) {
     return reply.networkReply()->request().url().path();
 }

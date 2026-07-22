@@ -5,7 +5,6 @@
 #include <MpvController>
 #include <QQmlEngine>
 #include <QThread>
-#include <optional>
 
 class Player : public QObject, public Singleton<Player> {
     Q_OBJECT
@@ -36,7 +35,7 @@ private:
 
     struct PendingStationChange {
         Station station;
-        bool play = false;
+        bool shouldPlay = false;
     };
 
     MpvController *m_mpvController = nullptr;
@@ -56,8 +55,8 @@ private:
     void setupConnections() const;
     void setupObservations() const;
 
-    void observeProperty(const QString &property, mpv_format format,
-                         AsyncReplyId id = AsyncReplyId::None) const;
+    void observePropertyAsync(const QString &property, mpv_format format,
+                              AsyncReplyId id = AsyncReplyId::None) const;
     void getPropertyAsync(const QString &property, AsyncReplyId id) const;
 
     void commandAsync(const QStringList &params,
