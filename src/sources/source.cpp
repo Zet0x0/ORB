@@ -86,11 +86,11 @@ void Source::DefaultStations::setCached(const QList<Station> &stations) {
     }
 
     m_stations = stations;
-    m_cachedAt = Utilities::currentTimestampUtc();
+    m_cachedAt = Utilities::currentTimestamp();
 }
 
 const QList<Station> &Source::DefaultStations::getCached() {
-    if (Utilities::currentTimestampUtc() - m_cachedAt >
+    if (Utilities::currentTimestamp() - m_cachedAt >
         SourceConstraints::DefaultStationsCacheExpiry) {
         resetCache();
     }

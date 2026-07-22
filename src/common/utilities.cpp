@@ -17,7 +17,7 @@ QString Utilities::escapeControlCharacters(QString string) {
         .replace('\x1b', "\\e");
 }
 
-qint64 Utilities::currentTimestampUtc() {
+qint64 Utilities::currentTimestamp() {
     return QDateTime::currentSecsSinceEpoch();
 }
 
