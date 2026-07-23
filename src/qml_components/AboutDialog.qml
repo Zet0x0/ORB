@@ -5,11 +5,12 @@ import QtQuick.Layouts
 Dialog {
     id: control
 
-    anchors.centerIn: parent
     dim: true
     modal: true
     standardButtons: Dialog.Ok
     title: qsTr("About %0").arg(Qt.application.name)
+    x: Math.floor((parent.width - width) / 2)
+    y: Math.floor((parent.height - height) / 2)
 
     FontMetrics {
         id: bodyFontMetrics
