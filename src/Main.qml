@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import orb.common
 import orb.player
 import orb.qml_components
 import orb.settings
@@ -19,7 +20,23 @@ ApplicationWindow {
         Menu {
             title: qsTr("&File")
 
-            MenuItem {
+            Action {
+                shortcut: StandardKey.Paste
+                text: qsTr("&Open Location from Clipboard...")
+
+                onTriggered: openLocationDialog.openWithText(Utilities.pasteFromClipboard())
+            }
+
+            Action {
+                enabled: Player.station.valid
+                text: qsTr("&Copy Stream URL")
+
+                onTriggered: Utilities.copyToClipboard(Player.station.streamUrl)
+            }
+
+            MenuSeparator {}
+
+            Action {
                 text: qsTr("&Quit")
 
                 onTriggered: Qt.quit()
@@ -27,9 +44,26 @@ ApplicationWindow {
         }
 
         Menu {
+            title: qsTr("&Playback")
+
+            Action {
+                enabled: Player.station.valid
+                text: Player.state === Player.Stopped ? qsTr("&Play") : qsTr("&Stop")
+
+                onTriggered: {
+                    if (Player.state === Player.Stopped) {
+                        Player.play();
+                    } else {
+                        Player.stop();
+                    }
+                }
+            }
+        }
+
+        Menu {
             title: qsTr("&Help")
 
-            MenuItem {
+            Action {
                 text: qsTr("&About")
 
                 onTriggered: aboutDialog.open()
@@ -59,6 +93,10 @@ ApplicationWindow {
 
     AboutDialog {
         id: aboutDialog
+    }
+
+    OpenLocationDialog {
+        id: openLocationDialog
     }
 
     ColumnLayout {
