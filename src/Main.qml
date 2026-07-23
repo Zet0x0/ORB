@@ -8,6 +8,8 @@ import orb.sources
 
 ApplicationWindow {
     height: Settings.window.height
+    maximumHeight: Screen.height
+    maximumWidth: Screen.width
     minimumHeight: 480
     minimumWidth: 640
     title: qsTr("ORB")
