@@ -11,6 +11,7 @@ qt_add_qml_module(
     StationDelegate.qml
     IconButton.qml
     PlayButton.qml
+    VolumeControl.qml
     ElapsedLabel.qml
     StationSearchField.qml
     StationNameLabel.qml

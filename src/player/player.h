@@ -19,6 +19,10 @@ class Player : public QObject, public Singleton<Player> {
     Q_PROPERTY(Player::State state READ state NOTIFY stateChanged FINAL)
     Q_PROPERTY(QString elapsed READ elapsed NOTIFY elapsedChanged FINAL)
 
+    Q_PROPERTY(
+        int volume READ volume WRITE setVolume NOTIFY volumeChanged FINAL)
+    Q_PROPERTY(bool muted READ muted WRITE setMuted NOTIFY mutedChanged FINAL)
+
     friend class Singleton<Player>;
 
 public:
@@ -30,7 +34,9 @@ private:
         None,
         Stopping,
         StoppingForStationChange,
-        ResolvingNowPlaying
+        ResolvingNowPlaying,
+        SettingVolume,
+        SettingMuted
     };
 
     struct PendingStationChange {
@@ -50,6 +56,12 @@ private:
     State m_state = State::Stopped;
     QString m_elapsed = QStringLiteral("00:00:00");
 
+    int m_volume = 100;
+    bool m_muted = false;
+
+    int m_previousVolume = 100;
+    bool m_previousMuted = false;
+
     explicit Player(QObject *parent = nullptr);
 
     void setupConnections() const;
@@ -61,6 +73,9 @@ private:
 
     void commandAsync(const QStringList &params,
                       AsyncReplyId id = AsyncReplyId::None) const;
+
+    void setPropertyAsync(const QString &property, const QVariant &value,
+                          AsyncReplyId id = AsyncReplyId::None) const;
 
     void setNowPlaying(QString newNowPlaying);
 
@@ -88,11 +103,17 @@ public:
     State state() const;
     QString elapsed() const;
 
+    int volume() const;
+    bool muted() const;
+
 public slots:
     void setStation(const Station &newStation, bool play = false);
 
     void play() const;
     void stop() const;
+
+    void setVolume(int newVolume);
+    void setMuted(bool newMuted);
 
 signals:
     void stationChanged();
@@ -100,4 +121,7 @@ signals:
 
     void stateChanged();
     void elapsedChanged();
+
+    void volumeChanged();
+    void mutedChanged();
 };
