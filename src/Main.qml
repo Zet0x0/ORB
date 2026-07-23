@@ -3,15 +3,38 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import orb.player
 import orb.qml_components
+import orb.settings
 import orb.sources
 
 ApplicationWindow {
-    height: 480
+    height: Settings.window.height
+    maximumHeight: Screen.height
+    maximumWidth: Screen.width
     minimumHeight: 480
     minimumWidth: 640
     title: qsTr("ORB")
     visible: true
-    width: 640
+    width: Settings.window.width
+
+    Component.onCompleted: {
+        if (Settings.window.x >= 0 && Settings.window.y >= 0) {
+            x = Settings.window.x;
+            y = Settings.window.y;
+        }
+
+        Player.station = Settings.player.lastStation;
+    }
+    Component.onDestruction: {
+        Settings.window.x = x;
+        Settings.window.y = y;
+
+        Settings.window.width = width;
+        Settings.window.height = height;
+
+        Settings.player.lastStation = Player.station;
+
+        Settings.sources.lastSearchSource = sourceSelector.currentValue;
+    }
 
     ColumnLayout {
         anchors {
@@ -58,10 +81,16 @@ ApplicationWindow {
             ComboBox {
                 id: sourceSelector
 
+                currentValue: Settings.sources.lastSearchSource
                 model: SourceController.getSources()
                 textRole: "name"
                 valueRole: "key"
 
+                Component.onCompleted: {
+                    if (currentIndex === -1) {
+                        currentIndex = 0;
+                    }
+                }
                 onCurrentValueChanged: {
                     SourceController.setSource(currentValue);
 

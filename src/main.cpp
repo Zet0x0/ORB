@@ -9,10 +9,14 @@
 int main(int argc, char *argv[]) {
     QQuickStyle::setFallbackStyle(QStringLiteral("Fusion"));
 
-    QGuiApplication app(argc, argv);
-    QQmlApplicationEngine engine;
+    QCoreApplication::setOrganizationName(QStringLiteral("zet0x0"));
+    QCoreApplication::setOrganizationDomain(QStringLiteral("com.zet0x0.orb"));
+    QCoreApplication::setApplicationName(QStringLiteral("ORB"));
 
     QIcon::setThemeName("orb");
+
+    QGuiApplication app(argc, argv);
+    QQmlApplicationEngine engine;
 
     QObject::connect(
         &engine, &QQmlApplicationEngine::objectCreationFailed, &app,
