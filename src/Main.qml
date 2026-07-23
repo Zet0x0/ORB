@@ -12,9 +12,30 @@ ApplicationWindow {
     maximumWidth: Screen.width
     minimumHeight: 480
     minimumWidth: 640
-    title: qsTr("ORB")
     visible: true
     width: Settings.window.width
+
+    menuBar: MenuBar {
+        Menu {
+            title: qsTr("&File")
+
+            MenuItem {
+                text: qsTr("&Quit")
+
+                onTriggered: Qt.quit()
+            }
+        }
+
+        Menu {
+            title: qsTr("&Help")
+
+            MenuItem {
+                text: qsTr("&About")
+
+                onTriggered: aboutDialog.open()
+            }
+        }
+    }
 
     Component.onCompleted: {
         if (Settings.window.x >= 0 && Settings.window.y >= 0) {
@@ -34,6 +55,10 @@ ApplicationWindow {
         Settings.player.lastStation = Player.station;
 
         Settings.sources.lastSearchSource = sourceSelector.currentValue;
+    }
+
+    AboutDialog {
+        id: aboutDialog
     }
 
     ColumnLayout {
