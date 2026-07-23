@@ -33,6 +33,8 @@ RowLayout {
     }
 
     Slider {
+        ToolTip.text: qsTr("Volume: %0").arg(Math.round(value) + "%")
+        ToolTip.visible: pressed || hovered
         from: 0
         palette.highlight: Player.muted ? Qt.darker(activeSystemPalette.highlight, 1.5) : activeSystemPalette.highlight
         stepSize: 1.0
