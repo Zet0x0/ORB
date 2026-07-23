@@ -27,7 +27,7 @@ Dialog {
     Component.onCompleted: {
         const playButton = standardButton(Dialog.Ok);
 
-        playButton.text = qsTr("Set && Play");
+        playButton.text = qsTr("Play");
         playButton.enabled = Qt.binding(() => urlField.acceptableInput);
     }
     onAccepted: {
