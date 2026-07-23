@@ -109,7 +109,7 @@ StackLayout {
                 z: 2
 
                 border {
-                    color: enabled ? palette.active.highlight : palette.disabled.highlight
+                    color: palette.highlight
                     width: 4
                 }
             }
@@ -128,7 +128,7 @@ StackLayout {
             visible: stationView.contentHeight > stationView.height
 
             contentItem: Rectangle {
-                color: enabled ? (stationViewScrollBar.pressed ? palette.active.midlight : palette.active.light) : palette.disabled.light
+                color: stationViewScrollBar.pressed ? palette.midlight : palette.light
                 implicitHeight: 100
                 implicitWidth: 6
                 radius: Math.floor(width / 2)

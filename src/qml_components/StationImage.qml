@@ -24,7 +24,7 @@ StackLayout {
         enabled: false
 
         icon {
-            color: palette.active.text
+            color: palette.active.buttonText
             height: Math.floor(parent.height / 2)
             name: "radio"
             width: Math.floor(parent.width / 2)

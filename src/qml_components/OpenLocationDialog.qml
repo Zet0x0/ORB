@@ -30,9 +30,7 @@ Dialog {
         playButton.text = qsTr("Play");
         playButton.enabled = Qt.binding(() => urlField.acceptableInput);
     }
-    onAccepted: {
-        Player.setStation(pendingStation, true);
-    }
+    onAccepted: Player.setStation(pendingStation, true)
     onOpened: {
         urlField.forceActiveFocus();
         urlField.selectAll();

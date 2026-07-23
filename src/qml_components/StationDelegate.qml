@@ -27,8 +27,8 @@ Frame {
     padding: 0
 
     background: Rectangle {
-        border.color: enabled ? (control.hovered ? palette.active.accent : palette.active.base) : palette.disabled.base
-        color: enabled ? (control.hovered ? palette.active.highlight : palette.active.window) : palette.disabled.window
+        border.color: control.hovered ? palette.accent : palette.base
+        color: control.hovered ? palette.highlight : palette.window
     }
 
     Keys.onSpacePressed: handleInteraction()
@@ -47,8 +47,8 @@ Frame {
             padding: (background as Rectangle).border.width
 
             background: Rectangle {
-                border.color: enabled ? (control.hovered ? palette.active.accent : palette.active.base) : palette.disabled.base
-                color: enabled ? palette.active.window : palette.disabled.window
+                border.color: control.hovered ? palette.accent : palette.base
+                color: palette.window
             }
             contentItem: StationImage {
                 imageUrl: control.station.imageUrl
@@ -60,7 +60,7 @@ Frame {
             Layout.fillHeight: true
             Layout.fillWidth: true
             Layout.maximumHeight: layout.height
-            color: enabled ? (control.hovered ? palette.active.highlightedText : palette.active.windowText) : palette.disabled.windowText
+            color: control.hovered ? palette.highlightedText : palette.windowText
             elide: Text.ElideRight
             text: control.station.name
             textFormat: Text.PlainText
