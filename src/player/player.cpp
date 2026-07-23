@@ -58,6 +58,13 @@ void Player::commandAsync(const QStringList &params, AsyncReplyId id) const {
                               static_cast<int>(id));
 }
 
+void Player::setPropertyAsync(const QString &property, const QVariant &value,
+                              AsyncReplyId id) const {
+    QMetaObject::invokeMethod(m_mpvController, &MpvController::setPropertyAsync,
+                              Qt::QueuedConnection, property, value,
+                              static_cast<int>(id));
+}
+
 void Player::setNowPlaying(QString newNowPlaying) {
     newNowPlaying = newNowPlaying.trimmed();
 
@@ -173,6 +180,32 @@ void Player::onAsyncReply(const QVariant &data, mpv_event event) {
 
         break;
     }
+
+    case AsyncReplyId::SettingVolume: {
+        if (!succeeded) {
+            // TODO: replace with UI error message
+            qWarning() << "mpv set volume failed:" << error;
+
+            m_volume = m_previousVolume;
+
+            emit volumeChanged();
+        }
+
+        break;
+    }
+
+    case AsyncReplyId::SettingMuted: {
+        if (!succeeded) {
+            // TODO: replace with UI error message
+            qWarning() << "mpv set mute failed:" << error;
+
+            m_muted = m_previousMuted;
+
+            emit mutedChanged();
+        }
+
+        break;
+    }
     }
 }
 
@@ -214,6 +247,14 @@ QString Player::elapsed() const {
     return m_elapsed;
 }
 
+int Player::volume() const {
+    return m_volume;
+}
+
+bool Player::muted() const {
+    return m_muted;
+}
+
 void Player::setStation(const Station &newStation, bool play) {
     if (m_state == State::Playing) {
         const bool alreadyStopping = m_pendingStationChange.has_value();
@@ -243,4 +284,33 @@ void Player::play() const {
 
 void Player::stop() const {
     sendStop(AsyncReplyId::Stopping);
+}
+
+void Player::setVolume(int newVolume) {
+    newVolume = qBound(0, newVolume, 100);
+
+    if (m_volume == newVolume) {
+        return;
+    }
+
+    m_previousVolume = m_volume;
+    m_volume = newVolume;
+    setPropertyAsync(MpvProperties::Volume, m_volume,
+                     AsyncReplyId::SettingVolume);
+
+    emit volumeChanged();
+
+    setMuted(false);
+}
+
+void Player::setMuted(bool newMuted) {
+    if (m_muted == newMuted) {
+        return;
+    }
+
+    m_previousMuted = m_muted;
+    m_muted = newMuted;
+    setPropertyAsync(MpvProperties::Mute, m_muted, AsyncReplyId::SettingMuted);
+
+    emit mutedChanged();
 }

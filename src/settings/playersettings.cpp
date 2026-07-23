@@ -8,6 +8,9 @@ PlayerSettings::PlayerSettings(QObject *parent)
 
     m_lastStation = Station::fromMap(
         m_settings->value(QStringLiteral("lastStation")).toMap());
+
+    m_volume = SettingsIO::readInt(m_settings, QStringLiteral("volume"), 100);
+    m_muted = SettingsIO::readBool(m_settings, QStringLiteral("muted"), false);
 }
 
 Station PlayerSettings::lastStation() const {
@@ -24,4 +27,34 @@ void PlayerSettings::setLastStation(const Station &newLastStation) {
                       m_lastStation.toMap());
 
     emit lastStationChanged();
+}
+
+int PlayerSettings::volume() const {
+    return m_volume;
+}
+
+void PlayerSettings::setVolume(int newVolume) {
+    if (m_volume == newVolume) {
+        return;
+    }
+
+    m_volume = newVolume;
+    SettingsIO::write(m_settings, QStringLiteral("volume"), m_volume);
+
+    emit volumeChanged();
+}
+
+bool PlayerSettings::muted() const {
+    return m_muted;
+}
+
+void PlayerSettings::setMuted(bool newMuted) {
+    if (m_muted == newMuted) {
+        return;
+    }
+
+    m_muted = newMuted;
+    SettingsIO::write(m_settings, QStringLiteral("muted"), m_muted);
+
+    emit mutedChanged();
 }

@@ -46,16 +46,82 @@ ApplicationWindow {
         Menu {
             title: qsTr("&Playback")
 
-            Action {
-                enabled: Player.station.valid
-                text: Player.state === Player.Stopped ? qsTr("&Play") : qsTr("&Stop")
+            // HACK: keeping one MenuItem with text based
+            // on Player.state will guarantee failure to
+            // render the underscores for P in Play and
+            // S in Stop - that's the reason there are
+            // two buttons for one function, using a weird
+            // `height` hack (QTBUG-???)
 
-                onTriggered: {
-                    if (Player.state === Player.Stopped) {
-                        Player.play();
-                    } else {
-                        Player.stop();
-                    }
+            MenuItem {
+                height: visible ? implicitHeight : 0
+                visible: Player.state === Player.Stopped
+
+                action: Action {
+                    enabled: Player.station.valid
+                    text: qsTr("&Play")
+
+                    onTriggered: Player.play()
+                }
+            }
+
+            MenuItem {
+                height: visible ? implicitHeight : 0
+                visible: Player.state !== Player.Stopped
+
+                action: Action {
+                    text: qsTr("&Stop")
+
+                    onTriggered: Player.stop()
+                }
+            }
+        }
+
+        Menu {
+            title: qsTr("&Audio")
+
+            Action {
+                enabled: Player.volume < 100
+                text: qsTr("&Increase Volume")
+
+                onTriggered: Player.volume += 5
+            }
+
+            Action {
+                enabled: Player.volume > 0
+                text: qsTr("&Decrease Volume")
+
+                onTriggered: Player.volume -= 5
+            }
+
+            MenuSeparator {}
+
+            // HACK: keeping one MenuItem with text based
+            // on Player.muted will guarantee failure to
+            // render the underscores for M in Muted and
+            // U in Unmuted - that's the reason there are
+            // two buttons for one function, using a weird
+            // `height` hack (QTBUG-???)
+
+            MenuItem {
+                height: visible ? implicitHeight : 0
+                visible: !Player.muted
+
+                action: Action {
+                    text: qsTr("&Mute")
+
+                    onTriggered: Player.muted = true
+                }
+            }
+
+            MenuItem {
+                height: visible ? implicitHeight : 0
+                visible: Player.muted
+
+                action: Action {
+                    text: qsTr("&Unmute")
+
+                    onTriggered: Player.muted = false
                 }
             }
         }
@@ -78,6 +144,8 @@ ApplicationWindow {
         }
 
         Player.station = Settings.player.lastStation;
+        Player.volume = Settings.player.volume;
+        Player.muted = Settings.player.muted;
     }
     Component.onDestruction: {
         Settings.window.x = x;
@@ -87,6 +155,8 @@ ApplicationWindow {
         Settings.window.height = height;
 
         Settings.player.lastStation = Player.station;
+        Settings.player.volume = Player.volume;
+        Settings.player.muted = Player.muted;
 
         Settings.sources.lastSearchSource = sourceSelector.currentValue;
     }
@@ -136,6 +206,12 @@ ApplicationWindow {
 
                 RowLayout {
                     PlayButton {}
+
+                    Item {
+                        Layout.fillWidth: true
+                    }
+
+                    VolumeControl {}
                 }
             }
         }
