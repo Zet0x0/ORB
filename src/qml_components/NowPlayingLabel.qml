@@ -6,7 +6,7 @@ import orb.player
 Label {
     id: control
 
-    color: enabled && state === "showing-info" ? palette.active.windowText : palette.disabled.windowText
+    color: state === "showing-info" ? palette.windowText : palette.disabled.windowText
     elide: Text.ElideMiddle
     font.italic: state !== "showing-info"
     textFormat: Text.PlainText

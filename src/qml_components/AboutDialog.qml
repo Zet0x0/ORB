@@ -56,7 +56,7 @@ Dialog {
                 onClicked: Qt.openUrlExternally("https://github.com/Zet0x0/ORB")
 
                 icon {
-                    color: palette.active.text
+                    color: palette.buttonText
                     name: "brand-github"
                 }
             }
