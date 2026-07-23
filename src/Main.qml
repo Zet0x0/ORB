@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import orb.common
 import orb.player
 import orb.qml_components
 import orb.settings
@@ -12,9 +13,63 @@ ApplicationWindow {
     maximumWidth: Screen.width
     minimumHeight: 480
     minimumWidth: 640
-    title: qsTr("ORB")
     visible: true
     width: Settings.window.width
+
+    menuBar: MenuBar {
+        Menu {
+            title: qsTr("&File")
+
+            Action {
+                shortcut: StandardKey.Paste
+                text: qsTr("&Open Location from Clipboard...")
+
+                onTriggered: openLocationDialog.openWithText(Utilities.pasteFromClipboard())
+            }
+
+            Action {
+                enabled: Player.station.valid
+                text: qsTr("&Copy Stream URL")
+
+                onTriggered: Utilities.copyToClipboard(Player.station.streamUrl)
+            }
+
+            MenuSeparator {}
+
+            Action {
+                text: qsTr("&Quit")
+
+                onTriggered: Qt.quit()
+            }
+        }
+
+        Menu {
+            title: qsTr("&Playback")
+
+            Action {
+                enabled: Player.station.valid
+                text: Player.state === Player.Stopped ? qsTr("&Play") : qsTr("&Stop")
+
+                onTriggered: {
+                    if (Player.state === Player.Stopped) {
+                        Player.play();
+                    } else {
+                        Player.stop();
+                    }
+                }
+            }
+        }
+
+        Menu {
+            title: qsTr("&Help")
+
+            Action {
+                text: qsTr("&About")
+
+                onTriggered: aboutDialog.open()
+            }
+        }
+    }
 
     Component.onCompleted: {
         if (Settings.window.x >= 0 && Settings.window.y >= 0) {
@@ -34,6 +89,14 @@ ApplicationWindow {
         Settings.player.lastStation = Player.station;
 
         Settings.sources.lastSearchSource = sourceSelector.currentValue;
+    }
+
+    AboutDialog {
+        id: aboutDialog
+    }
+
+    OpenLocationDialog {
+        id: openLocationDialog
     }
 
     ColumnLayout {

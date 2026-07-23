@@ -1,5 +1,7 @@
 #include "utilities.h"
+#include <QClipboard>
 #include <QDateTime>
+#include <QGuiApplication>
 #include <QUrl>
 
 QString Utilities::normalizeUserInputUrl(const QString &userInput) {
@@ -23,4 +25,12 @@ qint64 Utilities::currentTimestamp() {
 
 QString Utilities::requestPathFromRestReply(QRestReply &reply) {
     return reply.networkReply()->request().url().path();
+}
+
+void Utilities::copyToClipboard(const QString &text) {
+    QGuiApplication::clipboard()->setText(text);
+}
+
+QString Utilities::pasteFromClipboard() {
+    return QGuiApplication::clipboard()->text();
 }

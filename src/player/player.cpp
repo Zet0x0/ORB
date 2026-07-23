@@ -215,10 +215,6 @@ QString Player::elapsed() const {
 }
 
 void Player::setStation(const Station &newStation, bool play) {
-    if (m_station == newStation) {
-        return;
-    }
-
     if (m_state == State::Playing) {
         const bool alreadyStopping = m_pendingStationChange.has_value();
         m_pendingStationChange = PendingStationChange{newStation, play};
@@ -230,9 +226,11 @@ void Player::setStation(const Station &newStation, bool play) {
         return;
     }
 
-    m_station = newStation;
+    if (m_station != newStation) {
+        m_station = newStation;
 
-    emit stationChanged();
+        emit stationChanged();
+    }
 
     if (play) {
         this->play();

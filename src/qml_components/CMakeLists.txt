@@ -16,4 +16,6 @@ qt_add_qml_module(
     StationNameLabel.qml
     NowPlayingLabel.qml
     StationSearch.qml
+    AboutDialog.qml
+    OpenLocationDialog.qml
     NO_PLUGIN)
