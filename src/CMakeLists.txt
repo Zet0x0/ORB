@@ -14,7 +14,7 @@ set(BUILD_SHARED_LIBS ON)
 include("cmake/DownloadLibmpv.cmake")
 include("cmake/DownloadTablerIcons.cmake")
 
-find_package(Qt6 REQUIRED COMPONENTS Quick QuickControls2)
+find_package(Qt6 REQUIRED COMPONENTS Quick QuickControls2 LabsPlatform)
 
 qt_standard_project_setup(REQUIRES 6.11)
 
@@ -32,8 +32,15 @@ add_subdirectory(sources)
 add_subdirectory(player)
 add_subdirectory(qml_components)
 
-target_link_libraries(ORB PRIVATE Qt6::Quick Qt6::QuickControls2 settings
-                                  sources player qml_components)
+target_link_libraries(
+    ORB
+    PRIVATE Qt6::Quick
+            Qt6::QuickControls2
+            Qt6::LabsPlatform
+            settings
+            sources
+            player
+            qml_components)
 
 set_target_properties(
     ORB PROPERTIES WIN32_EXECUTABLE TRUE RUNTIME_OUTPUT_DIRECTORY

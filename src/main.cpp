@@ -7,12 +7,14 @@
 #include <QQuickStyle>
 
 int main(int argc, char *argv[]) {
-    QQuickStyle::setFallbackStyle(QStringLiteral("Fusion"));
-
     QCoreApplication::setOrganizationName(QStringLiteral("zet0x0"));
     QCoreApplication::setOrganizationDomain(QStringLiteral("com.zet0x0.orb"));
     QCoreApplication::setApplicationName(QStringLiteral("ORB"));
     QCoreApplication::setApplicationVersion(QStringLiteral("0.1.0"));
+
+    QGuiApplication::setQuitOnLastWindowClosed(false);
+
+    QQuickStyle::setFallbackStyle(QStringLiteral("Fusion"));
 
     QIcon::setThemeName("orb");
 

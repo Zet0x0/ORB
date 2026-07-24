@@ -1,5 +1,6 @@
 #include "utilities.h"
 #include <QClipboard>
+#include <QCursor>
 #include <QDateTime>
 #include <QGuiApplication>
 #include <QUrl>
@@ -33,4 +34,8 @@ void Utilities::copyToClipboard(const QString &text) {
 
 QString Utilities::pasteFromClipboard() {
     return QGuiApplication::clipboard()->text();
+}
+
+QPoint Utilities::getGlobalCursorPos() {
+    return QCursor::pos();
 }

@@ -7,6 +7,7 @@ qt_add_qml_module(
     OUTPUT_DIRECTORY
     "${CMAKE_BINARY_DIR}/orb/qml_components"
     QML_FILES
+    MainWindow.qml
     StationImage.qml
     StationDelegate.qml
     IconButton.qml
@@ -19,4 +20,6 @@ qt_add_qml_module(
     StationSearch.qml
     AboutDialog.qml
     OpenLocationDialog.qml
+    SystemTrayIcon.qml
+    SystemTrayMenu.qml
     NO_PLUGIN)
