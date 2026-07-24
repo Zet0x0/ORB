@@ -2,6 +2,7 @@ import Qt.labs.platform
 import QtQuick
 import orb.common
 import orb.player
+import orb.settings
 
 SystemTrayIcon {
     required property MainWindow applicationWindow
@@ -19,7 +20,7 @@ SystemTrayIcon {
 
         return Player.station.name;
     }
-    visible: available && trayMenu !== null
+    visible: available && trayMenu !== null && Settings.tray.enabled
 
     // HACK: QTBUG-33481 workaround
     Component.onCompleted: {

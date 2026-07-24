@@ -150,6 +150,13 @@ MainWindow {
 
         Settings.sources.lastSearchSource = sourceSelector.currentValue;
     }
+    onClosing: close => {
+        if (Settings.tray.enabled && Settings.tray.closeToTray) {
+            return;
+        }
+
+        Qt.quit();
+    }
 
     AboutDialog {
         id: aboutDialog
