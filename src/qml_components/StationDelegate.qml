@@ -27,8 +27,8 @@ Frame {
     padding: 0
 
     background: Rectangle {
-        border.color: control.hovered ? palette.accent : palette.base
-        color: control.hovered ? palette.highlight : palette.window
+        border.color: control.hovered ? palette.active.accent : palette.mid
+        color: palette.window
     }
 
     Keys.onSpacePressed: handleInteraction()
@@ -47,7 +47,7 @@ Frame {
             padding: (background as Rectangle).border.width
 
             background: Rectangle {
-                border.color: control.hovered ? palette.accent : palette.base
+                border.color: control.hovered ? palette.active.accent : palette.mid
                 color: palette.window
             }
             contentItem: StationImage {
@@ -70,8 +70,6 @@ Frame {
     }
 
     MouseArea {
-        id: mouseArea
-
         anchors.fill: parent
         cursorShape: Qt.PointingHandCursor
 
