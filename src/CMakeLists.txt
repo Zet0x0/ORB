@@ -26,11 +26,14 @@ qt_add_executable(ORB ${SOURCES})
 
 qt_add_qml_module(ORB URI orb QML_FILES Main.qml)
 
+qt_add_resources(ORB "resources" PREFIX "/" FILES qtquickcontrols2.conf)
+
 add_subdirectory(common)
 add_subdirectory(settings)
 add_subdirectory(sources)
 add_subdirectory(player)
 add_subdirectory(qml_components)
+add_subdirectory(style)
 
 target_link_libraries(
     ORB
@@ -40,7 +43,8 @@ target_link_libraries(
             settings
             sources
             player
-            qml_components)
+            qml_components
+            style)
 
 set_target_properties(
     ORB PROPERTIES WIN32_EXECUTABLE TRUE RUNTIME_OUTPUT_DIRECTORY
