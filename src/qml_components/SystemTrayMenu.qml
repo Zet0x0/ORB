@@ -43,46 +43,29 @@ Window {
 
         onClosed: window.hide()
 
-        // HACK: using the hack for play/stop, mute/unmute
-        // like in Main.qml for the menu bar
-
-        MenuItem {
+        Action {
             enabled: Player.station.valid
-            height: visible ? implicitHeight : 0
-            text: qsTr("&Play")
-            visible: Player.state === Player.Stopped
+            text: Player.state === Player.Stopped ? qsTr("Play") : qsTr("Stop")
 
-            onTriggered: Player.play()
+            onTriggered: {
+                if (Player.state === Player.Stopped) {
+                    Player.play();
+                } else {
+                    Player.stop();
+                }
+            }
         }
 
-        MenuItem {
-            height: visible ? implicitHeight : 0
-            text: qsTr("&Stop")
-            visible: Player.state !== Player.Stopped
+        Action {
+            text: Player.muted ? qsTr("Unmute") : qsTr("Mute")
 
-            onTriggered: Player.stop()
-        }
-
-        MenuItem {
-            height: visible ? implicitHeight : 0
-            text: qsTr("&Mute")
-            visible: !Player.muted
-
-            onTriggered: Player.muted = true
-        }
-
-        MenuItem {
-            height: visible ? implicitHeight : 0
-            text: qsTr("&Unmute")
-            visible: Player.muted
-
-            onTriggered: Player.muted = false
+            onTriggered: Player.muted = !Player.muted
         }
 
         MenuSeparator {}
 
         Action {
-            text: qsTr("&Quit %0").arg(Qt.application.name)
+            text: qsTr("Quit %0").arg(Qt.application.name)
 
             onTriggered: Qt.quit()
         }
