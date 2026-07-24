@@ -2,8 +2,8 @@
 
 Settings::Settings(QObject *parent)
     : QObject(parent), m_window(new WindowSettings(this)),
-      m_sources(new SourcesSettings(this)), m_player(new PlayerSettings(this)) {
-}
+      m_sources(new SourcesSettings(this)), m_player(new PlayerSettings(this)),
+      m_tray(new TraySettings(this)) {}
 
 WindowSettings *Settings::window() const {
     return m_window;
@@ -15,4 +15,8 @@ SourcesSettings *Settings::sources() const {
 
 PlayerSettings *Settings::player() const {
     return m_player;
+}
+
+TraySettings *Settings::tray() const {
+    return m_tray;
 }

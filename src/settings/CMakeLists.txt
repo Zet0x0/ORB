@@ -20,6 +20,8 @@ qt_add_qml_module(
     sourcessettings.h
     sourcessettings.cpp
     playersettings.h
-    playersettings.cpp)
+    playersettings.cpp
+    traysettings.h
+    traysettings.cpp)
 
 target_link_libraries(settings PRIVATE sources common)

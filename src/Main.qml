@@ -7,7 +7,9 @@ import orb.qml_components
 import orb.settings
 import orb.sources
 
-ApplicationWindow {
+MainWindow {
+    id: applicationWindow
+
     height: Settings.window.height
     maximumHeight: Screen.height
     maximumWidth: Screen.width
@@ -54,26 +56,20 @@ ApplicationWindow {
             // `height` hack (QTBUG-???)
 
             MenuItem {
+                enabled: Player.station.valid
                 height: visible ? implicitHeight : 0
+                text: qsTr("&Play")
                 visible: Player.state === Player.Stopped
 
-                action: Action {
-                    enabled: Player.station.valid
-                    text: qsTr("&Play")
-
-                    onTriggered: Player.play()
-                }
+                onTriggered: Player.play()
             }
 
             MenuItem {
                 height: visible ? implicitHeight : 0
+                text: qsTr("&Stop")
                 visible: Player.state !== Player.Stopped
 
-                action: Action {
-                    text: qsTr("&Stop")
-
-                    onTriggered: Player.stop()
-                }
+                onTriggered: Player.stop()
             }
         }
 
@@ -105,24 +101,18 @@ ApplicationWindow {
 
             MenuItem {
                 height: visible ? implicitHeight : 0
+                text: qsTr("&Mute")
                 visible: !Player.muted
 
-                action: Action {
-                    text: qsTr("&Mute")
-
-                    onTriggered: Player.muted = true
-                }
+                onTriggered: Player.muted = true
             }
 
             MenuItem {
                 height: visible ? implicitHeight : 0
+                text: qsTr("&Unmute")
                 visible: Player.muted
 
-                action: Action {
-                    text: qsTr("&Unmute")
-
-                    onTriggered: Player.muted = false
-                }
+                onTriggered: Player.muted = false
             }
         }
 
@@ -160,6 +150,13 @@ ApplicationWindow {
 
         Settings.sources.lastSearchSource = sourceSelector.currentValue;
     }
+    onClosing: close => {
+        if (Settings.tray.enabled && Settings.tray.closeToTray) {
+            return;
+        }
+
+        Qt.quit();
+    }
 
     AboutDialog {
         id: aboutDialog
@@ -167,6 +164,14 @@ ApplicationWindow {
 
     OpenLocationDialog {
         id: openLocationDialog
+    }
+
+    SystemTrayIcon {
+        id: systemTrayIcon
+
+        applicationWindow: applicationWindow
+
+        trayMenu: SystemTrayMenu {}
     }
 
     ColumnLayout {
