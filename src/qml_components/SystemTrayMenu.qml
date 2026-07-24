@@ -27,7 +27,9 @@ Window {
         }
 
         x = Math.max(Screen.virtualX, Math.min(Screen.virtualX + Screen.width - width, lastPosition.x));
-        y = Math.max(Screen.virtualY, Math.min(Screen.virtualY + Screen.height - height, lastPosition.y - height + 1)); // `+ 1` for perfect alignment
+        // fencepost problem: window's last pixel row is `y + height - 1`,
+        // so `y` must be `lastPosition.y - (height - 1)` for that row to land on the cursor
+        y = Math.max(Screen.virtualY, Math.min(Screen.virtualY + Screen.height - height, lastPosition.y - (height - 1)));
     }
 
     color: "#00000000"
