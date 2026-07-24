@@ -30,6 +30,7 @@ TextField {
         enabled: control.enabled
         icon.name: "x"
         implicitHeight: parent.height
+        z: 1
 
         onClicked: {
             control.clear();

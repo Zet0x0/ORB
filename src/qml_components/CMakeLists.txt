@@ -22,4 +22,5 @@ qt_add_qml_module(
     OpenLocationDialog.qml
     SystemTrayIcon.qml
     SystemTrayMenu.qml
+    TextFieldContextMenu.qml
     NO_PLUGIN)

@@ -4,7 +4,7 @@
 #include <QGuiApplication>
 #include <QIcon>
 #include <QQmlApplicationEngine>
-#include <QQuickStyle>
+#include <QQuickWindow>
 
 int main(int argc, char *argv[]) {
     QCoreApplication::setOrganizationName(QStringLiteral("zet0x0"));
@@ -14,7 +14,7 @@ int main(int argc, char *argv[]) {
 
     QGuiApplication::setQuitOnLastWindowClosed(false);
 
-    QQuickStyle::setFallbackStyle(QStringLiteral("Fusion"));
+    QQuickWindow::setGraphicsApi(QSGRendererInterface::OpenGL);
 
     QIcon::setThemeName("orb");
 
