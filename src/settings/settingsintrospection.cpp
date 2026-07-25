@@ -34,8 +34,9 @@ QList<ResolvedField> resolvedFields(const SettingsGroup *group) {
     }
 
     const QMetaObject *metaObject = group->metaObject();
+    const QList<SettingsFieldMeta> fields = group->settingsFields();
 
-    for (const SettingsFieldMeta &field : group->settingsFields()) {
+    for (const SettingsFieldMeta &field : std::as_const(fields)) {
         const int propertyIndex =
             metaObject->indexOfProperty(field.propertyName.constData());
 
