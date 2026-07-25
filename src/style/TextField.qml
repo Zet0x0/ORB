@@ -1,6 +1,6 @@
+import ORB.QmlComponents
 import QtQuick
 import QtQuick.Controls.Fusion as C
-import orb.qml_components
 
 C.TextField {
     id: control

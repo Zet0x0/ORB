@@ -1,8 +1,8 @@
+import ORB.Common
+import ORB.Player
+import ORB.Settings
 import Qt.labs.platform
 import QtQuick
-import orb.common
-import orb.player
-import orb.settings
 
 SystemTrayIcon {
     required property MainWindow applicationWindow

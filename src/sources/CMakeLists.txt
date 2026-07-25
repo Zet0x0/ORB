@@ -3,9 +3,9 @@ add_library(sources STATIC)
 qt_add_qml_module(
     sources
     URI
-    orb.sources
+    ORB.Sources
     OUTPUT_DIRECTORY
-    "${CMAKE_BINARY_DIR}/orb/sources"
+    "${CMAKE_BINARY_DIR}/ORB/Sources"
     SOURCES
     sourcecontroller.h
     sourcecontroller.cpp

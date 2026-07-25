@@ -1,7 +1,7 @@
+import ORB.Player
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
-import orb.player
 
 RowLayout {
     id: root

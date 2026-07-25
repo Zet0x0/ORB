@@ -1,9 +1,9 @@
+import ORB.Common
+import ORB.Player
+import ORB.Sources
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
-import orb.common
-import orb.player
-import orb.sources
 
 Dialog {
     id: control

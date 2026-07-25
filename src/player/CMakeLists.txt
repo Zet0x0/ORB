@@ -3,11 +3,11 @@ add_library(player STATIC)
 qt_add_qml_module(
     player
     URI
-    orb.player
+    ORB.Player
     OUTPUT_DIRECTORY
-    "${CMAKE_BINARY_DIR}/orb/player"
+    "${CMAKE_BINARY_DIR}/ORB/Player"
     DEPENDENCIES
-    orb.sources
+    ORB.Sources
     SOURCES
     player.h
     player.cpp

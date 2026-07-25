@@ -1,6 +1,6 @@
+import ORB.Sources
 import QtQuick
 import QtQuick.Controls
-import orb.sources
 
 TextField {
     id: control

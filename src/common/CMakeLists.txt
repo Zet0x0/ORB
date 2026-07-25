@@ -3,9 +3,9 @@ add_library(common STATIC)
 qt_add_qml_module(
     common
     URI
-    orb.common
+    ORB.Common
     OUTPUT_DIRECTORY
-    "${CMAKE_BINARY_DIR}/orb/common"
+    "${CMAKE_BINARY_DIR}/ORB/Common"
     SOURCES
     singleton.h
     utilities.h
