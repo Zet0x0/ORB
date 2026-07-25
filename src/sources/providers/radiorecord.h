@@ -4,10 +4,10 @@
 #include <QNetworkRequestFactory>
 
 namespace RadioRecordConstants {
-const QString BaseApiUrl = QStringLiteral("https://www.radiorecord.ru/api");
+constexpr QLatin1StringView BaseApiUrl("https://www.radiorecord.ru/api");
 
-const QString DefaultStationsPath = QStringLiteral("/stations/");
-const QString SearchPath = QStringLiteral("/search/");
+constexpr QLatin1StringView DefaultStationsPath("/stations/");
+constexpr QLatin1StringView SearchPath("/search/");
 }
 
 class RadioRecord : public Source {
