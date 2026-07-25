@@ -20,12 +20,8 @@ qt_standard_project_setup(REQUIRES 6.11)
 
 add_subdirectory("external/mpvqt" EXCLUDE_FROM_ALL)
 
-set(SOURCES ORB.rc main.cpp)
-qt_add_big_resources(SOURCES icons/icons.qrc)
-qt_add_executable(ORB ${SOURCES})
-
+qt_add_executable(ORB ORB.rc main.cpp)
 qt_add_qml_module(ORB URI ORB QML_FILES Main.qml)
-
 qt_add_resources(ORB "resources" PREFIX "/" FILES qtquickcontrols2.conf)
 
 add_subdirectory(common)
