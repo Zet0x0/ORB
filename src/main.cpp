@@ -16,7 +16,7 @@ int main(int argc, char *argv[]) {
 
     QQuickWindow::setGraphicsApi(QSGRendererInterface::OpenGL);
 
-    QIcon::setThemeName("orb");
+    QIcon::setThemeName("ORB");
 
     QGuiApplication app(argc, argv);
     QQmlApplicationEngine engine;
