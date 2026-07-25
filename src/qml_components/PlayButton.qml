@@ -1,5 +1,5 @@
+import ORB.Player
 import QtQuick
-import orb.player
 
 IconButton {
     enabled: Player.station.valid

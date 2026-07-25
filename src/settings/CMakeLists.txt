@@ -3,11 +3,11 @@ add_library(settings STATIC)
 qt_add_qml_module(
     settings
     URI
-    orb.settings
+    ORB.Settings
     OUTPUT_DIRECTORY
-    "${CMAKE_BINARY_DIR}/orb/settings"
+    "${CMAKE_BINARY_DIR}/ORB/Settings"
     DEPENDENCIES
-    orb.sources
+    ORB.Sources
     SOURCES
     settings.h
     settings.cpp

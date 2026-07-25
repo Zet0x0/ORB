@@ -3,9 +3,9 @@ add_library(qml_components STATIC)
 qt_add_qml_module(
     qml_components
     URI
-    orb.qml_components
+    ORB.QmlComponents
     OUTPUT_DIRECTORY
-    "${CMAKE_BINARY_DIR}/orb/qml_components"
+    "${CMAKE_BINARY_DIR}/ORB/QmlComponents"
     QML_FILES
     MainWindow.qml
     StationImage.qml

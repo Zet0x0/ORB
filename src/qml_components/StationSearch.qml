@@ -1,7 +1,7 @@
+import ORB.Sources
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
-import orb.sources
 
 StackLayout {
     id: control

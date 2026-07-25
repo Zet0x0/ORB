@@ -1,11 +1,11 @@
+import ORB.Common
+import ORB.Player
+import ORB.QmlComponents
+import ORB.Settings
+import ORB.Sources
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
-import orb.common
-import orb.player
-import orb.qml_components
-import orb.settings
-import orb.sources
 
 MainWindow {
     id: applicationWindow
