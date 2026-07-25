@@ -1,0 +1,7 @@
+<RCC>
+    <qresource prefix="/icons">
+        <file alias="ORB/index.theme">index.theme</file>
+        <file alias="ORB/24x24">../../external/tabler-icons/icons/outline</file>
+        <file>ORB.svg</file>
+    </qresource>
+</RCC>
