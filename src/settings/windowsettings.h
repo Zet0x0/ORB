@@ -1,9 +1,10 @@
 #pragma once
 
+#include "settingsgroup.h"
 #include <QQmlEngine>
 #include <QSettings>
 
-class WindowSettings : public QObject {
+class WindowSettings : public SettingsGroup {
     Q_OBJECT
     QML_ELEMENT
 
@@ -25,6 +26,8 @@ private:
 
 public:
     explicit WindowSettings(QObject *parent = nullptr);
+
+    QString settingsCategory() const override;
 
     int x() const;
     void setX(int newX);

@@ -1,0 +1,141 @@
+#include "settingspropertymodel.h"
+#include "settingsgroup.h"
+#include "settingsintrospection.h"
+
+SettingsPropertyModel::SettingsPropertyModel(QObject *parent)
+    : QAbstractListModel(parent) {}
+
+QVariant SettingsPropertyModel::groups() const {
+    QVariantList result;
+
+    for (QObject *group : m_groups) {
+        result.append(QVariant::fromValue(group));
+    }
+
+    return result;
+}
+
+void SettingsPropertyModel::setGroups(const QVariant &newGroups) {
+    QList<QObject *> groups;
+
+    const QVariantList newGroupsList = newGroups.toList();
+
+    for (const QVariant &value : std::as_const(newGroupsList)) {
+        if (QObject *group = value.value<QObject *>()) {
+            groups.append(group);
+        }
+    }
+
+    if (m_groups == groups) {
+        return;
+    }
+
+    beginResetModel();
+
+    m_groups = groups;
+    rebuildEntries();
+
+    endResetModel();
+
+    emit groupsChanged();
+}
+
+void SettingsPropertyModel::rebuildEntries() {
+    m_entries.clear();
+
+    for (QObject *groupObject : std::as_const(m_groups)) {
+        auto *group = qobject_cast<SettingsGroup *>(groupObject);
+
+        const QList<SettingsIntrospection::ResolvedField> fields =
+            SettingsIntrospection::resolvedFields(group);
+
+        for (const SettingsIntrospection::ResolvedField &field :
+             std::as_const(fields)) {
+            m_entries.append(
+                {groupObject, field.property, field.label, field.subcategory});
+        }
+    }
+
+    std::stable_sort(
+        m_entries.begin(), m_entries.end(), [](const Entry &a, const Entry &b) {
+            return a.subcategory.isEmpty() && !b.subcategory.isEmpty();
+        });
+}
+
+int SettingsPropertyModel::rowCount(const QModelIndex &parent) const {
+    return parent.isValid() ? 0 : m_entries.size();
+}
+
+QVariant SettingsPropertyModel::data(const QModelIndex &index, int role) const {
+    if (!index.isValid() || index.row() >= m_entries.size()) {
+        return QVariant();
+    }
+
+    const Entry &entry = m_entries.at(index.row());
+
+    switch (role) {
+    case NameRole:
+        return QString::fromUtf8(entry.property.name());
+
+    case LabelRole:
+        return entry.label;
+
+    case TypeRole:
+        return propertyType(entry.property);
+
+    case ValueRole:
+        return entry.property.read(entry.target);
+
+    case SubcategoryRole:
+        return entry.subcategory;
+
+    default:
+        return QVariant();
+    }
+}
+
+bool SettingsPropertyModel::setData(const QModelIndex &index,
+                                    const QVariant &value, int role) {
+    if (role != ValueRole || !index.isValid() ||
+        index.row() >= m_entries.size()) {
+        return false;
+    }
+
+    const Entry &entry = m_entries.at(index.row());
+
+    if (!entry.property.write(entry.target, value)) {
+        return false;
+    }
+
+    emit dataChanged(index, index, {ValueRole});
+
+    return true;
+}
+
+void SettingsPropertyModel::setValue(int row, const QVariant &value) {
+    setData(index(row), value, ValueRole);
+}
+
+QHash<int, QByteArray> SettingsPropertyModel::roleNames() const {
+    static const QHash<int, QByteArray> roles{
+        {NameRole, QByteArrayLiteral("name")},
+        {LabelRole, QByteArrayLiteral("label")},
+        {TypeRole, QByteArrayLiteral("type")},
+        {ValueRole, QByteArrayLiteral("value")},
+        {SubcategoryRole, QByteArrayLiteral("subcategory")}};
+
+    return roles;
+}
+
+QString SettingsPropertyModel::propertyType(const QMetaProperty &property) {
+    switch (property.metaType().id()) {
+    case QMetaType::Bool:
+        return QStringLiteral("bool");
+
+    case QMetaType::Int:
+        return QStringLiteral("int");
+
+    default:
+        return QStringLiteral("string");
+    }
+}

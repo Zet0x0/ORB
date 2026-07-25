@@ -3,7 +3,7 @@
 #include "settingsio.h"
 
 WindowSettings::WindowSettings(QObject *parent)
-    : QObject(parent), m_settings(SettingsFactory::create(this)) {
+    : SettingsGroup(parent), m_settings(SettingsFactory::create(this)) {
     m_settings->beginGroup(QStringLiteral("window"));
 
     m_x = SettingsIO::readInt(m_settings, QStringLiteral("x"), -1);
@@ -11,6 +11,10 @@ WindowSettings::WindowSettings(QObject *parent)
 
     m_width = SettingsIO::readInt(m_settings, QStringLiteral("width"), 640);
     m_height = SettingsIO::readInt(m_settings, QStringLiteral("height"), 480);
+}
+
+QString WindowSettings::settingsCategory() const {
+    return tr("Window");
 }
 
 int WindowSettings::x() const {

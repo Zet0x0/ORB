@@ -1,9 +1,10 @@
 #pragma once
 
+#include "settingsgroup.h"
 #include <QQmlEngine>
 #include <QSettings>
 
-class SourcesSettings : public QObject {
+class SourcesSettings : public SettingsGroup {
     Q_OBJECT
     QML_ELEMENT
 
@@ -17,6 +18,8 @@ private:
 
 public:
     explicit SourcesSettings(QObject *parent = nullptr);
+
+    QString settingsCategory() const override;
 
     QString lastSearchSource() const;
     void setLastSearchSource(const QString &newLastSearchSource);

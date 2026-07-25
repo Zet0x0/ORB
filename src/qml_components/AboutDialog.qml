@@ -11,6 +11,7 @@ Dialog {
     title: qsTr("About %0").arg(Qt.application.name)
     x: Math.floor((parent.width - width) / 2)
     y: Math.floor((parent.height - height) / 2)
+    z: 1
 
     FontMetrics {
         id: bodyFontMetrics

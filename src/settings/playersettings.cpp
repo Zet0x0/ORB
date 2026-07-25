@@ -3,7 +3,7 @@
 #include "settingsio.h"
 
 PlayerSettings::PlayerSettings(QObject *parent)
-    : QObject(parent), m_settings(SettingsFactory::create(this)) {
+    : SettingsGroup(parent), m_settings(SettingsFactory::create(this)) {
     m_settings->beginGroup(QStringLiteral("player"));
 
     m_lastStation = Station::fromMap(
@@ -11,6 +11,10 @@ PlayerSettings::PlayerSettings(QObject *parent)
 
     m_volume = SettingsIO::readInt(m_settings, QStringLiteral("volume"), 100);
     m_muted = SettingsIO::readBool(m_settings, QStringLiteral("muted"), false);
+}
+
+QString PlayerSettings::settingsCategory() const {
+    return tr("Player");
 }
 
 Station PlayerSettings::lastStation() const {

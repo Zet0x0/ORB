@@ -15,6 +15,15 @@ qt_add_qml_module(
     settingsfactory.cpp
     settingsio.h
     settingsio.cpp
+    settingsfieldmeta.h
+    settingsgroup.h
+    settingsgroup.cpp
+    settingsintrospection.h
+    settingsintrospection.cpp
+    settingscategorymodel.h
+    settingscategorymodel.cpp
+    settingspropertymodel.h
+    settingspropertymodel.cpp
     windowsettings.h
     windowsettings.cpp
     sourcessettings.h

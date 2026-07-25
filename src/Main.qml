@@ -46,6 +46,16 @@ MainWindow {
         }
 
         Menu {
+            title: qsTr("&Edit")
+
+            Action {
+                text: qsTr("&Preferences...")
+
+                onTriggered: preferencesDialog.open()
+            }
+        }
+
+        Menu {
             title: qsTr("&Playback")
 
             // HACK: keeping one MenuItem with text based
@@ -164,6 +174,10 @@ MainWindow {
 
     OpenLocationDialog {
         id: openLocationDialog
+    }
+
+    PreferencesDialog {
+        id: preferencesDialog
     }
 
     SystemTrayIcon {

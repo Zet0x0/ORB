@@ -1,10 +1,11 @@
 #pragma once
 
 #include "../sources/station.h"
+#include "settingsgroup.h"
 #include <QQmlEngine>
 #include <QSettings>
 
-class PlayerSettings : public QObject {
+class PlayerSettings : public SettingsGroup {
     Q_OBJECT
     QML_ELEMENT
 
@@ -25,6 +26,8 @@ private:
 
 public:
     explicit PlayerSettings(QObject *parent = nullptr);
+
+    QString settingsCategory() const override;
 
     Station lastStation() const;
     void setLastStation(const Station &newLastStation);

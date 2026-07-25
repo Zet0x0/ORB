@@ -1,9 +1,10 @@
 #pragma once
 
+#include "settingsgroup.h"
 #include <QQmlEngine>
 #include <QSettings>
 
-class TraySettings : public QObject {
+class TraySettings : public SettingsGroup {
     Q_OBJECT
     QML_ELEMENT
 
@@ -22,6 +23,10 @@ private:
 
 public:
     explicit TraySettings(QObject *parent = nullptr);
+
+    QString settingsCategory() const override;
+    QString settingsSubcategory() const override;
+    QList<SettingsFieldMeta> settingsFields() const override;
 
     bool enabled() const;
     void setEnabled(bool newEnabled);
