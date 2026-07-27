@@ -4,6 +4,8 @@
 #include <QNetworkRequestFactory>
 
 namespace RadioRecordConstants {
+constexpr QLatin1StringView WebsiteUrl("https://www.radiorecord.ru/");
+
 constexpr QLatin1StringView BaseApiUrl("https://www.radiorecord.ru/api");
 
 constexpr QLatin1StringView DefaultStationsPath("/stations/");
@@ -37,4 +39,6 @@ public:
     void cancelSearch() override;
 
     bool hasDefaultStations() const override;
+
+    QString websiteUrl() const override;
 };

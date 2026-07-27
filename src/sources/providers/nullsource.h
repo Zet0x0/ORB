@@ -10,4 +10,6 @@ private:
 
 public:
     void cancelSearch() override;
+
+    QString websiteUrl() const override;
 };

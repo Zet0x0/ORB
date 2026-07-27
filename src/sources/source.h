@@ -51,6 +51,8 @@ public:
     virtual bool hasDefaultStations() const;
     void loadDefaultStations();
 
+    virtual QString websiteUrl() const = 0;
+
 signals:
     void stationsDispatched(const QList<Station> &stations);
     void errorOccurred(const ErrorInfo &error);

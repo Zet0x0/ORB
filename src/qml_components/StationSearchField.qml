@@ -19,7 +19,7 @@ TextField {
         SourceController.search(text);
     }
 
-    enabled: sourceSelector.currentIndex > 0
+    enabled: !SourceController.currentSourceIsNull
     rightPadding: leftPadding + clearSearchFieldButton.width
 
     onAccepted: engageSearch()
