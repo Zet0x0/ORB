@@ -242,8 +242,6 @@ Dialog {
     }
 
     component CategoryDelegate: ItemDelegate {
-        id: categoryDelegate
-
         required property var groups
         required property int index
         required property string name
@@ -252,10 +250,9 @@ Dialog {
         text: name
         width: ListView.view.width
 
-        background: Rectangle {
-            color: categoryDelegate.highlighted ? palette.active.highlight : (categoryDelegate.hovered ? palette.button : "transparent")
+        Component.onCompleted: {
+            background.color = Qt.binding(() => down ? palette.midlight : (highlighted ? palette.active.highlight : (hovered ? palette.button : "transparent")));
         }
-
         onClicked: ListView.view.currentIndex = index
     }
 }
