@@ -226,6 +226,8 @@ MainWindow {
                 RowLayout {
                     PlayButton {}
 
+                    PlaybackStatusIndicator {}
+
                     Item {
                         Layout.fillWidth: true
                     }

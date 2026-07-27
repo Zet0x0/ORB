@@ -6,6 +6,7 @@
 #include <MpvController>
 #include <QQmlEngine>
 #include <QThread>
+#include <QTimer>
 
 class Player : public QObject, public Singleton<Player> {
     Q_OBJECT
@@ -26,10 +27,15 @@ class Player : public QObject, public Singleton<Player> {
 
     Q_PROPERTY(ErrorInfo error READ error NOTIFY errorChanged FINAL)
 
+    Q_PROPERTY(
+        int retryAttempt READ retryAttempt NOTIFY retryAttemptChanged FINAL)
+    Q_PROPERTY(int retrySecondsRemaining READ retrySecondsRemaining NOTIFY
+                   retrySecondsRemainingChanged FINAL)
+
     friend class Singleton<Player>;
 
 public:
-    enum class State { Stopped, Loading, Playing };
+    enum class State { Stopped, Loading, Playing, Retrying };
     Q_ENUM(State)
 
 private:
@@ -67,6 +73,11 @@ private:
 
     ErrorInfo m_error;
 
+    QTimer *m_retryTimer = nullptr;
+    QTimer *m_stabilityTimer = nullptr;
+    int m_retryAttempt = 0;
+    int m_retrySecondsRemaining = 0;
+
     explicit Player(QObject *parent = nullptr);
 
     void setupConnections() const;
@@ -93,6 +104,15 @@ private:
     void setError(const ErrorInfo &error);
     void raiseError(const QString &title, const QString &message);
 
+    bool shouldRetry() const;
+    int retryDelaySeconds() const;
+    void cancelRetry();
+
+    void setRetryAttempt(int newRetryAttempt);
+    void setRetrySecondsRemaining(int newRetrySecondsRemaining);
+    void startRetryCountdown(int seconds);
+    void stopRetryCountdown();
+
 private slots:
     void onPropertyChanged(const QString &property, const QVariant &value);
 
@@ -101,6 +121,9 @@ private slots:
     void onEndFile(QString reason);
     void onFileStarted();
     void onFileLoaded();
+
+    void onRetryTick();
+    void onPlaybackStable();
 
 public:
     ~Player();
@@ -116,16 +139,21 @@ public:
 
     ErrorInfo error() const;
 
+    int retryAttempt() const;
+    int retrySecondsRemaining() const;
+
 public slots:
     void setStation(const Station &newStation, bool play = false);
 
     void play() const;
-    void stop() const;
+    void stop();
 
     void setVolume(int newVolume);
     void setMuted(bool newMuted);
 
     void clearError();
+
+    void retryNow();
 
 signals:
     void stationChanged();
@@ -138,4 +166,7 @@ signals:
     void mutedChanged();
 
     void errorChanged();
+
+    void retryAttemptChanged();
+    void retrySecondsRemainingChanged();
 };

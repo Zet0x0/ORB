@@ -168,7 +168,6 @@ Dialog {
 
                                     SpinBox {
                                         value: propertyDelegate.value
-                                        width: parent.width
 
                                         onValueModified: propertyModel.setValue(propertyDelegate.index, value)
                                     }
@@ -179,7 +178,6 @@ Dialog {
 
                                     TextField {
                                         text: propertyDelegate.value
-                                        width: parent.width
 
                                         onEditingFinished: propertyModel.setValue(propertyDelegate.index, text)
                                     }
@@ -202,8 +200,13 @@ Dialog {
                                         visible: propertyDelegate.type !== "bool"
                                     }
 
-                                    Loader {
+                                    Item {
                                         Layout.fillWidth: true
+                                        visible: propertyDelegate.type !== "bool"
+                                    }
+
+                                    Loader {
+                                        Layout.fillWidth: propertyDelegate.type === "string"
                                         sourceComponent: {
                                             switch (propertyDelegate.type) {
                                             case "bool":
