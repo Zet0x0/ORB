@@ -10,10 +10,6 @@ SourcesSettings::SourcesSettings(QObject *parent)
         m_settings, QStringLiteral("lastSearchSource"), QStringLiteral("none"));
 }
 
-QString SourcesSettings::settingsCategory() const {
-    return tr("Sources");
-}
-
 QString SourcesSettings::lastSearchSource() const {
     return m_lastSearchSource;
 }

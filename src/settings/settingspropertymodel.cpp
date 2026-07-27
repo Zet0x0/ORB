@@ -83,8 +83,16 @@ QVariant SettingsPropertyModel::data(const QModelIndex &index, int role) const {
     case TypeRole:
         return propertyType(entry.property);
 
-    case ValueRole:
+    case ValueRole: {
+        const int pendingIndex =
+            pendingChangeIndex(entry.target, entry.property);
+
+        if (pendingIndex != -1) {
+            return m_pendingChanges.at(pendingIndex).value;
+        }
+
         return entry.property.read(entry.target);
+    }
 
     case SubcategoryRole:
         return entry.subcategory;
@@ -102,18 +110,75 @@ bool SettingsPropertyModel::setData(const QModelIndex &index,
     }
 
     const Entry &entry = m_entries.at(index.row());
+    const int pendingIndex = pendingChangeIndex(entry.target, entry.property);
 
-    if (!entry.property.write(entry.target, value)) {
-        return false;
+    if (value == entry.property.read(entry.target)) {
+        if (pendingIndex != -1) {
+            m_pendingChanges.removeAt(pendingIndex);
+        }
+    } else if (pendingIndex != -1) {
+        m_pendingChanges[pendingIndex].value = value;
+    } else {
+        m_pendingChanges.append({entry.target, entry.property, value});
     }
 
     emit dataChanged(index, index, {ValueRole});
+    emit hasPendingChangesChanged();
 
     return true;
 }
 
 void SettingsPropertyModel::setValue(int row, const QVariant &value) {
     setData(index(row), value, ValueRole);
+}
+
+bool SettingsPropertyModel::hasPendingChanges() const {
+    return !m_pendingChanges.isEmpty();
+}
+
+int
+SettingsPropertyModel::pendingChangeIndex(QObject *target,
+                                          const QMetaProperty &property) const {
+    for (int i = 0; i < m_pendingChanges.size(); ++i) {
+        const PendingChange &change = m_pendingChanges.at(i);
+
+        if (change.target == target &&
+            change.property.propertyIndex() == property.propertyIndex()) {
+            return i;
+        }
+    }
+
+    return -1;
+}
+
+void SettingsPropertyModel::applyChanges() {
+    if (m_pendingChanges.isEmpty()) {
+        return;
+    }
+
+    for (const PendingChange &change : std::as_const(m_pendingChanges)) {
+        change.property.write(change.target, change.value);
+    }
+
+    clearPendingChanges();
+}
+
+void SettingsPropertyModel::discardChanges() {
+    clearPendingChanges();
+}
+
+void SettingsPropertyModel::clearPendingChanges() {
+    if (m_pendingChanges.isEmpty()) {
+        return;
+    }
+
+    m_pendingChanges.clear();
+
+    if (!m_entries.isEmpty()) {
+        emit dataChanged(index(0), index(m_entries.size() - 1), {ValueRole});
+    }
+
+    emit hasPendingChangesChanged();
 }
 
 QHash<int, QByteArray> SettingsPropertyModel::roleNames() const {

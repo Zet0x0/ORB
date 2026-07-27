@@ -10,6 +10,8 @@ class SettingsPropertyModel : public QAbstractListModel {
 
     Q_PROPERTY(
         QVariant groups READ groups WRITE setGroups NOTIFY groupsChanged FINAL)
+    Q_PROPERTY(bool hasPendingChanges READ hasPendingChanges NOTIFY
+                   hasPendingChangesChanged FINAL)
 
 private:
     struct Entry {
@@ -19,10 +21,20 @@ private:
         QString subcategory;
     };
 
+    struct PendingChange {
+        QObject *target;
+        QMetaProperty property;
+        QVariant value;
+    };
+
     QList<QObject *> m_groups;
     QList<Entry> m_entries;
+    QList<PendingChange> m_pendingChanges;
 
     void rebuildEntries();
+    void clearPendingChanges();
+    int pendingChangeIndex(QObject *target,
+                           const QMetaProperty &property) const;
 
     static QString propertyType(const QMetaProperty &property);
 
@@ -53,6 +65,12 @@ public:
 
     Q_INVOKABLE void setValue(int row, const QVariant &value);
 
+    bool hasPendingChanges() const;
+
+    Q_INVOKABLE void applyChanges();
+    Q_INVOKABLE void discardChanges();
+
 signals:
     void groupsChanged();
+    void hasPendingChangesChanged();
 };

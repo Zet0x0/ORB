@@ -13,10 +13,6 @@ WindowSettings::WindowSettings(QObject *parent)
     m_height = SettingsIO::readInt(m_settings, QStringLiteral("height"), 480);
 }
 
-QString WindowSettings::settingsCategory() const {
-    return tr("Window");
-}
-
 int WindowSettings::x() const {
     return m_x;
 }

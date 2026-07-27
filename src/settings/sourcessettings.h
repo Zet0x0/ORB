@@ -19,8 +19,6 @@ private:
 public:
     explicit SourcesSettings(QObject *parent = nullptr);
 
-    QString settingsCategory() const override;
-
     QString lastSearchSource() const;
     void setLastSearchSource(const QString &newLastSearchSource);
 

@@ -13,10 +13,6 @@ PlayerSettings::PlayerSettings(QObject *parent)
     m_muted = SettingsIO::readBool(m_settings, QStringLiteral("muted"), false);
 }
 
-QString PlayerSettings::settingsCategory() const {
-    return tr("Player");
-}
-
 Station PlayerSettings::lastStation() const {
     return m_lastStation;
 }

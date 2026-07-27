@@ -27,8 +27,6 @@ private:
 public:
     explicit PlayerSettings(QObject *parent = nullptr);
 
-    QString settingsCategory() const override;
-
     Station lastStation() const;
     void setLastStation(const Station &newLastStation);
 

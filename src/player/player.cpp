@@ -135,9 +135,8 @@ void Player::onAsyncReply(const QVariant &data, mpv_event event) {
     const bool succeeded = error > -1;
 
     switch (id) {
-    case AsyncReplyId::None: {
+    case AsyncReplyId::None:
         break;
-    }
 
     case AsyncReplyId::Stopping: {
         if (succeeded) {

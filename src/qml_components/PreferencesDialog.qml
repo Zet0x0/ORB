@@ -11,11 +11,40 @@ Dialog {
     closePolicy: Popup.CloseOnEscape
     dim: true
     modal: true
-    standardButtons: Dialog.Close
     title: qsTr("Preferences")
     x: Math.floor((parent.width - width) / 2)
     y: Math.floor((parent.height - height) / 2)
     z: 1
+
+    footer: DialogButtonBox {
+        Button {
+            DialogButtonBox.buttonRole: DialogButtonBox.ApplyRole
+            enabled: propertyModel.hasPendingChanges
+            highlighted: propertyModel.hasPendingChanges
+            text: qsTr("Apply")
+
+            onClicked: propertyModel.applyChanges()
+        }
+
+        Button {
+            DialogButtonBox.buttonRole: DialogButtonBox.AcceptRole
+            text: qsTr("OK")
+
+            onClicked: {
+                propertyModel.applyChanges();
+                control.close();
+            }
+        }
+
+        Button {
+            DialogButtonBox.buttonRole: DialogButtonBox.RejectRole
+            text: qsTr("Cancel")
+
+            onClicked: control.close()
+        }
+    }
+
+    onClosed: propertyModel.discardChanges()
 
     SettingsPropertyModel {
         id: propertyModel

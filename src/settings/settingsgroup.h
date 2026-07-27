@@ -9,7 +9,7 @@ class SettingsGroup : public QObject {
 public:
     explicit SettingsGroup(QObject *parent = nullptr);
 
-    virtual QString settingsCategory() const = 0;
+    virtual QString settingsCategory() const;
     virtual QString settingsSubcategory() const;
 
     virtual QList<SettingsFieldMeta> settingsFields() const;

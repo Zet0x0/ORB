@@ -27,8 +27,6 @@ private:
 public:
     explicit WindowSettings(QObject *parent = nullptr);
 
-    QString settingsCategory() const override;
-
     int x() const;
     void setX(int newX);
     int y() const;
