@@ -1,5 +1,6 @@
 #pragma once
 
+#include "../common/errorinfo.h"
 #include "../common/singleton.h"
 #include "../sources/station.h"
 #include <MpvController>
@@ -22,6 +23,8 @@ class Player : public QObject, public Singleton<Player> {
     Q_PROPERTY(
         int volume READ volume WRITE setVolume NOTIFY volumeChanged FINAL)
     Q_PROPERTY(bool muted READ muted WRITE setMuted NOTIFY mutedChanged FINAL)
+
+    Q_PROPERTY(ErrorInfo error READ error NOTIFY errorChanged FINAL)
 
     friend class Singleton<Player>;
 
@@ -62,6 +65,8 @@ private:
     int m_previousVolume = 100;
     bool m_previousMuted = false;
 
+    ErrorInfo m_error;
+
     explicit Player(QObject *parent = nullptr);
 
     void setupConnections() const;
@@ -85,6 +90,9 @@ private:
 
     void sendStop(AsyncReplyId id) const;
 
+    void setError(const ErrorInfo &error);
+    void raiseError(const QString &title, const QString &message);
+
 private slots:
     void onPropertyChanged(const QString &property, const QVariant &value);
 
@@ -106,6 +114,8 @@ public:
     int volume() const;
     bool muted() const;
 
+    ErrorInfo error() const;
+
 public slots:
     void setStation(const Station &newStation, bool play = false);
 
@@ -114,6 +124,8 @@ public slots:
 
     void setVolume(int newVolume);
     void setMuted(bool newMuted);
+
+    void clearError();
 
 signals:
     void stationChanged();
@@ -124,4 +136,6 @@ signals:
 
     void volumeChanged();
     void mutedChanged();
+
+    void errorChanged();
 };

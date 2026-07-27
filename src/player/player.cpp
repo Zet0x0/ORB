@@ -115,6 +115,20 @@ void Player::sendStop(AsyncReplyId id) const {
     commandAsync({QStringLiteral("stop")}, id);
 }
 
+void Player::setError(const ErrorInfo &error) {
+    if (m_error == error) {
+        return;
+    }
+
+    m_error = error;
+
+    emit errorChanged();
+}
+
+void Player::raiseError(const QString &title, const QString &message) {
+    setError(ErrorInfo(title, message));
+}
+
 void Player::onPropertyChanged(const QString &property, const QVariant &value) {
     if (property == MpvProperties::NowPlaying) {
         const bool alreadyResolving = m_pendingNowPlaying.has_value();
@@ -142,8 +156,9 @@ void Player::onAsyncReply(const QVariant &data, mpv_event event) {
         if (succeeded) {
             setState(State::Stopped);
         } else {
-            // TODO: replace with UI error message
-            qWarning() << "mpv stop command failed:" << error;
+            raiseError(tr("Playback error"),
+                       tr("Failed to stop playback (%0)")
+                           .arg(MpvController::getError(error)));
         }
 
         break;
@@ -160,8 +175,9 @@ void Player::onAsyncReply(const QVariant &data, mpv_event event) {
                 setStation(pending->station, pending->shouldPlay);
             }
         } else {
-            // TODO: replace with UI error message
-            qWarning() << "mpv stop command failed:" << error;
+            raiseError(tr("Playback error"),
+                       tr("Failed to stop playback (%0)")
+                           .arg(MpvController::getError(error)));
         }
 
         break;
@@ -182,8 +198,9 @@ void Player::onAsyncReply(const QVariant &data, mpv_event event) {
 
     case AsyncReplyId::SettingVolume: {
         if (!succeeded) {
-            // TODO: replace with UI error message
-            qWarning() << "mpv set volume failed:" << error;
+            raiseError(tr("Audio error"),
+                       tr("Failed to change the volume (%0)")
+                           .arg(MpvController::getError(error)));
 
             m_volume = m_previousVolume;
 
@@ -195,8 +212,9 @@ void Player::onAsyncReply(const QVariant &data, mpv_event event) {
 
     case AsyncReplyId::SettingMuted: {
         if (!succeeded) {
-            // TODO: replace with UI error message
-            qWarning() << "mpv set mute failed:" << error;
+            raiseError(tr("Audio error"),
+                       tr("Failed to mute the audio (%0)")
+                           .arg(MpvController::getError(error)));
 
             m_muted = m_previousMuted;
 
@@ -209,15 +227,20 @@ void Player::onAsyncReply(const QVariant &data, mpv_event event) {
 }
 
 void Player::onEndFile(QString reason) {
-    if (reason == QStringLiteral("eof") || reason == QStringLiteral("error")) {
-        // TODO: replace with UI error message
-        qCritical() << "playback error";
+    if (reason == QStringLiteral("error")) {
+        raiseError(tr("Playback error"),
+                   tr("An error occurred trying to play the station"));
+    } else if (reason == QStringLiteral("eof")) {
+        raiseError(tr("Playback error"), tr("An error occurred trying to play "
+                                            "the station (unexpected EOF)"));
     }
 
     setState(State::Stopped);
 }
 
 void Player::onFileStarted() {
+    clearError();
+
     setState(State::Loading);
 }
 
@@ -252,6 +275,10 @@ int Player::volume() const {
 
 bool Player::muted() const {
     return m_muted;
+}
+
+ErrorInfo Player::error() const {
+    return m_error;
 }
 
 void Player::setStation(const Station &newStation, bool play) {
@@ -312,4 +339,8 @@ void Player::setMuted(bool newMuted) {
     setPropertyAsync(MpvProperties::Mute, m_muted, AsyncReplyId::SettingMuted);
 
     emit mutedChanged();
+}
+
+void Player::clearError() {
+    setError(ErrorInfo{});
 }

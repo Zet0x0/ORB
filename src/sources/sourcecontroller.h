@@ -1,8 +1,8 @@
 #pragma once
 
+#include "../common/errorinfo.h"
 #include "../common/singleton.h"
 #include "source.h"
-#include "sourceerror.h"
 #include "stationmodel.h"
 #include <QQmlEngine>
 
@@ -13,7 +13,7 @@ class SourceController : public QObject, public Singleton<SourceController> {
 
     Q_PROPERTY(SourceController::SearchState searchState READ searchState NOTIFY
                    searchStateChanged FINAL)
-    Q_PROPERTY(SourceError error READ error NOTIFY errorChanged FINAL)
+    Q_PROPERTY(ErrorInfo error READ error NOTIFY errorChanged FINAL)
 
     Q_PROPERTY(bool canShowDefaultStations READ canShowDefaultStations WRITE
                    setCanShowDefaultStations NOTIFY
@@ -32,7 +32,7 @@ private:
 
     Source *m_source = nullptr;
     SearchState m_searchState;
-    SourceError m_error;
+    ErrorInfo m_error;
 
     StationModel *m_stationModel = nullptr;
 
@@ -53,7 +53,7 @@ private slots:
     void onSearchStarted();
     void onSearchCancelled();
 
-    void setError(const SourceError &error);
+    void setError(const ErrorInfo &error);
 
 public:
     bool sourceExists(const QString &key) const;
@@ -62,7 +62,7 @@ public:
     Q_INVOKABLE QVariantList getSources() const;
 
     SearchState searchState() const;
-    SourceError error() const;
+    ErrorInfo error() const;
 
     Q_INVOKABLE StationModel *stationModel() const;
 
