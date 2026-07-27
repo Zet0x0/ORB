@@ -12,7 +12,7 @@ C.TextField {
     C.ContextMenu.onRequested: {
         const pos = hoverHandler.point.position;
 
-        const overOverlay = control.children.find(child => child.visible && child.z > 0 && child.contains(Qt.point(pos.x - child.x, pos.y - child.y)));
+        const overOverlay = children.find(child => child.visible && child.z > 0 && child.contains(Qt.point(pos.x - child.x, pos.y - child.y)));
 
         if (!overOverlay) {
             contextMenu.popup(pos.x, pos.y);

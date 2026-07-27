@@ -239,6 +239,8 @@ MainWindow {
             ComboBox {
                 id: sourceSelector
 
+                ToolTip.text: qsTr("Station search source")
+                ToolTip.visible: hovered
                 currentValue: Settings.sources.lastSearchSource
                 model: SourceController.getSources()
                 textRole: "name"
@@ -264,6 +266,7 @@ MainWindow {
             }
 
             IconButton {
+                ToolTip.text: qsTr("Search")
                 enabled: stationSearchField.enabled
                 icon.name: "search"
 

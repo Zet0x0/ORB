@@ -6,8 +6,10 @@ import QtQuick.Controls
 Label {
     id: control
 
+    ToolTip.text: text
+    ToolTip.visible: truncated && hoverHandler.hovered
     color: state === "showing-info" ? palette.windowText : palette.disabled.windowText
-    elide: Text.ElideMiddle
+    elide: Text.ElideRight
     font.italic: state !== "showing-info"
     textFormat: Text.PlainText
 
@@ -37,4 +39,8 @@ Label {
             }
         }
     ]
+
+    HoverHandler {
+        id: hoverHandler
+    }
 }

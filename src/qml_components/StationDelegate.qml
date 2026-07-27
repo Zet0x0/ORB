@@ -10,20 +10,19 @@ Frame {
     required property station station
 
     function handleInteraction() {
-        if (Player.station === control.station) {
+        if (Player.station === station) {
             if (Player.state === Player.Stopped) {
                 Player.play();
             } else {
                 Player.stop();
             }
         } else {
-            Player.setStation(control.station, true);
+            Player.setStation(station, true);
         }
     }
 
     contentHeight: layout.implicitHeight + layout.anchors.topMargin + layout.anchors.bottomMargin
     contentWidth: layout.implicitWidth + layout.anchors.leftMargin + layout.anchors.rightMargin
-    hoverEnabled: enabled
     padding: 0
 
     background: Rectangle {
@@ -60,6 +59,8 @@ Frame {
             Layout.fillHeight: true
             Layout.fillWidth: true
             Layout.maximumHeight: layout.height
+            ToolTip.text: control.station.name
+            ToolTip.visible: truncated && control.hovered
             color: control.hovered ? palette.highlightedText : palette.windowText
             elide: Text.ElideRight
             text: control.station.name

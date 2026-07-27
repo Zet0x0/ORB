@@ -27,6 +27,7 @@ TextField {
     IconButton {
         id: clearSearchFieldButton
 
+        ToolTip.text: qsTr("Clear")
         enabled: control.enabled
         icon.name: "x"
         implicitHeight: parent.height

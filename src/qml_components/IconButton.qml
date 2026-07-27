@@ -2,6 +2,7 @@ import QtQuick
 import QtQuick.Controls
 
 Button {
+    ToolTip.visible: ToolTip.text.length > 0 && hovered
     display: AbstractButton.IconOnly
     icon.color: palette.buttonText
     implicitHeight: icon.height + verticalPadding * 2
