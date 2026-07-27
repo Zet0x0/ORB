@@ -153,6 +153,39 @@ Dialog {
 
                                 Layout.fillWidth: true
 
+                                Component {
+                                    id: boolComponent
+
+                                    CheckBox {
+                                        checked: propertyDelegate.value
+                                        text: propertyDelegate.label
+
+                                        onToggled: propertyModel.setValue(propertyDelegate.index, checked)
+                                    }
+                                }
+
+                                Component {
+                                    id: intComponent
+
+                                    SpinBox {
+                                        value: propertyDelegate.value
+                                        width: parent.width
+
+                                        onValueModified: propertyModel.setValue(propertyDelegate.index, value)
+                                    }
+                                }
+
+                                Component {
+                                    id: stringComponent
+
+                                    TextField {
+                                        text: propertyDelegate.value
+                                        width: parent.width
+
+                                        onEditingFinished: propertyModel.setValue(propertyDelegate.index, text)
+                                    }
+                                }
+
                                 Label {
                                     Layout.topMargin: propertyDelegate.index === 0 ? 0 : 8
                                     font.bold: true
@@ -168,28 +201,20 @@ Dialog {
                                         visible: propertyDelegate.type !== "bool"
                                     }
 
-                                    CheckBox {
-                                        checked: propertyDelegate.value
-                                        text: propertyDelegate.label
-                                        visible: propertyDelegate.type === "bool"
-
-                                        onToggled: propertyModel.setValue(propertyDelegate.index, checked)
-                                    }
-
-                                    SpinBox {
+                                    Loader {
                                         Layout.fillWidth: true
-                                        value: propertyDelegate.value
-                                        visible: propertyDelegate.type === "int"
-
-                                        onValueModified: propertyModel.setValue(propertyDelegate.index, value)
-                                    }
-
-                                    TextField {
-                                        Layout.fillWidth: true
-                                        text: propertyDelegate.value
-                                        visible: propertyDelegate.type === "string"
-
-                                        onEditingFinished: propertyModel.setValue(propertyDelegate.index, text)
+                                        sourceComponent: {
+                                            switch (propertyDelegate.type) {
+                                            case "bool":
+                                                return boolComponent;
+                                            case "int":
+                                                return intComponent;
+                                            case "string":
+                                                return stringComponent;
+                                            default:
+                                                return null;
+                                            }
+                                        }
                                     }
                                 }
                             }
