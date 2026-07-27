@@ -23,4 +23,5 @@ qt_add_qml_module(
     SystemTrayIcon.qml
     SystemTrayMenu.qml
     TextFieldContextMenu.qml
+    PreferencesDialog.qml
     NO_PLUGIN)

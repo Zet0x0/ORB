@@ -23,6 +23,7 @@ Dialog {
     title: qsTr("Open Location")
     x: Math.floor((parent.width - width) / 2)
     y: Math.floor((parent.height - height) / 2)
+    z: 1
 
     Component.onCompleted: {
         const playButton = standardButton(Dialog.Ok);

@@ -1,9 +1,10 @@
 #pragma once
 
+#include "settingsgroup.h"
 #include <QQmlEngine>
 #include <QSettings>
 
-class WindowSettings : public QObject {
+class WindowSettings : public SettingsGroup {
     Q_OBJECT
     QML_ELEMENT
 

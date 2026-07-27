@@ -3,7 +3,7 @@
 #include "settingsio.h"
 
 PlayerSettings::PlayerSettings(QObject *parent)
-    : QObject(parent), m_settings(SettingsFactory::create(this)) {
+    : SettingsGroup(parent), m_settings(SettingsFactory::create(this)) {
     m_settings->beginGroup(QStringLiteral("player"));
 
     m_lastStation = Station::fromMap(

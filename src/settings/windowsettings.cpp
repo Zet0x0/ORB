@@ -3,7 +3,7 @@
 #include "settingsio.h"
 
 WindowSettings::WindowSettings(QObject *parent)
-    : QObject(parent), m_settings(SettingsFactory::create(this)) {
+    : SettingsGroup(parent), m_settings(SettingsFactory::create(this)) {
     m_settings->beginGroup(QStringLiteral("window"));
 
     m_x = SettingsIO::readInt(m_settings, QStringLiteral("x"), -1);

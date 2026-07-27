@@ -3,7 +3,7 @@
 #include "settingsio.h"
 
 SourcesSettings::SourcesSettings(QObject *parent)
-    : QObject(parent), m_settings(SettingsFactory::create(this)) {
+    : SettingsGroup(parent), m_settings(SettingsFactory::create(this)) {
     m_settings->beginGroup(QStringLiteral("sources"));
 
     m_lastSearchSource = SettingsIO::readString(

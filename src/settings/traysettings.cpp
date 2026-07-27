@@ -3,7 +3,7 @@
 #include "settingsio.h"
 
 TraySettings::TraySettings(QObject *parent)
-    : QObject(parent), m_settings(SettingsFactory::create(this)) {
+    : SettingsGroup(parent), m_settings(SettingsFactory::create(this)) {
     m_settings->beginGroup(QStringLiteral("tray"));
 
     m_enabled =
@@ -11,6 +11,21 @@ TraySettings::TraySettings(QObject *parent)
 
     m_closeToTray =
         SettingsIO::readBool(m_settings, QStringLiteral("closeToTray"), false);
+}
+
+QString TraySettings::settingsCategory() const {
+    return tr("System");
+}
+
+QString TraySettings::settingsSubcategory() const {
+    return tr("Tray");
+}
+
+QList<SettingsFieldMeta> TraySettings::settingsFields() const {
+    return {
+        {"enabled", tr("Enabled")},
+        {"closeToTray", tr("Close window to tray")},
+    };
 }
 
 bool TraySettings::enabled() const {

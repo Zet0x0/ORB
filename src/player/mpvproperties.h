@@ -3,9 +3,9 @@
 #include <QString>
 
 namespace MpvProperties {
-const QString NowPlaying = QStringLiteral("media-title");
-const QString Filename = QStringLiteral("filename");
-const QString Elapsed = QStringLiteral("time-pos");
-const QString Volume = QStringLiteral("volume");
-const QString Mute = QStringLiteral("mute");
+constexpr QLatin1StringView NowPlaying("media-title");
+constexpr QLatin1StringView Filename("filename");
+constexpr QLatin1StringView Elapsed("time-pos");
+constexpr QLatin1StringView Volume("volume");
+constexpr QLatin1StringView Mute("mute");
 }
