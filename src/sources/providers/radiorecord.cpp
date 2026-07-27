@@ -69,7 +69,7 @@ void RadioRecord::handleStationsEndpointResult(const QJsonDocument &json) {
     }
 
     if (stations.isEmpty()) {
-        raiseError(tr("Search Error"), tr("No default stations found"));
+        raiseError(tr("Search error"), tr("No default stations found"));
 
         return;
     }
@@ -92,7 +92,7 @@ void RadioRecord::handleSearchEndpointResult(const QJsonDocument &json) {
 
 void RadioRecord::onSearchRequestFinished(QRestReply &reply) {
     if (!reply.isSuccess()) {
-        raiseError(tr("Search Error"), reply.networkReply()->errorString());
+        raiseError(tr("Search error"), reply.networkReply()->errorString());
 
         return;
     }
@@ -110,7 +110,7 @@ void RadioRecord::onSearchRequestFinished(QRestReply &reply) {
     } else if (path.endsWith(RadioRecordConstants::SearchPath)) {
         handleSearchEndpointResult(json);
     } else {
-        raiseError(tr("Search Error"), tr("Unhandled path %0").arg(path));
+        raiseError(tr("Search error"), tr("Unhandled path %0").arg(path));
     }
 }
 

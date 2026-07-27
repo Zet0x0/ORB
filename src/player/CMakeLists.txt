@@ -7,6 +7,7 @@ qt_add_qml_module(
     OUTPUT_DIRECTORY
     "${CMAKE_BINARY_DIR}/ORB/Player"
     DEPENDENCIES
+    ORB.Common
     ORB.Sources
     SOURCES
     player.h

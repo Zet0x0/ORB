@@ -24,4 +24,5 @@ qt_add_qml_module(
     SystemTrayMenu.qml
     TextFieldContextMenu.qml
     PreferencesDialog.qml
+    ErrorBanner.qml
     NO_PLUGIN)

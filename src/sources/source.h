@@ -1,7 +1,7 @@
 #pragma once
 
+#include "../common/errorinfo.h"
 #include "station.h"
-#include "sourceerror.h"
 #include <QRestAccessManager>
 #include <QRestReply>
 
@@ -53,7 +53,7 @@ public:
 
 signals:
     void stationsDispatched(const QList<Station> &stations);
-    void errorOccurred(const SourceError &error);
+    void errorOccurred(const ErrorInfo &error);
 
     void searchStarted();
     void searchCancelled();

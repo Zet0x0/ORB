@@ -29,7 +29,7 @@ void SourceController::setSearchState(const SearchState &newSearchState) {
     }
 
     if (m_searchState == SearchState::Error) {
-        setError(SourceError{});
+        setError(ErrorInfo{});
     }
 
     m_searchState = newSearchState;
@@ -63,7 +63,7 @@ void SourceController::onSearchCancelled() {
     setSearchState(SearchState::Idle);
 }
 
-void SourceController::setError(const SourceError &error) {
+void SourceController::setError(const ErrorInfo &error) {
     if (m_error == error) {
         return;
     }
@@ -117,7 +117,7 @@ SourceController::SearchState SourceController::searchState() const {
     return m_searchState;
 }
 
-SourceError SourceController::error() const {
+ErrorInfo SourceController::error() const {
     return m_error;
 }
 

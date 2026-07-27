@@ -4,12 +4,7 @@
 #include <QJsonParseError>
 
 void Source::raiseError(const QString &title, const QString &message) {
-    SourceError error;
-
-    error.title = title;
-    error.message = message;
-
-    emit errorOccurred(error);
+    emit errorOccurred(ErrorInfo(title, message));
 }
 
 bool Source::parseJson(QRestReply &reply, QJsonDocument *json) {
@@ -17,7 +12,7 @@ bool Source::parseJson(QRestReply &reply, QJsonDocument *json) {
     const std::optional jsonDocument = reply.readJson(&jsonError);
 
     if (jsonError.error != QJsonParseError::NoError) {
-        raiseError(tr("Parse Error"),
+        raiseError(tr("Parse error"),
                    tr("%0 (offset %1)")
                        .arg(jsonError.errorString(),
                             QString::number(jsonError.offset)));

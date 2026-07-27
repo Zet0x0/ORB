@@ -275,4 +275,13 @@ MainWindow {
             sourceSelector: sourceSelector
         }
     }
+
+    ErrorBanner {
+        error: Player.error
+        x: Math.floor((parent.width - width) / 2)
+        y: Math.floor((parent.height - height) / 2)
+        z: 999
+
+        onDismissed: Player.clearError()
+    }
 }

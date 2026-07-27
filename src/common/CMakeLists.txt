@@ -11,7 +11,9 @@ qt_add_qml_module(
     utilities.h
     utilities.cpp
     urlvalidator.h
-    urlvalidator.cpp)
+    urlvalidator.cpp
+    errorinfo.h
+    errorinfo.cpp)
 
 target_link_libraries(
     common

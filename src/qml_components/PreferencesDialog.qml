@@ -189,6 +189,7 @@ Dialog {
                                     Layout.topMargin: propertyDelegate.index === 0 ? 0 : 8
                                     font.bold: true
                                     text: propertyDelegate.subcategory
+                                    textFormat: Text.PlainText
                                     visible: propertyDelegate.showSubcategoryHeader
                                 }
 
@@ -197,6 +198,7 @@ Dialog {
 
                                     Label {
                                         text: propertyDelegate.label
+                                        textFormat: Text.PlainText
                                         visible: propertyDelegate.type !== "bool"
                                     }
 
