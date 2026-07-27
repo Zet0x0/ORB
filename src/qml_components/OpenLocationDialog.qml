@@ -50,6 +50,8 @@ Dialog {
             placeholderText: qsTr("Enter URL here...")
 
             validator: UrlValidator {}
+
+            onAccepted: control.accept()
         }
     }
 }
