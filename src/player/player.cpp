@@ -1,10 +1,18 @@
 #include "player.h"
 #include "../common/utilities.h"
+#include "../settings/settings.h"
 #include "mpvproperties.h"
+
+namespace {
+constexpr int RetryBaseDelayMs = 1000;
+constexpr int RetryMaxDelayMs = 30000;
+constexpr int StabilityThresholdMs = 15000;
+}
 
 Player::Player(QObject *parent)
     : QObject(parent), m_mpvController(new MpvController),
-      m_workerThread(new QThread(this)) {
+      m_workerThread(new QThread(this)), m_retryTimer(new QTimer(this)),
+      m_stabilityTimer(new QTimer(this)) {
     connect(m_workerThread, &QThread::finished, m_mpvController,
             &QObject::deleteLater, Qt::QueuedConnection);
 
@@ -14,6 +22,14 @@ Player::Player(QObject *parent)
 
     QMetaObject::invokeMethod(m_mpvController, &MpvController::init,
                               Qt::BlockingQueuedConnection);
+
+    m_retryTimer->setSingleShot(true);
+    connect(m_retryTimer, &QTimer::timeout, this, &Player::retryPlayback);
+
+    m_stabilityTimer->setSingleShot(true);
+    m_stabilityTimer->setInterval(StabilityThresholdMs);
+    connect(m_stabilityTimer, &QTimer::timeout, this,
+            &Player::onPlaybackStable);
 
     setupConnections();
     setupObservations();
@@ -129,6 +145,26 @@ void Player::raiseError(const QString &title, const QString &message) {
     setError(ErrorInfo(title, message));
 }
 
+bool Player::shouldRetry() const {
+    const PlayerSettings *settings = Settings::instance()->player();
+
+    return settings->retryOnError() && m_retryAttempt < settings->maxRetries();
+}
+
+int Player::retryDelayMs() const {
+    const int attempt = qMax(1, m_retryAttempt);
+    const qint64 delay = qint64(RetryBaseDelayMs) << qMin(attempt - 1, 10);
+
+    return static_cast<int>(qMin<qint64>(delay, RetryMaxDelayMs));
+}
+
+void Player::cancelRetry() {
+    m_retryTimer->stop();
+    m_stabilityTimer->stop();
+
+    m_retryAttempt = 0;
+}
+
 void Player::onPropertyChanged(const QString &property, const QVariant &value) {
     if (property == MpvProperties::NowPlaying) {
         const bool alreadyResolving = m_pendingNowPlaying.has_value();
@@ -227,13 +263,29 @@ void Player::onAsyncReply(const QVariant &data, mpv_event event) {
 }
 
 void Player::onEndFile(QString reason) {
-    if (reason == QStringLiteral("error")) {
-        raiseError(tr("Playback error"),
-                   tr("An error occurred trying to play the station"));
-    } else if (reason == QStringLiteral("eof")) {
-        raiseError(tr("Playback error"), tr("An error occurred trying to play "
-                                            "the station (unexpected EOF)"));
+    m_stabilityTimer->stop();
+
+    const bool isPlaybackError =
+        reason == QStringLiteral("error") || reason == QStringLiteral("eof");
+
+    if (isPlaybackError && shouldRetry()) {
+        ++m_retryAttempt;
+
+        setState(State::Retrying);
+        m_retryTimer->start(retryDelayMs());
+
+        return;
     }
+
+    if (isPlaybackError) {
+        raiseError(tr("Playback error"),
+                   m_retryAttempt > 0
+                       ? tr("Unable to play the station after %0 retries")
+                             .arg(m_retryAttempt)
+                       : tr("An error occurred trying to play the station"));
+    }
+
+    m_retryAttempt = 0;
 
     setState(State::Stopped);
 }
@@ -246,6 +298,20 @@ void Player::onFileStarted() {
 
 void Player::onFileLoaded() {
     setState(State::Playing);
+
+    m_stabilityTimer->start();
+}
+
+void Player::retryPlayback() {
+    if (m_state != State::Retrying) {
+        return;
+    }
+
+    play();
+}
+
+void Player::onPlaybackStable() {
+    m_retryAttempt = 0;
 }
 
 Player::~Player() {
@@ -282,6 +348,12 @@ ErrorInfo Player::error() const {
 }
 
 void Player::setStation(const Station &newStation, bool play) {
+    cancelRetry();
+
+    if (m_state == State::Retrying) {
+        setState(State::Stopped);
+    }
+
     if (m_state == State::Playing) {
         const bool alreadyStopping = m_pendingStationChange.has_value();
         m_pendingStationChange = PendingStationChange{newStation, play};
@@ -308,7 +380,9 @@ void Player::play() const {
     commandAsync({QStringLiteral("loadfile"), m_station.streamUrl()});
 }
 
-void Player::stop() const {
+void Player::stop() {
+    cancelRetry();
+
     sendStop(AsyncReplyId::Stopping);
 }
 

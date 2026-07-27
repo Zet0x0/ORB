@@ -11,6 +11,26 @@ PlayerSettings::PlayerSettings(QObject *parent)
 
     m_volume = SettingsIO::readInt(m_settings, QStringLiteral("volume"), 100);
     m_muted = SettingsIO::readBool(m_settings, QStringLiteral("muted"), false);
+
+    m_retryOnError =
+        SettingsIO::readBool(m_settings, QStringLiteral("retryOnError"), true);
+    m_maxRetries =
+        SettingsIO::readInt(m_settings, QStringLiteral("maxRetries"), 5);
+}
+
+QString PlayerSettings::settingsCategory() const {
+    return tr("Player");
+}
+
+QString PlayerSettings::settingsSubcategory() const {
+    return tr("Playback");
+}
+
+QList<SettingsFieldMeta> PlayerSettings::settingsFields() const {
+    return {
+        {"retryOnError", tr("Retry on playback error")},
+        {"maxRetries", tr("Max retry attempts")},
+    };
 }
 
 Station PlayerSettings::lastStation() const {
@@ -57,4 +77,37 @@ void PlayerSettings::setMuted(bool newMuted) {
     SettingsIO::write(m_settings, QStringLiteral("muted"), m_muted);
 
     emit mutedChanged();
+}
+
+bool PlayerSettings::retryOnError() const {
+    return m_retryOnError;
+}
+
+void PlayerSettings::setRetryOnError(bool newRetryOnError) {
+    if (m_retryOnError == newRetryOnError) {
+        return;
+    }
+
+    m_retryOnError = newRetryOnError;
+    SettingsIO::write(m_settings, QStringLiteral("retryOnError"),
+                      m_retryOnError);
+
+    emit retryOnErrorChanged();
+}
+
+int PlayerSettings::maxRetries() const {
+    return m_maxRetries;
+}
+
+void PlayerSettings::setMaxRetries(int newMaxRetries) {
+    newMaxRetries = qMax(0, newMaxRetries);
+
+    if (m_maxRetries == newMaxRetries) {
+        return;
+    }
+
+    m_maxRetries = newMaxRetries;
+    SettingsIO::write(m_settings, QStringLiteral("maxRetries"), m_maxRetries);
+
+    emit maxRetriesChanged();
 }

@@ -6,6 +6,7 @@
 #include <MpvController>
 #include <QQmlEngine>
 #include <QThread>
+#include <QTimer>
 
 class Player : public QObject, public Singleton<Player> {
     Q_OBJECT
@@ -29,7 +30,7 @@ class Player : public QObject, public Singleton<Player> {
     friend class Singleton<Player>;
 
 public:
-    enum class State { Stopped, Loading, Playing };
+    enum class State { Stopped, Loading, Playing, Retrying };
     Q_ENUM(State)
 
 private:
@@ -67,6 +68,10 @@ private:
 
     ErrorInfo m_error;
 
+    QTimer *m_retryTimer = nullptr;
+    QTimer *m_stabilityTimer = nullptr;
+    int m_retryAttempt = 0;
+
     explicit Player(QObject *parent = nullptr);
 
     void setupConnections() const;
@@ -93,6 +98,10 @@ private:
     void setError(const ErrorInfo &error);
     void raiseError(const QString &title, const QString &message);
 
+    bool shouldRetry() const;
+    int retryDelayMs() const;
+    void cancelRetry();
+
 private slots:
     void onPropertyChanged(const QString &property, const QVariant &value);
 
@@ -101,6 +110,9 @@ private slots:
     void onEndFile(QString reason);
     void onFileStarted();
     void onFileLoaded();
+
+    void retryPlayback();
+    void onPlaybackStable();
 
 public:
     ~Player();
@@ -120,7 +132,7 @@ public slots:
     void setStation(const Station &newStation, bool play = false);
 
     void play() const;
-    void stop() const;
+    void stop();
 
     void setVolume(int newVolume);
     void setMuted(bool newMuted);
