@@ -10,6 +10,7 @@ Dialog {
 
     closePolicy: Popup.CloseOnEscape
     dim: true
+    focus: true
     modal: true
     title: qsTr("Preferences")
     x: Math.floor((parent.width - width) / 2)
@@ -78,10 +79,14 @@ Dialog {
                     Layout.fillHeight: true
                     Layout.fillWidth: true
                     ScrollBar.vertical: categoryScrollBar
+                    activeFocusOnTab: true
                     boundsBehavior: Flickable.StopAtBounds
                     cacheBuffer: contentHeight
                     clip: true
                     currentIndex: 0
+                    focus: true
+                    keyNavigationEnabled: true
+                    keyNavigationWraps: true
 
                     delegate: CategoryDelegate {}
                     model: SettingsCategoryModel {}
