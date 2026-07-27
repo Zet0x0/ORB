@@ -4,8 +4,7 @@
 #include "mpvproperties.h"
 
 namespace {
-constexpr int RetryBaseDelayMs = 1000;
-constexpr int RetryMaxDelayMs = 30000;
+constexpr int RetryMaxDelaySeconds = 30;
 constexpr int StabilityThresholdMs = 15000;
 }
 
@@ -23,8 +22,8 @@ Player::Player(QObject *parent)
     QMetaObject::invokeMethod(m_mpvController, &MpvController::init,
                               Qt::BlockingQueuedConnection);
 
-    m_retryTimer->setSingleShot(true);
-    connect(m_retryTimer, &QTimer::timeout, this, &Player::retryPlayback);
+    m_retryTimer->setInterval(1000);
+    connect(m_retryTimer, &QTimer::timeout, this, &Player::onRetryTick);
 
     m_stabilityTimer->setSingleShot(true);
     m_stabilityTimer->setInterval(StabilityThresholdMs);
@@ -151,18 +150,49 @@ bool Player::shouldRetry() const {
     return settings->retryOnError() && m_retryAttempt < settings->maxRetries();
 }
 
-int Player::retryDelayMs() const {
+int Player::retryDelaySeconds() const {
     const int attempt = qMax(1, m_retryAttempt);
-    const qint64 delay = qint64(RetryBaseDelayMs) << qMin(attempt - 1, 10);
+    const int delay = 1 << qMin(attempt - 1, 10);
 
-    return static_cast<int>(qMin<qint64>(delay, RetryMaxDelayMs));
+    return qMin(delay, RetryMaxDelaySeconds);
 }
 
 void Player::cancelRetry() {
-    m_retryTimer->stop();
     m_stabilityTimer->stop();
 
-    m_retryAttempt = 0;
+    stopRetryCountdown();
+    setRetryAttempt(0);
+}
+
+void Player::setRetryAttempt(int newRetryAttempt) {
+    if (m_retryAttempt == newRetryAttempt) {
+        return;
+    }
+
+    m_retryAttempt = newRetryAttempt;
+
+    emit retryAttemptChanged();
+}
+
+void Player::setRetrySecondsRemaining(int newRetrySecondsRemaining) {
+    if (m_retrySecondsRemaining == newRetrySecondsRemaining) {
+        return;
+    }
+
+    m_retrySecondsRemaining = newRetrySecondsRemaining;
+
+    emit retrySecondsRemainingChanged();
+}
+
+void Player::startRetryCountdown(int seconds) {
+    setRetrySecondsRemaining(seconds);
+    m_retryTimer->start();
+}
+
+void Player::stopRetryCountdown() {
+    m_retryTimer->stop();
+
+    setRetrySecondsRemaining(0);
 }
 
 void Player::onPropertyChanged(const QString &property, const QVariant &value) {
@@ -269,10 +299,10 @@ void Player::onEndFile(QString reason) {
         reason == QStringLiteral("error") || reason == QStringLiteral("eof");
 
     if (isPlaybackError && shouldRetry()) {
-        ++m_retryAttempt;
+        setRetryAttempt(m_retryAttempt + 1);
 
         setState(State::Retrying);
-        m_retryTimer->start(retryDelayMs());
+        startRetryCountdown(retryDelaySeconds());
 
         return;
     }
@@ -285,7 +315,7 @@ void Player::onEndFile(QString reason) {
                        : tr("An error occurred trying to play the station"));
     }
 
-    m_retryAttempt = 0;
+    setRetryAttempt(0);
 
     setState(State::Stopped);
 }
@@ -302,16 +332,29 @@ void Player::onFileLoaded() {
     m_stabilityTimer->start();
 }
 
-void Player::retryPlayback() {
+void Player::onRetryTick() {
     if (m_state != State::Retrying) {
+        m_retryTimer->stop();
+
         return;
     }
 
-    play();
+    const int remaining = m_retrySecondsRemaining - 1;
+
+    if (remaining <= 0) {
+        m_retryTimer->stop();
+        setRetrySecondsRemaining(0);
+
+        play();
+
+        return;
+    }
+
+    setRetrySecondsRemaining(remaining);
 }
 
 void Player::onPlaybackStable() {
-    m_retryAttempt = 0;
+    setRetryAttempt(0);
 }
 
 Player::~Player() {
@@ -345,6 +388,14 @@ bool Player::muted() const {
 
 ErrorInfo Player::error() const {
     return m_error;
+}
+
+int Player::retryAttempt() const {
+    return m_retryAttempt;
+}
+
+int Player::retrySecondsRemaining() const {
+    return m_retrySecondsRemaining;
 }
 
 void Player::setStation(const Station &newStation, bool play) {
@@ -417,4 +468,13 @@ void Player::setMuted(bool newMuted) {
 
 void Player::clearError() {
     setError(ErrorInfo{});
+}
+
+void Player::retryNow() {
+    if (m_state != State::Retrying) {
+        return;
+    }
+
+    stopRetryCountdown();
+    play();
 }

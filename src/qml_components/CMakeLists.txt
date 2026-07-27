@@ -25,4 +25,5 @@ qt_add_qml_module(
     TextFieldContextMenu.qml
     PreferencesDialog.qml
     ErrorBanner.qml
+    PlaybackStatusIndicator.qml
     NO_PLUGIN)

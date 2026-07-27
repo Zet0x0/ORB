@@ -27,6 +27,11 @@ class Player : public QObject, public Singleton<Player> {
 
     Q_PROPERTY(ErrorInfo error READ error NOTIFY errorChanged FINAL)
 
+    Q_PROPERTY(
+        int retryAttempt READ retryAttempt NOTIFY retryAttemptChanged FINAL)
+    Q_PROPERTY(int retrySecondsRemaining READ retrySecondsRemaining NOTIFY
+                   retrySecondsRemainingChanged FINAL)
+
     friend class Singleton<Player>;
 
 public:
@@ -71,6 +76,7 @@ private:
     QTimer *m_retryTimer = nullptr;
     QTimer *m_stabilityTimer = nullptr;
     int m_retryAttempt = 0;
+    int m_retrySecondsRemaining = 0;
 
     explicit Player(QObject *parent = nullptr);
 
@@ -99,8 +105,13 @@ private:
     void raiseError(const QString &title, const QString &message);
 
     bool shouldRetry() const;
-    int retryDelayMs() const;
+    int retryDelaySeconds() const;
     void cancelRetry();
+
+    void setRetryAttempt(int newRetryAttempt);
+    void setRetrySecondsRemaining(int newRetrySecondsRemaining);
+    void startRetryCountdown(int seconds);
+    void stopRetryCountdown();
 
 private slots:
     void onPropertyChanged(const QString &property, const QVariant &value);
@@ -111,7 +122,7 @@ private slots:
     void onFileStarted();
     void onFileLoaded();
 
-    void retryPlayback();
+    void onRetryTick();
     void onPlaybackStable();
 
 public:
@@ -128,6 +139,9 @@ public:
 
     ErrorInfo error() const;
 
+    int retryAttempt() const;
+    int retrySecondsRemaining() const;
+
 public slots:
     void setStation(const Station &newStation, bool play = false);
 
@@ -138,6 +152,8 @@ public slots:
     void setMuted(bool newMuted);
 
     void clearError();
+
+    void retryNow();
 
 signals:
     void stationChanged();
@@ -150,4 +166,7 @@ signals:
     void mutedChanged();
 
     void errorChanged();
+
+    void retryAttemptChanged();
+    void retrySecondsRemainingChanged();
 };
