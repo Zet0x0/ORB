@@ -21,11 +21,10 @@ Frame {
         }
     }
 
-    height: Math.min(control.implicitHeight, parent.height)
-    hoverEnabled: true
+    height: Math.min(implicitHeight, parent.height)
     opacity: error.title.length > 0 || error.message.length > 0 ? 1 : 0
     visible: opacity > 0
-    width: Math.min(400, control.implicitWidth, parent.width)
+    width: Math.min(400, implicitWidth, parent.width)
 
     background: Rectangle {
         id: bannerBackground
@@ -61,18 +60,18 @@ Frame {
     }
 
     Component.onCompleted: {
-        if (control.error.title.length > 0 || control.error.message.length > 0) {
-            control.displayedError = control.error;
+        if (error.title.length > 0 || error.message.length > 0) {
+            displayedError = error;
         }
     }
     onErrorChanged: {
-        if (control.error.title.length > 0 || control.error.message.length > 0) {
-            control.displayedError = control.error;
+        if (error.title.length > 0 || error.message.length > 0) {
+            displayedError = error;
 
             flashAnimation.restart();
         }
 
-        control.updateAutoDismiss();
+        updateAutoDismiss();
     }
     onHoveredChanged: updateAutoDismiss()
 
@@ -111,6 +110,7 @@ Frame {
 
         IconButton {
             Layout.alignment: Qt.AlignTop
+            ToolTip.text: qsTr("Copy to clipboard")
             icon.name: "copy"
 
             onClicked: Utilities.copyToClipboard(`${control.displayedError.title}\n\n${control.displayedError.message}`)
@@ -118,6 +118,7 @@ Frame {
 
         IconButton {
             Layout.alignment: Qt.AlignTop
+            ToolTip.text: qsTr("Dismiss")
             icon.name: "x"
 
             onClicked: control.dismissed()

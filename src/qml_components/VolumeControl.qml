@@ -4,8 +4,6 @@ import QtQuick.Controls
 import QtQuick.Layouts
 
 RowLayout {
-    id: root
-
     SystemPalette {
         id: activeSystemPalette
 
@@ -13,6 +11,7 @@ RowLayout {
     }
 
     IconButton {
+        ToolTip.text: Player.muted ? qsTr("Unmute") : qsTr("Mute")
         icon.name: {
             if (Player.muted) {
                 return "volume-off";
