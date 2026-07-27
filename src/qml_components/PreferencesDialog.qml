@@ -21,7 +21,6 @@ Dialog {
         Button {
             DialogButtonBox.buttonRole: DialogButtonBox.ApplyRole
             enabled: propertyModel.hasPendingChanges
-            highlighted: propertyModel.hasPendingChanges
             text: qsTr("Apply")
 
             onClicked: propertyModel.applyChanges()
