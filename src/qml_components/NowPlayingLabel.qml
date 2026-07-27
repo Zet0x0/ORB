@@ -1,3 +1,4 @@
+import ORB.Common
 import ORB.Player
 import QtQuick
 import QtQuick.Controls
@@ -13,6 +14,19 @@ Label {
     font.italic: state !== "showing-info"
     textFormat: Text.PlainText
 
+    ContextMenu.menu: Menu {
+        MenuItem {
+            enabled: control.state === "showing-info"
+            text: qsTr("Copy")
+
+            onTriggered: Utilities.copyToClipboard(Player.nowPlaying)
+
+            icon {
+                color: palette.buttonText
+                name: "copy"
+            }
+        }
+    }
     states: [
         State {
             name: "playback-stopped"
