@@ -13,7 +13,7 @@ StackLayout {
     states: [
         State {
             name: "no-source"
-            when: control.sourceSelector.currentIndex === 0
+            when: SourceController.currentSourceIsNull
 
             PropertyChanges {
                 statusLabel.text: qsTr("# Nothing to show\nStart by [selecting a source](#sourceSelector)")

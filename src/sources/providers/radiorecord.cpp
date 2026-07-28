@@ -127,3 +127,7 @@ void RadioRecord::cancelSearch() {
 bool RadioRecord::hasDefaultStations() const {
     return true;
 }
+
+QString RadioRecord::websiteUrl() const {
+    return RadioRecordConstants::WebsiteUrl.toString();
+}

@@ -7,3 +7,7 @@ void NullSource::handleSearch(const QString &query) {
 }
 
 void NullSource::cancelSearch() {}
+
+QString NullSource::websiteUrl() const {
+    return QStringLiteral("https://youtu.be/ds8sVhxdvfA");
+}

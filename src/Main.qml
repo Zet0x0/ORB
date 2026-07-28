@@ -238,6 +238,14 @@ MainWindow {
         }
 
         RowLayout {
+            IconButton {
+                ToolTip.text: qsTr("Open source's official website")
+                enabled: !SourceController.currentSourceIsNull && SourceController.currentSourceUrl.length > 0
+                icon.name: "external-link"
+
+                onClicked: Qt.openUrlExternally(SourceController.currentSourceUrl)
+            }
+
             ComboBox {
                 id: sourceSelector
 

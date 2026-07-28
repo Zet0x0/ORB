@@ -1,3 +1,4 @@
+import ORB.Common
 import ORB.Player
 import QtQuick
 import QtQuick.Controls
@@ -11,6 +12,7 @@ Label {
     color: state === "showing-info" ? palette.windowText : palette.disabled.windowText
     elide: Text.ElideRight
     font.italic: state !== "showing-info"
+    maximumLineCount: 1
     textFormat: Text.PlainText
 
     states: [
@@ -40,7 +42,29 @@ Label {
         }
     ]
 
+    ContextMenu.onRequested: position => {
+        if (position.x <= control.contentWidth && position.y <= control.contentHeight) {
+            contextMenu.popup(position);
+        }
+    }
+
     HoverHandler {
         id: hoverHandler
+    }
+
+    Menu {
+        id: contextMenu
+
+        MenuItem {
+            enabled: control.state === "showing-info"
+            text: qsTr("Copy")
+
+            onTriggered: Utilities.copyToClipboard(Player.nowPlaying)
+
+            icon {
+                color: palette.buttonText
+                name: "copy"
+            }
+        }
     }
 }

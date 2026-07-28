@@ -6,6 +6,10 @@
 #include "stationmodel.h"
 #include <QQmlEngine>
 
+namespace SourceControllerConstants {
+constexpr QLatin1StringView NullSourceKey("none");
+}
+
 class SourceController : public QObject, public Singleton<SourceController> {
     Q_OBJECT
     QML_ELEMENT
@@ -19,6 +23,11 @@ class SourceController : public QObject, public Singleton<SourceController> {
                    setCanShowDefaultStations NOTIFY
                        canShowDefaultStationsChanged FINAL)
 
+    Q_PROPERTY(QString currentSourceUrl READ currentSourceUrl NOTIFY
+                   currentSourceUrlChanged FINAL)
+    Q_PROPERTY(bool currentSourceIsNull READ currentSourceIsNull NOTIFY
+                   currentSourceUrlChanged FINAL)
+
     friend class Singleton<SourceController>;
 
 public:
@@ -31,6 +40,7 @@ private:
     QStringList m_sourcesInsertOrder;
 
     Source *m_source = nullptr;
+    QString m_currentSourceKey;
     SearchState m_searchState;
     ErrorInfo m_error;
 
@@ -68,6 +78,9 @@ public:
 
     bool canShowDefaultStations() const;
 
+    QString currentSourceUrl() const;
+    bool currentSourceIsNull() const;
+
 public slots:
     void setSource(const QString &newSourceName);
     void search(const QString &query);
@@ -79,4 +92,5 @@ signals:
     void errorChanged();
 
     void canShowDefaultStationsChanged();
+    void currentSourceUrlChanged();
 };

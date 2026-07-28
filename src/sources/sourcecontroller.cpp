@@ -129,11 +129,23 @@ bool SourceController::canShowDefaultStations() const {
     return m_canShowDefaultStations;
 }
 
+QString SourceController::currentSourceUrl() const {
+    return m_source ? m_source->websiteUrl() : QString();
+}
+
+bool SourceController::currentSourceIsNull() const {
+    return m_currentSourceKey.isEmpty() ||
+           m_currentSourceKey ==
+               SourceControllerConstants::NullSourceKey.toString();
+}
+
 void SourceController::setSource(const QString &newSourceName) {
-    Source *newSource = m_sources.value(newSourceName, nullptr);
+    QString resolvedKey = newSourceName;
+    Source *newSource = m_sources.value(resolvedKey, nullptr);
 
     if (!newSource) {
-        newSource = m_sources.value(QStringLiteral("none"), nullptr);
+        resolvedKey = SourceControllerConstants::NullSourceKey.toString();
+        newSource = m_sources.value(resolvedKey, nullptr);
     }
 
     if (!newSource || m_source == newSource) {
@@ -151,6 +163,9 @@ void SourceController::setSource(const QString &newSourceName) {
     setCanShowDefaultStations(newSource->hasDefaultStations());
 
     m_source = newSource;
+    m_currentSourceKey = resolvedKey;
+
+    emit currentSourceUrlChanged();
 }
 
 void SourceController::search(const QString &query) {
