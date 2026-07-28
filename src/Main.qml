@@ -224,9 +224,13 @@ MainWindow {
                 }
 
                 RowLayout {
-                    PlayButton {}
+                    PlayButton {
+                        id: playButton
+                    }
 
-                    PlaybackStatusIndicator {}
+                    PlaybackStatusIndicator {
+                        Layout.maximumHeight: playButton.height
+                    }
 
                     Item {
                         Layout.fillWidth: true

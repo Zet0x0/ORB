@@ -10,8 +10,6 @@ T.BusyIndicator {
 
     contentItem: Item {
         height: control.availableHeight
-        implicitHeight: 24
-        implicitWidth: 24
         width: control.availableWidth
 
         C.Button {
@@ -20,9 +18,7 @@ T.BusyIndicator {
             enabled: false
             height: width
             padding: 0
-            width: Math.floor(parent.width / 2)
-            x: Math.floor((parent.width - width) / 2)
-            y: Math.floor((parent.height - height) / 2)
+            width: parent.width
 
             RotationAnimator on rotation {
                 duration: 600

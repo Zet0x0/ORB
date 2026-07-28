@@ -46,7 +46,15 @@ StackLayout {
     }
 
     // Image.Loading
-    BusyIndicator {
-        running: StackLayout.isCurrentItem
+    Item {
+        id: loadingIndicatorParent
+
+        BusyIndicator {
+            height: Math.floor(parent.height / 2)
+            running: loadingIndicatorParent.StackLayout.isCurrentItem
+            width: Math.floor(parent.width / 2)
+            x: Math.floor((parent.width - width) / 2)
+            y: Math.floor((parent.height - height) / 2)
+        }
     }
 }

@@ -12,6 +12,8 @@ RowLayout {
     visible: Player.state === Player.Loading || Player.state === Player.Retrying
 
     BusyIndicator {
+        Layout.fillHeight: true
+        Layout.preferredWidth: height
         running: control.visible
     }
 
