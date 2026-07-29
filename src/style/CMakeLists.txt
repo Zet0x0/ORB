@@ -7,6 +7,7 @@ qt_add_qml_module(
     OUTPUT_DIRECTORY
     "${CMAKE_BINARY_DIR}/ORB/Style"
     QML_FILES
+    AppPalette.qml
     TextField.qml
     BusyIndicator.qml
     NO_PLUGIN)

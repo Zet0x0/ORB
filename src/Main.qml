@@ -3,6 +3,7 @@ import ORB.Player
 import ORB.QmlComponents
 import ORB.Settings
 import ORB.Sources
+import ORB.Style
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
@@ -136,6 +137,7 @@ MainWindow {
             }
         }
     }
+    palette: AppPalette {}
 
     Component.onCompleted: {
         if (Settings.window.x >= 0 && Settings.window.y >= 0) {
