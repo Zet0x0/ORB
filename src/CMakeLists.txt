@@ -32,8 +32,8 @@ add_subdirectory(common)
 add_subdirectory(settings)
 add_subdirectory(sources)
 add_subdirectory(player)
-add_subdirectory(qml_components)
 add_subdirectory(style)
+add_subdirectory(qml_components)
 
 target_link_libraries(
     ORB

@@ -1,4 +1,5 @@
 import ORB.Common
+import ORB.Style
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
@@ -29,7 +30,7 @@ Frame {
     background: Rectangle {
         id: bannerBackground
 
-        border.color: "#f00"
+        border.color: AppColors.semantic.danger
         color: control.palette.window
         radius: 2
 
@@ -42,7 +43,7 @@ Frame {
                 duration: 200
                 property: "color"
                 target: bannerBackground
-                to: Qt.tint(control.palette.window, "#33ff0000")
+                to: Qt.tint(control.palette.window, Qt.alpha(AppColors.semantic.danger, 0.2))
             }
 
             ColorAnimation {
