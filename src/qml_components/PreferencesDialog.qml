@@ -255,9 +255,6 @@ Dialog {
         text: name
         width: ListView.view.width
 
-        Component.onCompleted: {
-            background.color = Qt.binding(() => down ? palette.midlight : (highlighted ? palette.active.highlight : (hovered ? palette.button : "transparent")));
-        }
         onClicked: ListView.view.currentIndex = index
     }
 }

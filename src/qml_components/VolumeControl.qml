@@ -4,11 +4,7 @@ import QtQuick.Controls
 import QtQuick.Layouts
 
 RowLayout {
-    SystemPalette {
-        id: activeSystemPalette
-
-        colorGroup: SystemPalette.Active
-    }
+    id: control
 
     IconButton {
         ToolTip.text: Player.muted ? qsTr("Unmute") : qsTr("Mute")
@@ -35,7 +31,7 @@ RowLayout {
         ToolTip.text: qsTr("Volume: %0").arg(Math.round(value) + "%")
         ToolTip.visible: pressed || hovered
         from: 0
-        palette.highlight: Player.muted ? Qt.darker(activeSystemPalette.highlight, 1.5) : activeSystemPalette.highlight
+        palette.highlight: Player.muted ? control.palette.disabled.highlight : control.palette.highlight
         stepSize: 1.0
         to: 100
         value: Player.volume

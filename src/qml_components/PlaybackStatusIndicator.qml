@@ -18,7 +18,7 @@ RowLayout {
     }
 
     Label {
-        enabled: false
+        palette.windowText: control.palette.disabled.windowText
         text: qsTr("Retrying in %0s...").arg(Player.retrySecondsRemaining)
         textFormat: Text.PlainText
         visible: Player.state === Player.Retrying

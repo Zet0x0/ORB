@@ -67,6 +67,6 @@ Menu {
     }
 
     component ContextMenuItem: MenuItem {
-        icon.color: palette.buttonText
+        icon.color: palette.text
     }
 }

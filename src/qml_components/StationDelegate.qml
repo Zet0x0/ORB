@@ -23,10 +23,11 @@ Frame {
 
     contentHeight: layout.implicitHeight + layout.anchors.topMargin + layout.anchors.bottomMargin
     contentWidth: layout.implicitWidth + layout.anchors.leftMargin + layout.anchors.rightMargin
+    hoverEnabled: enabled
     padding: 0
 
     background: Rectangle {
-        border.color: control.hovered ? palette.active.accent : palette.mid
+        border.color: control.hovered ? palette.accent : palette.mid
         color: palette.window
     }
 
@@ -46,7 +47,7 @@ Frame {
             padding: (background as Rectangle).border.width
 
             background: Rectangle {
-                border.color: control.hovered ? palette.active.accent : palette.mid
+                border.color: palette.mid
                 color: palette.window
             }
             contentItem: StationImage {
@@ -61,7 +62,6 @@ Frame {
             Layout.maximumHeight: layout.height
             ToolTip.text: control.station.name
             ToolTip.visible: truncated && control.hovered
-            color: control.hovered ? palette.highlightedText : palette.windowText
             elide: Text.ElideRight
             text: control.station.name
             textFormat: Text.PlainText
