@@ -28,7 +28,7 @@ RowLayout {
     }
 
     Slider {
-        ToolTip.text: qsTr("Volume: %0").arg(Math.round(value) + "%")
+        ToolTip.text: qsTr("Volume: %0%").arg(Math.round(value))
         ToolTip.visible: pressed || hovered
         from: 0
         palette.highlight: Player.muted ? control.palette.disabled.highlight : control.palette.highlight
