@@ -23,6 +23,7 @@ Dialog {
         Image {
             Layout.alignment: Qt.AlignTop
             Layout.fillHeight: true
+            Layout.margins: 8
             Layout.preferredWidth: height
             fillMode: Image.PreserveAspectFit
             source: "qrc:/icons/ORB.svg"
