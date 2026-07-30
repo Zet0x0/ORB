@@ -21,10 +21,8 @@ Frame {
         }
     }
 
-    contentHeight: layout.implicitHeight + layout.anchors.topMargin + layout.anchors.bottomMargin
-    contentWidth: layout.implicitWidth + layout.anchors.leftMargin + layout.anchors.rightMargin
     hoverEnabled: enabled
-    padding: 0
+    padding: 8 + (background as Rectangle).border.width
 
     background: Rectangle {
         border.color: control.hovered ? palette.accent : palette.mid
@@ -33,33 +31,29 @@ Frame {
 
     Keys.onSpacePressed: handleInteraction()
 
+    HoverHandler {
+        cursorShape: Qt.PointingHandCursor
+    }
+
+    TapHandler {
+        onTapped: control.handleInteraction()
+    }
+
     RowLayout {
-        id: layout
+        anchors.fill: parent
 
-        anchors {
-            fill: parent
-            margins: 8 + (control.background as Rectangle).border.width
+        StationImage {
+            Layout.fillHeight: false
+            Layout.fillWidth: false
+            Layout.preferredHeight: 48
+            Layout.preferredWidth: 48
+            imageUrl: control.station.imageUrl
         }
 
-        Control {
-            Layout.preferredHeight: Math.max(layout.height, 48)
-            Layout.preferredWidth: Math.max(layout.height, 48)
-            padding: (background as Rectangle).border.width
-
-            background: Rectangle {
-                border.color: palette.mid
-                color: palette.window
-            }
-            contentItem: StationImage {
-                imageUrl: control.station.imageUrl
-            }
-        }
-
-        // TODO: sliding label OR elide
         Label {
             Layout.fillHeight: true
             Layout.fillWidth: true
-            Layout.maximumHeight: layout.height
+            Layout.maximumHeight: 48
             ToolTip.text: control.station.name
             ToolTip.visible: truncated && control.hovered
             elide: Text.ElideRight
@@ -68,12 +62,5 @@ Frame {
             verticalAlignment: Qt.AlignVCenter
             wrapMode: Text.Wrap
         }
-    }
-
-    MouseArea {
-        anchors.fill: parent
-        cursorShape: Qt.PointingHandCursor
-
-        onClicked: control.handleInteraction()
     }
 }
