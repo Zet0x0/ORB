@@ -1,5 +1,5 @@
 import QtQuick
-import QtQuick.Controls.Fusion as C
+import QtQuick.Controls as C
 import QtQuick.Templates as T
 
 T.BusyIndicator {

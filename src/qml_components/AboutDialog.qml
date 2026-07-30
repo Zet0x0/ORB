@@ -53,14 +53,10 @@ Dialog {
                 Layout.alignment: Qt.AlignHCenter
                 Layout.topMargin: 8
                 flat: true
+                icon.name: "brand-github"
                 text: qsTr("View on GitHub")
 
                 onClicked: Qt.openUrlExternally("https://github.com/Zet0x0/ORB")
-
-                icon {
-                    color: palette.buttonText
-                    name: "brand-github"
-                }
             }
         }
     }
