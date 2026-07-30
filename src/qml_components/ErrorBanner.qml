@@ -31,7 +31,7 @@ Frame {
         id: bannerBackground
 
         border.color: AppColors.semantic.danger
-        color: control.palette.window
+        color: palette.window
         radius: 2
 
         SequentialAnimation {
