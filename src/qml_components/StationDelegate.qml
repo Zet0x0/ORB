@@ -22,7 +22,7 @@ Frame {
     }
 
     hoverEnabled: enabled
-    padding: 8 + (background as Rectangle).border.width
+    padding: 0
 
     background: Rectangle {
         border.color: control.hovered ? palette.accent : palette.mid
@@ -39,28 +39,31 @@ Frame {
         onTapped: control.handleInteraction()
     }
 
-    RowLayout {
+    Control {
         anchors.fill: parent
+        padding: 8 + (control.background as Rectangle).border.width
 
-        StationImage {
-            Layout.fillHeight: false
-            Layout.fillWidth: false
-            Layout.preferredHeight: 48
-            Layout.preferredWidth: 48
-            imageUrl: control.station.imageUrl
-        }
+        contentItem: RowLayout {
+            StationImage {
+                Layout.fillHeight: false
+                Layout.fillWidth: false
+                Layout.preferredHeight: 48
+                Layout.preferredWidth: 48
+                imageUrl: control.station.imageUrl
+            }
 
-        Label {
-            Layout.fillHeight: true
-            Layout.fillWidth: true
-            Layout.maximumHeight: 48
-            ToolTip.text: control.station.name
-            ToolTip.visible: truncated && control.hovered
-            elide: Text.ElideRight
-            text: control.station.name
-            textFormat: Text.PlainText
-            verticalAlignment: Qt.AlignVCenter
-            wrapMode: Text.Wrap
+            Label {
+                Layout.fillHeight: true
+                Layout.fillWidth: true
+                Layout.maximumHeight: 48
+                ToolTip.text: control.station.name
+                ToolTip.visible: truncated && control.hovered
+                elide: Text.ElideRight
+                text: control.station.name
+                textFormat: Text.PlainText
+                verticalAlignment: Qt.AlignVCenter
+                wrapMode: Text.Wrap
+            }
         }
     }
 }
