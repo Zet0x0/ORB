@@ -39,16 +39,18 @@ endif()
 
 file(READ "${MPV_RELEASE_JSON_PATH}" MPV_RELEASE_JSON)
 
-# Extract the first asset URL that matches mpv-dev-x86_64-v3-*.7z
+# Extract the first asset URL that matches mpv-dev-x86_64-<digits>-*.7z
 string(
-    REGEX MATCHALL
-          "\"browser_download_url\": \"([^\"]*mpv-dev-x86_64-v3-[^\"]*\\.7z)\""
-          _matches "${MPV_RELEASE_JSON}")
+    REGEX
+        MATCHALL
+        "\"browser_download_url\": \"([^\"]*mpv-dev-x86_64-[0-9]+-[^\"]*\\.7z)\""
+        _matches
+        "${MPV_RELEASE_JSON}")
 
 if(NOT _matches)
     message(
         FATAL_ERROR
-            "Could not find mpv-dev-x86_64-v3-*.7z asset in latest release JSON"
+            "Could not find mpv-dev-x86_64-[0-9]+-*.7z asset in latest release JSON"
     )
 endif()
 
