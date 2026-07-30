@@ -162,7 +162,7 @@ MainWindow {
 
         Settings.sources.lastSearchSource = sourceSelector.currentValue;
     }
-    onClosing: close => {
+    onClosing: {
         if (Settings.tray.enabled && Settings.tray.closeToTray) {
             return;
         }
