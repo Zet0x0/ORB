@@ -23,4 +23,5 @@ qt_add_qml_module(
     ItemDelegate.qml
     Frame.qml
     CheckBox.qml
+    Label.qml
     NO_PLUGIN)
