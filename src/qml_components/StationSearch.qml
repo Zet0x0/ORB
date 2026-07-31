@@ -91,7 +91,6 @@ StackLayout {
             activeFocusOnTab: true
             boundsBehavior: Flickable.StopAtBounds
             clip: true
-            highlightFollowsCurrentItem: false
             keyNavigationWraps: true
             model: SourceController.stationModel()
             pixelAligned: true
@@ -99,19 +98,6 @@ StackLayout {
 
             delegate: StationDelegate {
                 width: ListView.view.width
-            }
-            highlight: Rectangle {
-                color: "transparent"
-                height: ListView.view.currentItem?.height ?? 0
-                visible: (!(ListView.view.currentItem as StationDelegate)?.hovered ?? false) && ListView.view.activeFocus
-                width: ListView.view.currentItem?.width ?? 0
-                y: ListView.view.currentItem?.y ?? 0
-                z: 2
-
-                border {
-                    color: palette.highlight
-                    width: 4
-                }
             }
 
             onCountChanged: currentIndex = count === 0 ? -1 : 0

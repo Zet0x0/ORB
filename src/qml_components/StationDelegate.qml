@@ -25,7 +25,7 @@ Frame {
     padding: 0
 
     background: Rectangle {
-        border.color: control.hovered ? palette.accent : palette.mid
+        border.color: control.hovered || (control.ListView.isCurrentItem && control.ListView.view.activeFocus) ? palette.highlight : palette.mid
         color: palette.window
     }
 
