@@ -16,4 +16,5 @@ qt_add_qml_module(
     BusyIndicator.qml
     Button.qml
     ApplicationWindow.qml
+    ToolTip.qml
     NO_PLUGIN)
