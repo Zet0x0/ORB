@@ -15,4 +15,5 @@ qt_add_qml_module(
     TextFieldContextMenu.qml
     BusyIndicator.qml
     Button.qml
+    ApplicationWindow.qml
     NO_PLUGIN)
