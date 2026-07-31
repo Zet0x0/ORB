@@ -19,4 +19,5 @@ qt_add_qml_module(
     ToolTip.qml
     MenuBar.qml
     MenuBarItem.qml
+    ToolButton.qml
     NO_PLUGIN)
