@@ -20,4 +20,5 @@ qt_add_qml_module(
     MenuBar.qml
     MenuBarItem.qml
     ToolButton.qml
+    ItemDelegate.qml
     NO_PLUGIN)
