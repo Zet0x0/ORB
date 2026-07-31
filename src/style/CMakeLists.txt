@@ -22,4 +22,5 @@ qt_add_qml_module(
     ToolButton.qml
     ItemDelegate.qml
     Frame.qml
+    CheckBox.qml
     NO_PLUGIN)
