@@ -1,11 +1,10 @@
 import QtQuick
 import QtQuick.Controls
-import QtQuick.Controls.Fusion as FusionC
 
 Menu {
     id: control
 
-    required property FusionC.TextField editor
+    required property TextField editor
 
     ContextMenuItem {
         enabled: control.editor.canUndo

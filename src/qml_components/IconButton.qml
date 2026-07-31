@@ -6,4 +6,10 @@ Button {
     display: AbstractButton.IconOnly
     implicitHeight: icon.height + verticalPadding * 2
     implicitWidth: icon.width + horizontalPadding * 2
+
+    // HACK: (?): prevent hijacking TapHandlers below this button
+    TapHandler {
+        acceptedButtons: Qt.AllButtons & ~Qt.LeftButton
+        gesturePolicy: TapHandler.ReleaseWithinBounds
+    }
 }
