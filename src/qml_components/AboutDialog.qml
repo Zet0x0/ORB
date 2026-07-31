@@ -5,7 +5,6 @@ import QtQuick.Layouts
 Dialog {
     id: control
 
-    dim: true
     modal: true
     standardButtons: Dialog.Ok
     title: qsTr("About %0").arg(Qt.application.name)
