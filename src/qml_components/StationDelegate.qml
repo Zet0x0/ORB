@@ -21,7 +21,6 @@ Frame {
         }
     }
 
-    hoverEnabled: enabled
     padding: 0
 
     background: Rectangle {
