@@ -1,5 +1,5 @@
 import QtQuick
-import QtQuick.Controls as C
+import QtQuick.Controls.impl
 import QtQuick.Templates as T
 
 T.BusyIndicator {
@@ -9,15 +9,12 @@ T.BusyIndicator {
     implicitWidth: Math.max(implicitBackgroundWidth + leftInset + rightInset, implicitContentWidth + leftPadding + rightPadding)
 
     contentItem: Item {
-        height: control.availableHeight
-        width: control.availableWidth
+        implicitHeight: 28
+        implicitWidth: 28
 
-        C.Button {
-            background: null
-            display: C.AbstractButton.IconOnly
-            enabled: false
+        IconLabel {
+            display: T.AbstractButton.IconOnly
             height: width
-            padding: 0
             width: parent.width
 
             RotationAnimator on rotation {
@@ -29,7 +26,7 @@ T.BusyIndicator {
             }
 
             icon {
-                color: control.palette.buttonText
+                color: control.palette.windowText
                 height: height
                 name: "dots"
                 width: width
