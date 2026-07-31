@@ -11,6 +11,7 @@ T.Button {
     spacing: 6
 
     background: Rectangle {
+        border.color: control.visualFocus ? control.palette.highlight : "#00000000"
         color: Qt.darker(control.highlighted ? control.palette.highlight : control.palette.button, control.down || control.checked ? 1.2 : (enabled && control.hovered ? 0.8 : 1.0))
         implicitHeight: 24
         implicitWidth: 80
