@@ -84,10 +84,20 @@ Dialog {
                     clip: true
                     currentIndex: 0
                     focus: true
+                    highlightFollowsCurrentItem: false
                     keyNavigationEnabled: true
                     keyNavigationWraps: true
 
                     delegate: CategoryDelegate {}
+                    highlight: Rectangle {
+                        border.color: palette.highlight
+                        color: "#00000000"
+                        height: ListView.view.currentItem.height
+                        visible: ListView.view.activeFocus
+                        width: ListView.view.currentItem.width
+                        y: ListView.view.currentItem.y
+                        z: 2
+                    }
                     model: SettingsCategoryModel {}
                 }
 
