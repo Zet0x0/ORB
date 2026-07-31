@@ -25,8 +25,8 @@ Frame {
     padding: 0
 
     background: Rectangle {
-        border.color: control.hovered || (control.ListView.isCurrentItem && control.ListView.view.activeFocus) ? palette.highlight : palette.mid
-        color: palette.window
+        border.color: control.ListView.isCurrentItem && control.ListView.view.activeFocus ? palette.highlight : "#00000000"
+        color: Qt.darker(palette.base, (enabled && control.hovered) || (control.ListView.isCurrentItem && control.ListView.view.activeFocus) ? 0.8 : 1.0)
     }
 
     Keys.onSpacePressed: handleInteraction()
