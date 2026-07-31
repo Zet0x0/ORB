@@ -29,6 +29,7 @@ TextField {
 
         ToolTip.text: qsTr("Clear")
         enabled: control.enabled
+        flat: true
         icon.name: "circle-x"
         implicitHeight: parent.height
         z: 1
