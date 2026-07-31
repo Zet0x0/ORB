@@ -24,4 +24,6 @@ qt_add_qml_module(
     Frame.qml
     CheckBox.qml
     Label.qml
+    Dialog.qml
+    DialogButtonBox.qml
     NO_PLUGIN)
