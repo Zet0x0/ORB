@@ -108,17 +108,7 @@ StackLayout {
             id: stationViewScrollBar
 
             Layout.fillHeight: true
-            minimumSize: 0.1
-            padding: 0
-            policy: visible ? ScrollBar.AlwaysOn : ScrollBar.AlwaysOff
-            visible: stationView.contentHeight > stationView.height
-
-            contentItem: Rectangle {
-                color: stationViewScrollBar.pressed ? palette.midlight : palette.light
-                implicitHeight: 100
-                implicitWidth: 6
-                radius: Math.floor(width / 2)
-            }
+            policy: stationView.contentHeight > stationView.height ? ScrollBar.AlwaysOn : ScrollBar.AlwaysOff
         }
     }
 }

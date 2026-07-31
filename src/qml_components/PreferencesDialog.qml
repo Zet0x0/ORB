@@ -103,17 +103,7 @@ Dialog {
                     id: categoryScrollBar
 
                     Layout.fillHeight: true
-                    minimumSize: 0.1
-                    padding: 0
-                    policy: visible ? ScrollBar.AlwaysOn : ScrollBar.AlwaysOff
-                    visible: categoryList.contentHeight > categoryList.height
-
-                    contentItem: Rectangle {
-                        color: categoryScrollBar.pressed ? palette.midlight : palette.light
-                        implicitHeight: 100
-                        implicitWidth: 6
-                        radius: Math.floor(width / 2)
-                    }
+                    policy: categoryList.contentHeight > categoryList.height ? ScrollBar.AlwaysOn : ScrollBar.AlwaysOff
                 }
             }
         }
@@ -238,17 +228,7 @@ Dialog {
                     id: settingsScrollBar
 
                     Layout.fillHeight: true
-                    minimumSize: 0.1
-                    padding: 0
-                    policy: visible ? ScrollBar.AlwaysOn : ScrollBar.AlwaysOff
-                    visible: settingsFlickable.contentHeight > settingsFlickable.height
-
-                    contentItem: Rectangle {
-                        color: settingsScrollBar.pressed ? palette.midlight : palette.light
-                        implicitHeight: 100
-                        implicitWidth: 6
-                        radius: Math.floor(width / 2)
-                    }
+                    policy: settingsFlickable.contentHeight > settingsFlickable.height ? ScrollBar.AlwaysOn : ScrollBar.AlwaysOff
                 }
             }
         }

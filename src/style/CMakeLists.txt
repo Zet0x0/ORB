@@ -26,4 +26,5 @@ qt_add_qml_module(
     Label.qml
     Dialog.qml
     DialogButtonBox.qml
+    ScrollBar.qml
     NO_PLUGIN)
