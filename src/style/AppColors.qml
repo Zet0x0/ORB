@@ -27,7 +27,7 @@ QtObject {
         windowText: "#e0e0e0"
     }
     readonly property ColorGroup disabled: ColorGroup {
-        accent: "#711c9c"
+        accent: "#550080"
         alternateBase: "#303030"
         base: "#1a1a1a"
         brightText: "#8a8a8a"
@@ -37,7 +37,7 @@ QtObject {
         highlight: "#3d3d3d"
         highlightedText: "#8a8a8a"
         light: "#4a4a4a"
-        link: "#711c9c"
+        link: "#550080"
         linkVisited: "#875c9c"
         mid: "#212121"
         midlight: "#454545"
