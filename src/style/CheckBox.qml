@@ -21,7 +21,7 @@ T.CheckBox {
     }
     indicator: Rectangle {
         border.color: control.visualFocus ? control.palette.highlight : "#00000000"
-        color: Qt.darker(control.palette.base, control.down ? 1.2 : (enabled && control.hovered ? 0.8 : 1.0))
+        color: Qt.darker(control.palette.base, control.down ? 1.2 : (enabled && (control.hovered || control.visualFocus) ? 0.8 : 1.0))
         implicitHeight: 14
         implicitWidth: 14
         x: control.text ? (control.mirrored ? control.width - width - control.rightPadding : control.leftPadding) : control.leftPadding + Math.floor((control.availableWidth - width) / 2)

@@ -11,10 +11,10 @@ T.ItemDelegate {
     spacing: 6
 
     background: Rectangle {
-        color: Qt.darker(control.palette.base, control.down || control.checked ? 1.2 : (enabled && control.hovered ? 0.8 : 1.0))
+        color: Qt.darker(control.palette.base, control.down || control.checked ? 1.2 : (enabled && (control.hovered || control.visualFocus) ? 0.8 : 1.0))
         implicitHeight: 20
         implicitWidth: 100
-        visible: control.down || control.hovered || control.checked || control.highlighted
+        visible: control.down || control.hovered || control.visualFocus || control.checked || control.highlighted
     }
     contentItem: IconLabel {
         alignment: control.display === IconLabel.IconOnly || control.display === IconLabel.TextUnderIcon ? Qt.AlignCenter : Qt.AlignLeft

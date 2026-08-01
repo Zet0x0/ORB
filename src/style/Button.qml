@@ -12,11 +12,11 @@ T.Button {
 
     background: Rectangle {
         border.color: control.visualFocus ? control.palette.highlight : "#00000000"
-        color: Qt.darker(control.highlighted ? control.palette.highlight : control.palette.button, control.down || control.checked ? 1.2 : (enabled && control.hovered ? 0.8 : 1.0))
+        color: Qt.darker(control.highlighted ? control.palette.highlight : control.palette.button, control.down || control.checked ? 1.2 : (enabled && (control.hovered || control.visualFocus) ? 0.8 : 1.0))
         implicitHeight: 24
         implicitWidth: 80
         radius: 2
-        visible: !control.flat || control.down || control.checked || control.highlighted || control.visualFocus || (enabled && control.hovered)
+        visible: !control.flat || control.down || control.checked || control.highlighted || control.visualFocus || (enabled && (control.hovered || control.visualFocus))
     }
     contentItem: IconLabel {
         color: control.palette.buttonText

@@ -14,7 +14,7 @@ T.MenuBarItem {
         color: Qt.lighter(control.palette.base, 1.2)
         implicitHeight: 20
         implicitWidth: 20
-        visible: control.down || control.hovered || (control.menu && control.menu.opened) || (control.highlighted && !control.menuBar.hovered)
+        visible: control.down || control.hovered || control.visualFocus || (control.menu && control.menu.opened) || (control.highlighted && !control.menuBar.hovered)
     }
     contentItem: IconLabel {
         alignment: Qt.AlignLeft
