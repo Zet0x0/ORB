@@ -8,13 +8,27 @@ Label {
     id: control
 
     ToolTip.text: text
-    ToolTip.visible: truncated && hoverHandler.hovered
+    ToolTip.visible: truncated && (hoverHandler.hovered || activeFocus)
+    activeFocusOnTab: true
     color: state === "showing-info" ? palette.windowText : palette.disabled.windowText
     elide: Text.ElideRight
     font.italic: state !== "showing-info"
     maximumLineCount: 1
     textFormat: Text.PlainText
 
+    background: Rectangle {
+        color: "#00000000"
+
+        Rectangle {
+            border.color: control.activeFocus ? control.palette.highlight : "#00000000"
+            color: "#00000000"
+            height: Math.round(control.contentHeight) + 4
+            radius: 2
+            width: Math.round(control.contentWidth) + 4
+            x: -2
+            y: -2
+        }
+    }
     states: [
         State {
             name: "playback-stopped"
@@ -42,9 +56,22 @@ Label {
         }
     ]
 
-    ContextMenu.onRequested: position => {
-        if (position.x <= control.contentWidth && position.y <= control.contentHeight) {
-            contextMenu.popup(position);
+    Shortcut {
+        enabled: control.activeFocus
+        sequences: ["Menu", "Shift+F10"]
+
+        onActivated: contextMenu.popup(Qt.point(0, control.height))
+    }
+
+    TapHandler {
+        acceptedButtons: Qt.RightButton
+
+        onTapped: event => {
+            const position = event.position;
+
+            if (position.x <= control.contentWidth && position.y <= control.contentHeight) {
+                contextMenu.popup(position);
+            }
         }
     }
 

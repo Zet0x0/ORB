@@ -56,7 +56,7 @@ Frame {
                 Layout.fillWidth: true
                 Layout.maximumHeight: 48
                 ToolTip.text: control.station.name
-                ToolTip.visible: truncated && control.hovered
+                ToolTip.visible: truncated && (enabled && (control.hovered || control.visualFocus || (control.ListView.isCurrentItem && control.ListView.view.activeFocus)))
                 elide: Text.ElideRight
                 text: control.station.name
                 textFormat: Text.PlainText

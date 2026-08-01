@@ -29,7 +29,7 @@ RowLayout {
 
     Slider {
         ToolTip.text: qsTr("Volume: %0%").arg(Math.round(value))
-        ToolTip.visible: pressed || hovered
+        ToolTip.visible: pressed || hovered || visualFocus
         from: 0
         palette.accent: Player.muted ? control.palette.disabled.accent : control.palette.accent
         stepSize: 1.0

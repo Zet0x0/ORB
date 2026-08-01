@@ -256,7 +256,7 @@ MainWindow {
                 id: sourceSelector
 
                 ToolTip.text: qsTr("Station search source")
-                ToolTip.visible: hovered
+                ToolTip.visible: hovered || visualFocus
                 currentValue: Settings.sources.lastSearchSource
                 model: SourceController.getSources()
                 textRole: "name"
