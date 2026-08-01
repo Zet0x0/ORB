@@ -25,9 +25,9 @@ StackLayout {
 
         icon {
             color: palette.active.buttonText
-            height: Math.floor(parent.height / 2)
+            height: Math.round(parent.height / 2)
             name: "radio"
-            width: Math.floor(parent.width / 2)
+            width: Math.round(parent.width / 2)
         }
     }
 
@@ -50,11 +50,11 @@ StackLayout {
         id: loadingIndicatorParent
 
         BusyIndicator {
-            height: Math.floor(parent.height / 2)
+            height: Math.round(parent.height / 2)
             running: loadingIndicatorParent.StackLayout.isCurrentItem
-            width: Math.floor(parent.width / 2)
-            x: Math.floor((parent.width - width) / 2)
-            y: Math.floor((parent.height - height) / 2)
+            width: Math.round(parent.width / 2)
+            x: Math.round((parent.width - width) / 2)
+            y: Math.round((parent.height - height) / 2)
         }
     }
 }

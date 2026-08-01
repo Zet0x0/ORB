@@ -9,7 +9,7 @@ T.ToolTip {
     implicitWidth: Math.max(implicitBackgroundWidth + leftInset + rightInset, implicitContentWidth + leftPadding + rightPadding)
     margins: 6
     padding: 6
-    x: parent ? Math.floor((parent.width - implicitWidth) / 2) : 0
+    x: parent ? Math.round((parent.width - implicitWidth) / 2) : 0
     y: -implicitHeight - 3
 
     background: Rectangle {

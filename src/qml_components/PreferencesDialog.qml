@@ -11,8 +11,8 @@ Dialog {
     closePolicy: Popup.CloseOnEscape
     modal: true
     title: qsTr("Preferences")
-    x: Math.floor((parent.width - width) / 2)
-    y: Math.floor((parent.height - height) / 2)
+    x: Math.round((parent.width - width) / 2)
+    y: Math.round((parent.height - height) / 2)
     z: 1
 
     footer: DialogButtonBox {
@@ -111,7 +111,7 @@ Dialog {
         Frame {
             Layout.fillHeight: true
             Layout.fillWidth: true
-            Layout.maximumHeight: Math.floor(control.parent.height * 0.7)
+            Layout.maximumHeight: Math.round(control.parent.height * 0.7)
             Layout.minimumHeight: 300
             Layout.minimumWidth: 300
             Layout.preferredHeight: Math.min(Layout.maximumHeight, settingsColumn.implicitHeight + topPadding + bottomPadding)

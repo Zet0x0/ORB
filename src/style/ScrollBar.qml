@@ -14,7 +14,7 @@ T.ScrollBar {
         color: contentItemHoverHandler.hovered ? control.palette.light : control.palette.midlight
         implicitHeight: control.interactive ? 6 : 2
         implicitWidth: control.interactive ? 6 : 2
-        radius: Math.floor(width / 2)
+        radius: Math.round(width / 2)
 
         HoverHandler {
             id: contentItemHoverHandler

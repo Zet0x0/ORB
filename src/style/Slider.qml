@@ -14,15 +14,15 @@ T.Slider {
         implicitWidth: control.horizontal ? 160 : 3
         radius: 2
         width: control.horizontal ? control.availableWidth : implicitWidth
-        x: control.horizontal ? 0 : Math.floor((control.availableWidth - width) / 2)
-        y: control.horizontal ? Math.floor((control.availableHeight - height) / 2) : 0
+        x: control.horizontal ? 0 : Math.round((control.availableWidth - width) / 2)
+        y: control.horizontal ? Math.round((control.availableHeight - height) / 2) : 0
 
         Rectangle {
             color: control.palette.accent
-            height: control.horizontal ? 3 : Math.floor(control.position * parent.height)
+            height: control.horizontal ? 3 : Math.round(control.position * parent.height)
             radius: 2
-            width: control.horizontal ? Math.floor(control.position * parent.width) : 3
-            y: control.horizontal ? 0 : Math.floor(control.visualPosition * parent.height)
+            width: control.horizontal ? Math.round(control.position * parent.width) : 3
+            y: control.horizontal ? 0 : Math.round(control.visualPosition * parent.height)
         }
     }
     handle: Rectangle {
@@ -31,8 +31,8 @@ T.Slider {
         implicitHeight: 13
         implicitWidth: 13
         radius: 2
-        x: control.leftPadding + Math.floor(control.horizontal ? control.visualPosition * (control.availableWidth - width) : (control.availableWidth - width) / 2)
-        y: control.topPadding + Math.floor(control.horizontal ? (control.availableHeight - height) / 2 : control.visualPosition * (control.availableHeight - height))
+        x: control.leftPadding + Math.round(control.horizontal ? control.visualPosition * (control.availableWidth - width) : (control.availableWidth - width) / 2)
+        y: control.topPadding + Math.round(control.horizontal ? (control.availableHeight - height) / 2 : control.visualPosition * (control.availableHeight - height))
 
         HoverHandler {
             id: handleHoverHandler
