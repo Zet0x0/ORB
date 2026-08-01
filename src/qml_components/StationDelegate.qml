@@ -28,7 +28,13 @@ Frame {
         color: Qt.darker(palette.base, (enabled && control.hovered) || (control.ListView.isCurrentItem && control.ListView.view.activeFocus) ? 0.8 : 1.0)
     }
 
-    Keys.onSpacePressed: handleInteraction()
+    Keys.onPressed: event => {
+        if (event.key === Qt.Key_Return || event.key === Qt.Key_Enter || event.key === Qt.Key_Space) {
+            handleInteraction();
+
+            event.accepted = true;
+        }
+    }
 
     HoverHandler {
         cursorShape: Qt.PointingHandCursor
