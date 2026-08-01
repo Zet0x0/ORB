@@ -7,6 +7,7 @@ import QtQuick.Layouts
 Frame {
     id: control
 
+    property bool keyPressed: false
     required property station station
 
     function handleInteraction() {
@@ -25,14 +26,28 @@ Frame {
 
     background: Rectangle {
         border.color: control.ListView.isCurrentItem && control.ListView.view.activeFocus ? palette.highlight : "#00000000"
-        color: Qt.darker(palette.base, (enabled && (control.hovered || control.visualFocus)) || (control.ListView.isCurrentItem && control.ListView.view.activeFocus) ? 0.8 : 1.0)
+        color: Qt.darker(palette.base, tapHandler.pressed || control.keyPressed ? 1.2 : (enabled && (control.hovered || control.visualFocus || (control.ListView.isCurrentItem && control.ListView.view.activeFocus)) ? 0.8 : 1.0))
     }
 
     Keys.onPressed: event => {
         if (event.key === Qt.Key_Return || event.key === Qt.Key_Enter || event.key === Qt.Key_Space) {
+            keyPressed = true;
+
             handleInteraction();
 
             event.accepted = true;
+        }
+    }
+    Keys.onReleased: event => {
+        if (event.key === Qt.Key_Return || event.key === Qt.Key_Enter || event.key === Qt.Key_Space) {
+            keyPressed = false;
+
+            event.accepted = true;
+        }
+    }
+    onActiveFocusChanged: {
+        if (!activeFocus) {
+            keyPressed = false;
         }
     }
 
@@ -41,6 +56,8 @@ Frame {
     }
 
     TapHandler {
+        id: tapHandler
+
         onTapped: control.handleInteraction()
     }
 
