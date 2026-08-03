@@ -28,10 +28,6 @@ T.TextField {
         onActivated: contextMenu.popup(Qt.point(control.leftPadding, control.cursorRectangle.y + control.cursorRectangle.height))
     }
 
-    HoverHandler {
-        id: hoverHandler
-    }
-
     TapHandler {
         acceptedButtons: Qt.RightButton
 
@@ -55,7 +51,7 @@ T.TextField {
         y: control.topPadding
     }
 
-    TextFieldContextMenu {
+    TextEditingContextMenu {
         id: contextMenu
 
         editor: control

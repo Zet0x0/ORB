@@ -12,7 +12,7 @@ qt_add_qml_module(
     AppColors.qml
     AppPalette.qml
     TextField.qml
-    TextFieldContextMenu.qml
+    TextEditingContextMenu.qml
     BusyIndicator.qml
     Button.qml
     ApplicationWindow.qml
@@ -32,4 +32,5 @@ qt_add_qml_module(
     MenuItem.qml
     MenuSeparator.qml
     ScrollIndicator.qml
+    SpinBox.qml
     NO_PLUGIN)

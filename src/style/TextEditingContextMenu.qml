@@ -4,7 +4,9 @@ import QtQuick.Controls
 Menu {
     id: control
 
-    required property TextField editor
+    required property Item editor
+
+    popupType: Popup.Window
 
     Action {
         enabled: control.editor.canUndo
