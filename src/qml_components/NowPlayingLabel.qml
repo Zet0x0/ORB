@@ -82,7 +82,7 @@ Label {
     Menu {
         id: contextMenu
 
-        MenuItem {
+        Action {
             enabled: control.state === "showing-info"
             icon.name: "copy"
             text: qsTr("Copy")

@@ -6,7 +6,7 @@ Menu {
 
     required property TextField editor
 
-    MenuItem {
+    Action {
         enabled: control.editor.canUndo
         icon.name: "arrow-back-up"
         text: qsTr("Undo")
@@ -14,7 +14,7 @@ Menu {
         onTriggered: control.editor.undo()
     }
 
-    MenuItem {
+    Action {
         enabled: control.editor.canRedo
         icon.name: "arrow-forward-up"
         text: qsTr("Redo")
@@ -24,7 +24,7 @@ Menu {
 
     MenuSeparator {}
 
-    MenuItem {
+    Action {
         enabled: !control.editor.readOnly && control.editor.selectedText.length > 0
         icon.name: "cut"
         text: qsTr("Cut")
@@ -32,7 +32,7 @@ Menu {
         onTriggered: control.editor.cut()
     }
 
-    MenuItem {
+    Action {
         enabled: control.editor.selectedText.length > 0
         icon.name: "copy"
         text: qsTr("Copy")
@@ -40,7 +40,7 @@ Menu {
         onTriggered: control.editor.copy()
     }
 
-    MenuItem {
+    Action {
         enabled: !control.editor.readOnly
         icon.name: "clipboard"
         text: qsTr("Paste")
@@ -48,7 +48,7 @@ Menu {
         onTriggered: control.editor.paste()
     }
 
-    MenuItem {
+    Action {
         enabled: !control.editor.readOnly && control.editor.selectedText.length > 0
         icon.name: "trash"
         text: qsTr("Delete")
@@ -58,7 +58,7 @@ Menu {
 
     MenuSeparator {}
 
-    MenuItem {
+    Action {
         icon.name: "select-all"
         text: qsTr("Select All")
 
