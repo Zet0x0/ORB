@@ -52,20 +52,15 @@ T.MenuItem {
         x: control.mirrored ? control.width - width - control.rightPadding : control.leftPadding
         y: control.topPadding + Math.round((control.availableHeight - height) / 2)
 
-        IconLabel {
-            display: T.AbstractButton.IconOnly
+        IconImage {
+            color: control.palette.text
             height: width
+            name: "check"
+            sourceSize: Qt.size(width, height)
             visible: control.checked
             width: parent.width
             x: Math.round((parent.width - width) / 2)
             y: Math.round((parent.height - height) / 2)
-
-            icon {
-                color: control.palette.text
-                height: height
-                name: "check"
-                width: width
-            }
         }
     }
 

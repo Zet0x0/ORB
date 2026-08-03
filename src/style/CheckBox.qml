@@ -27,20 +27,15 @@ T.CheckBox {
         x: control.text ? (control.mirrored ? control.width - width - control.rightPadding : control.leftPadding) : control.leftPadding + Math.round((control.availableWidth - width) / 2)
         y: control.topPadding + Math.round((control.availableHeight - height) / 2)
 
-        IconLabel {
-            display: T.AbstractButton.IconOnly
+        IconImage {
+            color: control.palette.text
             height: width
+            name: "check"
+            sourceSize: Qt.size(width, height)
             visible: control.checkState === Qt.Checked || (control.checked && control.checkState === undefined)
             width: parent.width
             x: Math.round((parent.width - width) / 2)
             y: Math.round((parent.height - height) / 2)
-
-            icon {
-                color: control.palette.text
-                height: height
-                name: "check"
-                width: width
-            }
         }
 
         Rectangle {

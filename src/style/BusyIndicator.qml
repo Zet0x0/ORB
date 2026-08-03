@@ -12,9 +12,11 @@ T.BusyIndicator {
         implicitHeight: 28
         implicitWidth: 28
 
-        IconLabel {
-            display: T.AbstractButton.IconOnly
+        IconImage {
+            color: control.palette.windowText
             height: width
+            name: "dots"
+            sourceSize: Qt.size(width, height)
             width: parent.width
 
             RotationAnimator on rotation {
@@ -23,13 +25,6 @@ T.BusyIndicator {
                 loops: Animation.Infinite
                 running: control.running && control.visible
                 to: 360
-            }
-
-            icon {
-                color: control.palette.windowText
-                height: height
-                name: "dots"
-                width: width
             }
         }
     }
