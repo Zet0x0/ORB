@@ -102,7 +102,6 @@ void Player::setState(const State &newState) {
     emit stateChanged();
 }
 
-// taken from MpvQt examples & slightly modified
 QString Player::formatTime(double time) const {
     const int totalNumberOfSeconds = static_cast<int>(time);
 

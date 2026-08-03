@@ -84,14 +84,10 @@ Label {
 
         MenuItem {
             enabled: control.state === "showing-info"
+            icon.name: "copy"
             text: qsTr("Copy")
 
             onTriggered: Utilities.copyToClipboard(Player.nowPlaying)
-
-            icon {
-                color: palette.buttonText
-                name: "copy"
-            }
         }
     }
 }

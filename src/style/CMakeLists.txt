@@ -28,4 +28,8 @@ qt_add_qml_module(
     DialogButtonBox.qml
     ScrollBar.qml
     Slider.qml
+    Menu.qml
+    MenuItem.qml
+    MenuSeparator.qml
+    ScrollIndicator.qml
     NO_PLUGIN)
