@@ -239,6 +239,7 @@ Dialog {
         required property int index
         required property string name
 
+        font.bold: highlighted
         highlighted: ListView.isCurrentItem
         text: name
         width: ListView.view.width
