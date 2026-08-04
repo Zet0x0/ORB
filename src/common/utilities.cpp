@@ -3,6 +3,7 @@
 #include <QCursor>
 #include <QDateTime>
 #include <QGuiApplication>
+#include <QScreen>
 #include <QUrl>
 
 QString Utilities::normalizeUserInputUrl(const QString &userInput) {
@@ -38,4 +39,14 @@ QString Utilities::pasteFromClipboard() {
 
 QPoint Utilities::getGlobalCursorPos() {
     return QCursor::pos();
+}
+
+QRect Utilities::getScreenAvailableGeometry(const QPoint &point) {
+    QScreen *screen = QGuiApplication::screenAt(point);
+
+    if (screen == nullptr) {
+        screen = QGuiApplication::primaryScreen();
+    }
+
+    return screen->availableGeometry();
 }
