@@ -33,6 +33,7 @@ T.Menu {
     margins: 0
     overlap: 1
     padding: 1
+    z: 2
 
     T.Overlay.modal: Rectangle {
         color: Qt.alpha(control.palette.dark, 0.1)

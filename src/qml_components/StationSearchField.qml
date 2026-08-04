@@ -32,7 +32,6 @@ TextField {
         flat: true
         icon.name: "circle-x"
         implicitHeight: parent.height
-        z: 1
 
         onClicked: {
             control.clear();

@@ -6,8 +6,6 @@ Menu {
 
     required property Item editor
 
-    popupType: Popup.Window
-
     Action {
         enabled: control.editor.canUndo
         icon.name: "arrow-back-up"

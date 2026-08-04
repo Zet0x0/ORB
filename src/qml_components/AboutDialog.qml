@@ -10,7 +10,6 @@ Dialog {
     title: qsTr("About %0").arg(Qt.application.name)
     x: Math.round((parent.width - width) / 2)
     y: Math.round((parent.height - height) / 2)
-    z: 1
 
     FontMetrics {
         id: bodyFontMetrics

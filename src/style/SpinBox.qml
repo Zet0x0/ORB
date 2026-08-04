@@ -44,7 +44,6 @@ T.SpinBox {
         text: control.displayText
         validator: control.validator
         verticalAlignment: Qt.AlignVCenter
-        z: 2
 
         Shortcut {
             enabled: textInput.activeFocus

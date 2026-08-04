@@ -13,7 +13,6 @@ Dialog {
     title: qsTr("Preferences")
     x: Math.round((parent.width - width) / 2)
     y: Math.round((parent.height - height) / 2)
-    z: 1
 
     footer: DialogButtonBox {
         Button {
@@ -94,7 +93,7 @@ Dialog {
                         visible: ListView.view.activeFocus
                         width: ListView.view.currentItem.width
                         y: ListView.view.currentItem.y
-                        z: 2
+                        z: 1
                     }
                     model: SettingsCategoryModel {}
                 }
