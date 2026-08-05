@@ -1,6 +1,6 @@
 import ORB.Player
+import ORB.Style
 import QtQuick
-import QtQuick.Controls
 
 // TODO: sliding label OR elide
 Label {

@@ -26,8 +26,6 @@ qt_add_executable(ORB ${SOURCES})
 
 qt_add_qml_module(ORB URI ORB QML_FILES Main.qml)
 
-qt_add_resources(ORB "resources" PREFIX "/" FILES qtquickcontrols2.conf)
-
 add_subdirectory(common)
 add_subdirectory(settings)
 add_subdirectory(sources)

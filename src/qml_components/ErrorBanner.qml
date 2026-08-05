@@ -1,7 +1,6 @@
 import ORB.Common
 import ORB.Style
 import QtQuick
-import QtQuick.Controls
 import QtQuick.Layouts
 
 Frame {

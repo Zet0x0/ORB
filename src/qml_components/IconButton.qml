@@ -1,5 +1,5 @@
+import ORB.Style
 import QtQuick
-import QtQuick.Controls
 
 Button {
     ToolTip.visible: ToolTip.text.length > 0 && (hovered || visualFocus)

@@ -1,6 +1,6 @@
 import ORB.Player
+import ORB.Style
 import QtQuick
-import QtQuick.Controls
 import QtQuick.Layouts
 
 RowLayout {

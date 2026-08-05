@@ -1,6 +1,6 @@
 import ORB.Player
+import ORB.Style
 import QtQuick
-import QtQuick.Controls
 
 IconButton {
     ToolTip.text: Player.state === Player.Stopped ? qsTr("Play") : qsTr("Stop")
