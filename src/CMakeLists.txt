@@ -18,7 +18,8 @@ find_package(Qt6 REQUIRED COMPONENTS Quick QuickControls2 LabsPlatform)
 
 qt_standard_project_setup(REQUIRES 6.11)
 
-add_subdirectory("external/mpvqt" EXCLUDE_FROM_ALL)
+add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/../external/mpvqt"
+                 "${CMAKE_CURRENT_BINARY_DIR}/external/mpvqt" EXCLUDE_FROM_ALL)
 
 set(SOURCES ORB.rc main.cpp)
 qt_add_big_resources(SOURCES style/icons/icons.qrc)
@@ -36,7 +37,6 @@ add_subdirectory(qml_components)
 target_link_libraries(
     ORB
     PRIVATE Qt6::Quick
-            Qt6::QuickControls2
             Qt6::LabsPlatform
             settings
             sources
@@ -52,6 +52,7 @@ set(CMAKE_INSTALL_BINDIR ".")
 include(GNUInstallDirs)
 install(TARGETS ORB RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}")
 install(FILES "${Libmpv_RUNTIME_DLL}" DESTINATION "${CMAKE_INSTALL_BINDIR}")
+
 if(BUILD_SHARED_LIBS)
     install(FILES "$<TARGET_FILE:MpvQt>" DESTINATION "${CMAKE_INSTALL_BINDIR}")
 endif()
@@ -64,7 +65,9 @@ qt_generate_deploy_app_script(
     NO_UNSUPPORTED_PLATFORM_ERROR
     DEPLOY_TOOL_OPTIONS
     --qmldir
-    "${CMAKE_CURRENT_SOURCE_DIR}")
+    "${CMAKE_CURRENT_SOURCE_DIR}"
+    --qmlimport
+    "${CMAKE_CURRENT_BINARY_DIR}")
 
 install(SCRIPT "cmake/DeploySettings.cmake")
 install(SCRIPT "${deploy_script}")
