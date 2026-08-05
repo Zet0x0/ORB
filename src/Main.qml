@@ -187,7 +187,9 @@ MainWindow {
 
         applicationWindow: applicationWindow
 
-        trayMenu: SystemTrayMenu {}
+        trayMenu: SystemTrayMenu {
+            palette: applicationWindow.palette
+        }
     }
 
     ColumnLayout {
