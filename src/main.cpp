@@ -5,44 +5,30 @@
 #include <QIcon>
 #include <QPalette>
 #include <QQmlApplicationEngine>
+#include <QQmlComponent>
 #include <QQuickWindow>
 
 namespace {
-struct ColorRoleMapping {
-    QPalette::ColorRole role;
-    const char *propertyName;
-};
-
-constexpr ColorRoleMapping colorRoleMappings[] = {
-    {QPalette::Accent, "accent"},
-    {QPalette::AlternateBase, "alternateBase"},
-    {QPalette::Base, "base"},
-    {QPalette::BrightText, "brightText"},
-    {QPalette::Button, "button"},
-    {QPalette::ButtonText, "buttonText"},
-    {QPalette::Dark, "dark"},
-    {QPalette::Highlight, "highlight"},
-    {QPalette::HighlightedText, "highlightedText"},
-    {QPalette::Light, "light"},
-    {QPalette::Link, "link"},
-    {QPalette::LinkVisited, "linkVisited"},
-    {QPalette::Mid, "mid"},
-    {QPalette::Midlight, "midlight"},
-    {QPalette::PlaceholderText, "placeholderText"},
-    {QPalette::Shadow, "shadow"},
-    {QPalette::Text, "text"},
-    {QPalette::ToolTipBase, "toolTipBase"},
-    {QPalette::ToolTipText, "toolTipText"},
-    {QPalette::Window, "window"},
-    {QPalette::WindowText, "windowText"},
-};
-
 void applyColorGroup(QPalette &palette, QPalette::ColorGroup group,
                      QObject *colorGroup) {
-    for (const ColorRoleMapping &mapping : colorRoleMappings) {
-        palette.setColor(
-            group, mapping.role,
-            colorGroup->property(mapping.propertyName).value<QColor>());
+    static const QMetaEnum roleEnum =
+        QMetaEnum::fromType<QPalette::ColorRole>();
+
+    for (int i = 0; i < roleEnum.keyCount(); ++i) {
+        QByteArray propertyName = roleEnum.key(i);
+
+        propertyName[0] = static_cast<char>(
+            std::tolower(static_cast<unsigned char>(propertyName[0])));
+
+        const QVariant value = colorGroup->property(propertyName.constData());
+
+        if (!value.canConvert<QColor>()) {
+            continue;
+        }
+
+        palette.setColor(group,
+                         static_cast<QPalette::ColorRole>(roleEnum.value(i)),
+                         value.value<QColor>());
     }
 }
 
@@ -81,15 +67,22 @@ int main(int argc, char *argv[]) {
             QCoreApplication::exit(-1);
         },
         Qt::QueuedConnection);
-    QObject::connect(
-        &engine, &QQmlApplicationEngine::objectCreated, &app,
-        [&app](QObject *object, const QUrl &) {
-            if (object) {
-                app.setPalette(paletteFromQmlPalette(
-                    object->property("palette").value<QObject *>()));
+
+    {
+        QQmlComponent paletteComponent(&engine, QStringLiteral("ORB.Style"),
+                                       QStringLiteral("AppPalette"));
+
+        if (paletteComponent.isReady()) {
+            std::unique_ptr<QObject> paletteObject(paletteComponent.create());
+
+            if (paletteObject) {
+                app.setPalette(paletteFromQmlPalette(paletteObject.get()));
             }
-        },
-        Qt::QueuedConnection);
+        } else {
+            qWarning() << "Failed to load ORB.Style/AppPalette:"
+                       << paletteComponent.errors();
+        }
+    }
 
     // Add sources
     {
