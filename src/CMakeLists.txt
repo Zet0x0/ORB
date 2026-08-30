@@ -37,6 +37,7 @@ add_subdirectory(qml_components)
 target_link_libraries(
     ORB
     PRIVATE Qt6::Quick
+            Qt6::QuickControls2
             Qt6::LabsPlatform
             settings
             sources

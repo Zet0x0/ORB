@@ -9,7 +9,7 @@ qt_add_qml_module(
     OUTPUT_DIRECTORY
     "${CMAKE_BINARY_DIR}/ORB/Style"
     IMPORTS
-    QtQuick.Controls.Fusion
+    QtQuick.Controls.Basic
     QML_FILES
     AppColors.qml
     AppPalette.qml

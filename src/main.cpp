@@ -6,6 +6,7 @@
 #include <QPalette>
 #include <QQmlApplicationEngine>
 #include <QQmlComponent>
+#include <QQuickStyle>
 #include <QQuickWindow>
 
 namespace {
@@ -54,6 +55,7 @@ int main(int argc, char *argv[]) {
 
     QGuiApplication::setQuitOnLastWindowClosed(false);
 
+    QQuickStyle::setStyle(QStringLiteral("ORB.Style"));
     QQuickWindow::setGraphicsApi(QSGRendererInterface::OpenGL);
 
     QIcon::setThemeName("ORB");
