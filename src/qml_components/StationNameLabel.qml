@@ -10,7 +10,8 @@ Label {
     ToolTip.visible: truncated && (hoverHandler.hovered || activeFocus)
     activeFocusOnTab: truncated || activeFocus
     elide: Text.ElideRight
-    font.italic: state !== "showing-name"
+    font.italic: !Player.station.valid
+    text: Player.station.valid ? Player.station.name : qsTr("No station selected")
     textFormat: Text.PlainText
 
     background: Rectangle {
@@ -26,24 +27,6 @@ Label {
             y: -2
         }
     }
-    states: [
-        State {
-            name: "no-station"
-            when: !Player.station.valid
-
-            PropertyChanges {
-                root.text: qsTr("No station selected")
-            }
-        },
-        State {
-            name: "showing-name"
-            when: Player.station.valid
-
-            PropertyChanges {
-                root.text: Player.station.name
-            }
-        }
-    ]
 
     HoverHandler {
         id: hoverHandler

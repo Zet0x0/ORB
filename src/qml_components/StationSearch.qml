@@ -6,65 +6,34 @@ import QtQuick.Layouts
 StackLayout {
     id: root
 
+    readonly property bool showingStations: !SourceController.currentSourceIsNull && SourceController.searchState === SourceController.Idle && stationView.count > 0
     required property ComboBox sourceSelector
 
-    currentIndex: state === "showing-stations" ? 1 : 0
-
-    states: [
-        State {
-            name: "no-source"
-            when: SourceController.currentSourceIsNull
-
-            PropertyChanges {
-                statusLabel.text: qsTr("# Nothing to show\nStart by [selecting a source](#sourceSelector)")
-            }
-        },
-        State {
-            name: "searching"
-            when: SourceController.searchState === SourceController.Searching
-
-            PropertyChanges {
-                statusLabel.text: qsTr("# Searching stations...")
-            }
-        },
-        State {
-            name: "error"
-            when: SourceController.searchState === SourceController.Error
-
-            PropertyChanges {
-                statusLabel.text: qsTr("# %0\n%1").arg(SourceController.error.title).arg(SourceController.error.message)
-            }
-        },
-        State {
-            name: "showing-stations"
-            when: stationView.count > 0
-
-            PropertyChanges {
-                statusLabel.text: qsTr("# You should be seeing the stations,\nnot this message")
-            }
-        },
-        State {
-            name: "no-default-stations"
-            when: !SourceController.canShowDefaultStations && stationView.count === 0
-
-            PropertyChanges {
-                statusLabel.text: qsTr("# Nothing to show\nType something in the search field")
-            }
-        },
-        State {
-            name: "no-results"
-            when: SourceController.canShowDefaultStations && stationView.count === 0
-
-            PropertyChanges {
-                statusLabel.text: qsTr("# Nothing found\nCheck your search query")
-            }
-        }
-    ]
+    currentIndex: showingStations ? 1 : 0
 
     Label {
         id: statusLabel
 
         horizontalAlignment: Qt.AlignHCenter
+        text: {
+            if (SourceController.currentSourceIsNull) {
+                return qsTr("# Nothing to show\nStart by [selecting a source](#sourceSelector)");
+            }
+
+            if (SourceController.searchState === SourceController.Searching) {
+                return qsTr("# Searching stations...");
+            }
+
+            if (SourceController.searchState === SourceController.Error) {
+                return qsTr("# %0\n%1").arg(SourceController.error.title).arg(SourceController.error.message);
+            }
+
+            if (SourceController.canShowDefaultStations) {
+                return qsTr("# Nothing found\nCheck your search query");
+            }
+
+            return qsTr("# Nothing to show\nType something in the search field");
+        }
         textFormat: Text.MarkdownText
         verticalAlignment: Qt.AlignVCenter
 

@@ -7,13 +7,26 @@ import QtQuick
 Label {
     id: root
 
+    readonly property bool showingInfo: Player.station.valid && Player.state !== Player.Stopped && Player.nowPlaying !== ""
+
     ToolTip.text: text
     ToolTip.visible: truncated && (hoverHandler.hovered || activeFocus)
     activeFocusOnTab: true
-    color: state === "showing-info" ? palette.windowText : palette.disabled.windowText
+    color: showingInfo ? palette.windowText : palette.disabled.windowText
     elide: Text.ElideRight
-    font.italic: state !== "showing-info"
+    font.italic: !showingInfo
     maximumLineCount: 1
+    text: {
+        if (!Player.station.valid || Player.state === Player.Stopped) {
+            return qsTr("Not playing anything currently");
+        }
+
+        if (Player.nowPlaying === "") {
+            return qsTr("No song information available");
+        }
+
+        return Player.nowPlaying;
+    }
     textFormat: Text.PlainText
 
     background: Rectangle {
@@ -29,32 +42,6 @@ Label {
             y: -2
         }
     }
-    states: [
-        State {
-            name: "playback-stopped"
-            when: !Player.station.valid || Player.state === Player.Stopped
-
-            PropertyChanges {
-                root.text: qsTr("Not playing anything currently")
-            }
-        },
-        State {
-            name: "no-info"
-            when: Player.nowPlaying === ""
-
-            PropertyChanges {
-                root.text: qsTr("No song information available")
-            }
-        },
-        State {
-            name: "showing-info"
-            when: Player.nowPlaying !== ""
-
-            PropertyChanges {
-                root.text: Player.nowPlaying
-            }
-        }
-    ]
 
     Shortcut {
         enabled: root.activeFocus
@@ -83,7 +70,7 @@ Label {
         id: contextMenu
 
         Action {
-            enabled: root.state === "showing-info"
+            enabled: root.showingInfo
             icon.name: "copy"
             text: qsTr("Copy")
 
