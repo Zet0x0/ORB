@@ -66,7 +66,7 @@ MainWindow {
             // `height` hack (QTBUG-???)
 
             MenuItem {
-                enabled: Player.station.valid
+                enabled: visible && Player.station.valid
                 height: visible ? implicitHeight : 0
                 text: qsTr("&Play")
                 visible: Player.state === Player.Stopped
@@ -75,6 +75,7 @@ MainWindow {
             }
 
             MenuItem {
+                enabled: visible
                 height: visible ? implicitHeight : 0
                 text: qsTr("&Stop")
                 visible: Player.state !== Player.Stopped
@@ -110,6 +111,7 @@ MainWindow {
             // `height` hack (QTBUG-???)
 
             MenuItem {
+                enabled: visible
                 height: visible ? implicitHeight : 0
                 text: qsTr("&Mute")
                 visible: !Player.muted
@@ -118,6 +120,7 @@ MainWindow {
             }
 
             MenuItem {
+                enabled: visible
                 height: visible ? implicitHeight : 0
                 text: qsTr("&Unmute")
                 visible: Player.muted
