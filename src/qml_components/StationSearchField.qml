@@ -1,6 +1,6 @@
 import ORB.Sources
+import ORB.Style
 import QtQuick
-import QtQuick.Controls
 
 TextField {
     id: control
@@ -29,9 +29,9 @@ TextField {
 
         ToolTip.text: qsTr("Clear")
         enabled: control.enabled
-        icon.name: "x"
+        flat: true
+        icon.name: "circle-x"
         implicitHeight: parent.height
-        z: 1
 
         onClicked: {
             control.clear();

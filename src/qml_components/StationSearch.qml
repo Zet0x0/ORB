@@ -1,6 +1,6 @@
 import ORB.Sources
+import ORB.Style
 import QtQuick
-import QtQuick.Controls
 import QtQuick.Layouts
 
 StackLayout {
@@ -91,7 +91,6 @@ StackLayout {
             activeFocusOnTab: true
             boundsBehavior: Flickable.StopAtBounds
             clip: true
-            highlightFollowsCurrentItem: false
             keyNavigationWraps: true
             model: SourceController.stationModel()
             pixelAligned: true
@@ -100,39 +99,15 @@ StackLayout {
             delegate: StationDelegate {
                 width: ListView.view.width
             }
-            highlight: Rectangle {
-                color: "transparent"
-                height: ListView.view.currentItem?.height ?? 0
-                visible: (!(ListView.view.currentItem as StationDelegate)?.hovered ?? false) && ListView.view.activeFocus
-                width: ListView.view.currentItem?.width ?? 0
-                y: ListView.view.currentItem?.y ?? 0
-                z: 2
-
-                border {
-                    color: palette.highlight
-                    width: 4
-                }
-            }
 
             onCountChanged: currentIndex = count === 0 ? -1 : 0
             onCurrentItemChanged: positionViewAtIndex(currentIndex, ListView.Contain)
         }
 
-        ScrollBar {
+        LayoutScrollBar {
             id: stationViewScrollBar
 
-            Layout.fillHeight: true
-            minimumSize: 0.1
-            padding: 0
-            policy: visible ? ScrollBar.AlwaysOn : ScrollBar.AlwaysOff
-            visible: stationView.contentHeight > stationView.height
-
-            contentItem: Rectangle {
-                color: stationViewScrollBar.pressed ? palette.midlight : palette.light
-                implicitHeight: 100
-                implicitWidth: 6
-                radius: Math.floor(width / 2)
-            }
+            view: stationView
         }
     }
 }

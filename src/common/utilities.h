@@ -2,6 +2,7 @@
 
 #include "singleton.h"
 #include <QPoint>
+#include <QRect>
 #include <QRestReply>
 
 class Utilities : public QObject, public Singleton<Utilities> {
@@ -23,4 +24,5 @@ public:
     Q_INVOKABLE static QString pasteFromClipboard();
 
     Q_INVOKABLE static QPoint getGlobalCursorPos();
+    Q_INVOKABLE static QRect getScreenAvailableGeometry(const QPoint &point);
 };

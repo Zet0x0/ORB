@@ -1,4 +1,4 @@
-import QtQuick.Controls
+import ORB.Style
 
 ApplicationWindow {
     function activate() {

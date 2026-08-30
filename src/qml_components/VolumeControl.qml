@@ -1,14 +1,10 @@
 import ORB.Player
+import ORB.Style
 import QtQuick
-import QtQuick.Controls
 import QtQuick.Layouts
 
 RowLayout {
-    SystemPalette {
-        id: activeSystemPalette
-
-        colorGroup: SystemPalette.Active
-    }
+    id: control
 
     IconButton {
         ToolTip.text: Player.muted ? qsTr("Unmute") : qsTr("Mute")
@@ -32,10 +28,10 @@ RowLayout {
     }
 
     Slider {
-        ToolTip.text: qsTr("Volume: %0").arg(Math.round(value) + "%")
-        ToolTip.visible: pressed || hovered
+        ToolTip.text: qsTr("Volume: %0%").arg(Math.round(value))
+        ToolTip.visible: pressed || hovered || visualFocus
         from: 0
-        palette.highlight: Player.muted ? Qt.darker(activeSystemPalette.highlight, 1.5) : activeSystemPalette.highlight
+        palette.accent: Player.muted ? control.palette.disabled.accent : control.palette.accent
         stepSize: 1.0
         to: 100
         value: Player.volume

@@ -1,21 +1,18 @@
 pragma ComponentBehavior: Bound
 
 import ORB.Settings
+import ORB.Style
 import QtQuick
-import QtQuick.Controls
 import QtQuick.Layouts
 
 Dialog {
     id: control
 
     closePolicy: Popup.CloseOnEscape
-    dim: true
-    focus: true
     modal: true
     title: qsTr("Preferences")
-    x: Math.floor((parent.width - width) / 2)
-    y: Math.floor((parent.height - height) / 2)
-    z: 1
+    x: Math.round((parent.width - width) / 2)
+    y: Math.round((parent.height - height) / 2)
 
     footer: DialogButtonBox {
         Button {
@@ -84,28 +81,27 @@ Dialog {
                     clip: true
                     currentIndex: 0
                     focus: true
+                    highlightFollowsCurrentItem: false
                     keyNavigationEnabled: true
                     keyNavigationWraps: true
 
                     delegate: CategoryDelegate {}
+                    highlight: Rectangle {
+                        border.color: palette.highlight
+                        color: "#00000000"
+                        height: ListView.view.currentItem.height
+                        visible: ListView.view.activeFocus
+                        width: ListView.view.currentItem.width
+                        y: ListView.view.currentItem.y
+                        z: 1
+                    }
                     model: SettingsCategoryModel {}
                 }
 
-                ScrollBar {
+                LayoutScrollBar {
                     id: categoryScrollBar
 
-                    Layout.fillHeight: true
-                    minimumSize: 0.1
-                    padding: 0
-                    policy: visible ? ScrollBar.AlwaysOn : ScrollBar.AlwaysOff
-                    visible: categoryList.contentHeight > categoryList.height
-
-                    contentItem: Rectangle {
-                        color: categoryScrollBar.pressed ? palette.midlight : palette.light
-                        implicitHeight: 100
-                        implicitWidth: 6
-                        radius: Math.floor(width / 2)
-                    }
+                    view: categoryList
                 }
             }
         }
@@ -113,7 +109,7 @@ Dialog {
         Frame {
             Layout.fillHeight: true
             Layout.fillWidth: true
-            Layout.maximumHeight: Math.floor(control.parent.height * 0.7)
+            Layout.maximumHeight: Math.round(control.parent.height * 0.7)
             Layout.minimumHeight: 300
             Layout.minimumWidth: 300
             Layout.preferredHeight: Math.min(Layout.maximumHeight, settingsColumn.implicitHeight + topPadding + bottomPadding)
@@ -226,21 +222,10 @@ Dialog {
                     }
                 }
 
-                ScrollBar {
+                LayoutScrollBar {
                     id: settingsScrollBar
 
-                    Layout.fillHeight: true
-                    minimumSize: 0.1
-                    padding: 0
-                    policy: visible ? ScrollBar.AlwaysOn : ScrollBar.AlwaysOff
-                    visible: settingsFlickable.contentHeight > settingsFlickable.height
-
-                    contentItem: Rectangle {
-                        color: settingsScrollBar.pressed ? palette.midlight : palette.light
-                        implicitHeight: 100
-                        implicitWidth: 6
-                        radius: Math.floor(width / 2)
-                    }
+                    view: settingsFlickable
                 }
             }
         }
@@ -251,13 +236,11 @@ Dialog {
         required property int index
         required property string name
 
+        font.bold: highlighted
         highlighted: ListView.isCurrentItem
         text: name
         width: ListView.view.width
 
-        Component.onCompleted: {
-            background.color = Qt.binding(() => down ? palette.midlight : (highlighted ? palette.active.highlight : (hovered ? palette.button : "transparent")));
-        }
         onClicked: ListView.view.currentIndex = index
     }
 }

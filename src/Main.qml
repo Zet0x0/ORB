@@ -3,8 +3,8 @@ import ORB.Player
 import ORB.QmlComponents
 import ORB.Settings
 import ORB.Sources
+import ORB.Style
 import QtQuick
-import QtQuick.Controls
 import QtQuick.Layouts
 
 MainWindow {
@@ -66,7 +66,7 @@ MainWindow {
             // `height` hack (QTBUG-???)
 
             MenuItem {
-                enabled: Player.station.valid
+                enabled: visible && Player.station.valid
                 height: visible ? implicitHeight : 0
                 text: qsTr("&Play")
                 visible: Player.state === Player.Stopped
@@ -75,6 +75,7 @@ MainWindow {
             }
 
             MenuItem {
+                enabled: visible
                 height: visible ? implicitHeight : 0
                 text: qsTr("&Stop")
                 visible: Player.state !== Player.Stopped
@@ -110,6 +111,7 @@ MainWindow {
             // `height` hack (QTBUG-???)
 
             MenuItem {
+                enabled: visible
                 height: visible ? implicitHeight : 0
                 text: qsTr("&Mute")
                 visible: !Player.muted
@@ -118,6 +120,7 @@ MainWindow {
             }
 
             MenuItem {
+                enabled: visible
                 height: visible ? implicitHeight : 0
                 text: qsTr("&Unmute")
                 visible: Player.muted
@@ -136,6 +139,7 @@ MainWindow {
             }
         }
     }
+    palette: AppPalette {}
 
     Component.onCompleted: {
         if (Settings.window.x >= 0 && Settings.window.y >= 0) {
@@ -160,7 +164,7 @@ MainWindow {
 
         Settings.sources.lastSearchSource = sourceSelector.currentValue;
     }
-    onClosing: close => {
+    onClosing: {
         if (Settings.tray.enabled && Settings.tray.closeToTray) {
             return;
         }
@@ -185,7 +189,9 @@ MainWindow {
 
         applicationWindow: applicationWindow
 
-        trayMenu: SystemTrayMenu {}
+        trayMenu: SystemTrayMenu {
+            palette: applicationWindow.palette
+        }
     }
 
     ColumnLayout {
@@ -224,9 +230,13 @@ MainWindow {
                 }
 
                 RowLayout {
-                    PlayButton {}
+                    PlayButton {
+                        id: playButton
+                    }
 
-                    PlaybackStatusIndicator {}
+                    PlaybackStatusIndicator {
+                        Layout.maximumHeight: playButton.height
+                    }
 
                     Item {
                         Layout.fillWidth: true
@@ -250,7 +260,7 @@ MainWindow {
                 id: sourceSelector
 
                 ToolTip.text: qsTr("Station search source")
-                ToolTip.visible: hovered
+                ToolTip.visible: hovered || visualFocus
                 currentValue: Settings.sources.lastSearchSource
                 model: SourceController.getSources()
                 textRole: "name"
@@ -291,9 +301,8 @@ MainWindow {
 
     ErrorBanner {
         error: Player.error
-        x: Math.floor((parent.width - width) / 2)
-        y: Math.floor((parent.height - height) / 2)
-        z: 999
+        x: Math.round((parent.width - width) / 2)
+        y: Math.round((parent.height - height) / 2)
 
         onDismissed: Player.clearError()
     }

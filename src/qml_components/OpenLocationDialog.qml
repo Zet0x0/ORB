@@ -1,8 +1,8 @@
 import ORB.Common
 import ORB.Player
 import ORB.Sources
+import ORB.Style
 import QtQuick
-import QtQuick.Controls
 import QtQuick.Layouts
 
 Dialog {
@@ -21,9 +21,8 @@ Dialog {
     pendingStation.streamUrl: urlField.text
     standardButtons: Dialog.Ok | Dialog.Cancel
     title: qsTr("Open Location")
-    x: Math.floor((parent.width - width) / 2)
-    y: Math.floor((parent.height - height) / 2)
-    z: 1
+    x: Math.round((parent.width - width) / 2)
+    y: Math.round((parent.height - height) / 2)
 
     Component.onCompleted: {
         const playButton = standardButton(Dialog.Ok);

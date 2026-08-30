@@ -1,5 +1,5 @@
+import ORB.Style
 import QtQuick
-import QtQuick.Controls
 import QtQuick.Layouts
 
 StackLayout {
@@ -25,9 +25,9 @@ StackLayout {
 
         icon {
             color: palette.active.buttonText
-            height: Math.floor(parent.height / 2)
+            height: Math.round(parent.height / 2)
             name: "radio"
-            width: Math.floor(parent.width / 2)
+            width: Math.round(parent.width / 2)
         }
     }
 
@@ -46,7 +46,15 @@ StackLayout {
     }
 
     // Image.Loading
-    BusyIndicator {
-        running: StackLayout.isCurrentItem
+    Item {
+        id: loadingIndicatorParent
+
+        BusyIndicator {
+            height: Math.round(parent.height / 2)
+            running: loadingIndicatorParent.StackLayout.isCurrentItem
+            width: Math.round(parent.width / 2)
+            x: Math.round((parent.width - width) / 2)
+            y: Math.round((parent.height - height) / 2)
+        }
     }
 }

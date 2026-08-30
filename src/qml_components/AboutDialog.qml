@@ -1,17 +1,15 @@
+import ORB.Style
 import QtQuick
-import QtQuick.Controls
 import QtQuick.Layouts
 
 Dialog {
     id: control
 
-    dim: true
     modal: true
     standardButtons: Dialog.Ok
     title: qsTr("About %0").arg(Qt.application.name)
-    x: Math.floor((parent.width - width) / 2)
-    y: Math.floor((parent.height - height) / 2)
-    z: 1
+    x: Math.round((parent.width - width) / 2)
+    y: Math.round((parent.height - height) / 2)
 
     FontMetrics {
         id: bodyFontMetrics
@@ -23,6 +21,7 @@ Dialog {
         Image {
             Layout.alignment: Qt.AlignTop
             Layout.fillHeight: true
+            Layout.margins: 8
             Layout.preferredWidth: height
             fillMode: Image.PreserveAspectFit
             source: "qrc:/icons/ORB.svg"
@@ -52,14 +51,10 @@ Dialog {
                 Layout.alignment: Qt.AlignHCenter
                 Layout.topMargin: 8
                 flat: true
+                icon.name: "brand-github"
                 text: qsTr("View on GitHub")
 
                 onClicked: Qt.openUrlExternally("https://github.com/Zet0x0/ORB")
-
-                icon {
-                    color: palette.buttonText
-                    name: "brand-github"
-                }
             }
         }
     }

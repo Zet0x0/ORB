@@ -1,13 +1,11 @@
 import QtQuick
-import QtQuick.Controls
-import QtQuick.Controls.Fusion as FusionC
 
 Menu {
     id: control
 
-    required property FusionC.TextField editor
+    required property Item editor
 
-    ContextMenuItem {
+    Action {
         enabled: control.editor.canUndo
         icon.name: "arrow-back-up"
         text: qsTr("Undo")
@@ -15,7 +13,7 @@ Menu {
         onTriggered: control.editor.undo()
     }
 
-    ContextMenuItem {
+    Action {
         enabled: control.editor.canRedo
         icon.name: "arrow-forward-up"
         text: qsTr("Redo")
@@ -25,7 +23,7 @@ Menu {
 
     MenuSeparator {}
 
-    ContextMenuItem {
+    Action {
         enabled: !control.editor.readOnly && control.editor.selectedText.length > 0
         icon.name: "cut"
         text: qsTr("Cut")
@@ -33,7 +31,7 @@ Menu {
         onTriggered: control.editor.cut()
     }
 
-    ContextMenuItem {
+    Action {
         enabled: control.editor.selectedText.length > 0
         icon.name: "copy"
         text: qsTr("Copy")
@@ -41,7 +39,7 @@ Menu {
         onTriggered: control.editor.copy()
     }
 
-    ContextMenuItem {
+    Action {
         enabled: !control.editor.readOnly
         icon.name: "clipboard"
         text: qsTr("Paste")
@@ -49,7 +47,7 @@ Menu {
         onTriggered: control.editor.paste()
     }
 
-    ContextMenuItem {
+    Action {
         enabled: !control.editor.readOnly && control.editor.selectedText.length > 0
         icon.name: "trash"
         text: qsTr("Delete")
@@ -59,14 +57,10 @@ Menu {
 
     MenuSeparator {}
 
-    ContextMenuItem {
+    Action {
         icon.name: "select-all"
         text: qsTr("Select All")
 
         onTriggered: control.editor.selectAll()
-    }
-
-    component ContextMenuItem: MenuItem {
-        icon.color: palette.buttonText
     }
 }

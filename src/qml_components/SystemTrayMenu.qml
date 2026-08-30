@@ -1,6 +1,7 @@
+import ORB.Common
 import ORB.Player
+import ORB.Style
 import QtQuick
-import QtQuick.Controls
 
 Window {
     id: window
@@ -26,10 +27,12 @@ Window {
             return;
         }
 
-        x = Math.max(Screen.virtualX, Math.min(Screen.virtualX + Screen.width - width, lastPosition.x));
+        const availableGeometry = Utilities.getScreenAvailableGeometry(lastPosition);
+
+        x = Math.max(availableGeometry.x, Math.min(availableGeometry.x + availableGeometry.width - width, lastPosition.x));
         // fencepost problem: window's last pixel row is `y + height - 1`,
         // so `y` must be `lastPosition.y - (height - 1)` for that row to land on the cursor
-        y = Math.max(Screen.virtualY, Math.min(Screen.virtualY + Screen.height - height, lastPosition.y - (height - 1)));
+        y = Math.max(availableGeometry.y, Math.min(availableGeometry.y + availableGeometry.height - height, lastPosition.y - (height - 1)));
     }
 
     color: "#00000000"

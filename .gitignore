@@ -83,4 +83,4 @@ CMakeLists.txt.user*
 build*/
 
 # Downloaded by cmake/DownloadTablerIcons.cmake
-/src/external/tabler-icons/
+/external/tabler-icons/

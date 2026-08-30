@@ -1,14 +1,39 @@
 add_library(style STATIC)
 
+set_source_files_properties(AppColors.qml PROPERTIES QT_QML_SINGLETON_TYPE TRUE)
+
 qt_add_qml_module(
     style
     URI
     ORB.Style
     OUTPUT_DIRECTORY
     "${CMAKE_BINARY_DIR}/ORB/Style"
+    IMPORTS
+    QtQuick.Controls.Basic
     QML_FILES
+    AppColors.qml
+    AppPalette.qml
     TextField.qml
+    TextEditingContextMenu.qml
     BusyIndicator.qml
+    Button.qml
+    ApplicationWindow.qml
+    ToolTip.qml
+    MenuBar.qml
+    MenuBarItem.qml
+    ToolButton.qml
+    ItemDelegate.qml
+    Frame.qml
+    CheckBox.qml
+    Label.qml
+    Dialog.qml
+    DialogButtonBox.qml
+    ScrollBar.qml
+    Slider.qml
+    Menu.qml
+    MenuItem.qml
+    MenuSeparator.qml
+    ScrollIndicator.qml
+    SpinBox.qml
+    ComboBox.qml
     NO_PLUGIN)
-
-target_link_libraries(style PRIVATE qml_components)

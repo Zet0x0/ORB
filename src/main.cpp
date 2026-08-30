@@ -3,8 +3,49 @@
 #include "sources/sourcecontroller.h"
 #include <QGuiApplication>
 #include <QIcon>
+#include <QPalette>
 #include <QQmlApplicationEngine>
+#include <QQmlComponent>
+#include <QQuickStyle>
 #include <QQuickWindow>
+
+namespace {
+void applyColorGroup(QPalette &palette, QPalette::ColorGroup group,
+                     QObject *colorGroup) {
+    static const QMetaEnum roleEnum =
+        QMetaEnum::fromType<QPalette::ColorRole>();
+
+    for (int i = 0; i < roleEnum.keyCount(); ++i) {
+        QByteArray propertyName = roleEnum.key(i);
+
+        propertyName[0] = static_cast<char>(
+            std::tolower(static_cast<unsigned char>(propertyName[0])));
+
+        const QVariant value = colorGroup->property(propertyName.constData());
+
+        if (!value.canConvert<QColor>()) {
+            continue;
+        }
+
+        palette.setColor(group,
+                         static_cast<QPalette::ColorRole>(roleEnum.value(i)),
+                         value.value<QColor>());
+    }
+}
+
+QPalette paletteFromQmlPalette(QObject *qmlPalette) {
+    QPalette palette;
+
+    applyColorGroup(palette, QPalette::Active,
+                    qmlPalette->property("active").value<QObject *>());
+    applyColorGroup(palette, QPalette::Inactive,
+                    qmlPalette->property("inactive").value<QObject *>());
+    applyColorGroup(palette, QPalette::Disabled,
+                    qmlPalette->property("disabled").value<QObject *>());
+
+    return palette;
+}
+}
 
 int main(int argc, char *argv[]) {
     QCoreApplication::setOrganizationName(QStringLiteral("zet0x0"));
@@ -14,6 +55,7 @@ int main(int argc, char *argv[]) {
 
     QGuiApplication::setQuitOnLastWindowClosed(false);
 
+    QQuickStyle::setStyle(QStringLiteral("ORB.Style"));
     QQuickWindow::setGraphicsApi(QSGRendererInterface::OpenGL);
 
     QIcon::setThemeName("ORB");
@@ -27,6 +69,22 @@ int main(int argc, char *argv[]) {
             QCoreApplication::exit(-1);
         },
         Qt::QueuedConnection);
+
+    {
+        QQmlComponent paletteComponent(&engine, QStringLiteral("ORB.Style"),
+                                       QStringLiteral("AppPalette"));
+
+        if (paletteComponent.isReady()) {
+            std::unique_ptr<QObject> paletteObject(paletteComponent.create());
+
+            if (paletteObject) {
+                app.setPalette(paletteFromQmlPalette(paletteObject.get()));
+            }
+        } else {
+            qWarning() << "Failed to load ORB.Style/AppPalette:"
+                       << paletteComponent.errors();
+        }
+    }
 
     // Add sources
     {
