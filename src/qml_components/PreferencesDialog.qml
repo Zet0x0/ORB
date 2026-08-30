@@ -98,11 +98,10 @@ Dialog {
                     model: SettingsCategoryModel {}
                 }
 
-                ScrollBar {
+                LayoutScrollBar {
                     id: categoryScrollBar
 
-                    Layout.fillHeight: true
-                    policy: categoryList.contentHeight > categoryList.height ? ScrollBar.AlwaysOn : ScrollBar.AlwaysOff
+                    view: categoryList
                 }
             }
         }
@@ -223,11 +222,10 @@ Dialog {
                     }
                 }
 
-                ScrollBar {
+                LayoutScrollBar {
                     id: settingsScrollBar
 
-                    Layout.fillHeight: true
-                    policy: settingsFlickable.contentHeight > settingsFlickable.height ? ScrollBar.AlwaysOn : ScrollBar.AlwaysOff
+                    view: settingsFlickable
                 }
             }
         }

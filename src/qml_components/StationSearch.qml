@@ -104,11 +104,10 @@ StackLayout {
             onCurrentItemChanged: positionViewAtIndex(currentIndex, ListView.Contain)
         }
 
-        ScrollBar {
+        LayoutScrollBar {
             id: stationViewScrollBar
 
-            Layout.fillHeight: true
-            policy: stationView.contentHeight > stationView.height ? ScrollBar.AlwaysOn : ScrollBar.AlwaysOff
+            view: stationView
         }
     }
 }

@@ -18,6 +18,7 @@ qt_add_qml_module(
     StationNameLabel.qml
     NowPlayingLabel.qml
     StationSearch.qml
+    LayoutScrollBar.qml
     AboutDialog.qml
     OpenLocationDialog.qml
     SystemTrayIcon.qml
