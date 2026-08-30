@@ -49,7 +49,7 @@ T.SpinBox {
             enabled: textInput.activeFocus
             sequences: ["Menu", "Shift+F10"]
 
-            onActivated: contextMenu.popup(Qt.point(textInput.leftPadding, textInput.cursorRectangle.y + textInput.cursorRectangle.height))
+            onActivated: contextMenu.popup(textInput.leftPadding, textInput.cursorRectangle.y + textInput.cursorRectangle.height)
         }
 
         TapHandler {

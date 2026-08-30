@@ -25,7 +25,7 @@ T.TextField {
         enabled: control.activeFocus
         sequences: ["Menu", "Shift+F10"]
 
-        onActivated: contextMenu.popup(Qt.point(control.leftPadding, control.cursorRectangle.y + control.cursorRectangle.height))
+        onActivated: contextMenu.popup(control.leftPadding, control.cursorRectangle.y + control.cursorRectangle.height)
     }
 
     TapHandler {

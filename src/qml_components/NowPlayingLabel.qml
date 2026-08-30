@@ -60,7 +60,7 @@ Label {
         enabled: control.activeFocus
         sequences: ["Menu", "Shift+F10"]
 
-        onActivated: contextMenu.popup(Qt.point(0, control.height))
+        onActivated: contextMenu.popup(0, control.height)
     }
 
     TapHandler {

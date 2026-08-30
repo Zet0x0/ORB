@@ -35,4 +35,5 @@ qt_add_qml_module(
     MenuSeparator.qml
     ScrollIndicator.qml
     SpinBox.qml
+    ComboBox.qml
     NO_PLUGIN)
