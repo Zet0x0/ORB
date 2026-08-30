@@ -5,7 +5,7 @@ import QtQuick
 
 // TODO: sliding label OR elide
 Label {
-    id: control
+    id: root
 
     ToolTip.text: text
     ToolTip.visible: truncated && (hoverHandler.hovered || activeFocus)
@@ -20,11 +20,11 @@ Label {
         color: "#00000000"
 
         Rectangle {
-            border.color: control.activeFocus ? control.palette.highlight : "#00000000"
+            border.color: root.activeFocus ? root.palette.highlight : "#00000000"
             color: "#00000000"
-            height: Math.round(control.contentHeight) + 4
+            height: Math.round(root.contentHeight) + 4
             radius: 2
-            width: Math.round(control.contentWidth) + 4
+            width: Math.round(root.contentWidth) + 4
             x: -2
             y: -2
         }
@@ -35,7 +35,7 @@ Label {
             when: !Player.station.valid || Player.state === Player.Stopped
 
             PropertyChanges {
-                control.text: qsTr("Not playing anything currently")
+                root.text: qsTr("Not playing anything currently")
             }
         },
         State {
@@ -43,7 +43,7 @@ Label {
             when: Player.nowPlaying === ""
 
             PropertyChanges {
-                control.text: qsTr("No song information available")
+                root.text: qsTr("No song information available")
             }
         },
         State {
@@ -51,16 +51,16 @@ Label {
             when: Player.nowPlaying !== ""
 
             PropertyChanges {
-                control.text: Player.nowPlaying
+                root.text: Player.nowPlaying
             }
         }
     ]
 
     Shortcut {
-        enabled: control.activeFocus
+        enabled: root.activeFocus
         sequences: ["Menu", "Shift+F10"]
 
-        onActivated: contextMenu.popup(0, control.height)
+        onActivated: contextMenu.popup(0, root.height)
     }
 
     TapHandler {
@@ -69,7 +69,7 @@ Label {
         onTapped: event => {
             const position = event.position;
 
-            if (position.x <= control.contentWidth && position.y <= control.contentHeight) {
+            if (position.x <= root.contentWidth && position.y <= root.contentHeight) {
                 contextMenu.popup(position);
             }
         }
@@ -83,7 +83,7 @@ Label {
         id: contextMenu
 
         Action {
-            enabled: control.state === "showing-info"
+            enabled: root.state === "showing-info"
             icon.name: "copy"
             text: qsTr("Copy")
 

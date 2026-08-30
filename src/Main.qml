@@ -8,7 +8,7 @@ import QtQuick
 import QtQuick.Layouts
 
 MainWindow {
-    id: applicationWindow
+    id: root
 
     height: Settings.window.height
     maximumHeight: Screen.height
@@ -187,10 +187,10 @@ MainWindow {
     SystemTrayIcon {
         id: systemTrayIcon
 
-        applicationWindow: applicationWindow
+        applicationWindow: root
 
         trayMenu: SystemTrayMenu {
-            palette: applicationWindow.palette
+            palette: root.palette
         }
     }
 

@@ -2,7 +2,7 @@ import QtQuick
 import QtQuick.Templates as T
 
 T.MenuBar {
-    id: control
+    id: root
 
     bottomPadding: SafeArea.margins.bottom
     implicitHeight: Math.max(implicitBackgroundHeight + topInset + bottomInset, implicitContentHeight + topPadding + bottomPadding)
@@ -12,21 +12,21 @@ T.MenuBar {
     topPadding: SafeArea.margins.top
 
     background: Rectangle {
-        color: control.palette.window
+        color: root.palette.window
         implicitHeight: 20
 
         Rectangle {
-            color: control.palette.mid
+            color: root.palette.mid
             height: 1
             width: parent.width
             y: parent.height - height
         }
     }
     contentItem: Row {
-        spacing: control.spacing
+        spacing: root.spacing
 
         Repeater {
-            model: control.contentModel
+            model: root.contentModel
         }
     }
     delegate: MenuBarItem {}

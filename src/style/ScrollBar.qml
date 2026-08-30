@@ -2,7 +2,7 @@ import QtQuick
 import QtQuick.Templates as T
 
 T.ScrollBar {
-    id: control
+    id: root
 
     implicitHeight: Math.max(implicitBackgroundHeight + topInset + bottomInset, implicitContentHeight + topPadding + bottomPadding)
     implicitWidth: Math.max(implicitBackgroundWidth + leftInset + rightInset, implicitContentWidth + leftPadding + rightPadding)
@@ -11,9 +11,9 @@ T.ScrollBar {
     visible: policy !== T.ScrollBar.AlwaysOff
 
     contentItem: Rectangle {
-        color: contentItemHoverHandler.hovered ? control.palette.light : control.palette.midlight
-        implicitHeight: control.interactive ? 6 : 2
-        implicitWidth: control.interactive ? 6 : 2
+        color: contentItemHoverHandler.hovered ? root.palette.light : root.palette.midlight
+        implicitHeight: root.interactive ? 6 : 2
+        implicitWidth: root.interactive ? 6 : 2
         radius: Math.round(width / 2)
 
         HoverHandler {

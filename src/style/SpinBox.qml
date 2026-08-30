@@ -3,7 +3,7 @@ import QtQuick.Controls.impl
 import QtQuick.Templates as T
 
 T.SpinBox {
-    id: control
+    id: root
 
     implicitHeight: Math.max(implicitBackgroundHeight + topInset + bottomInset, implicitContentHeight + topPadding + bottomPadding, up.implicitIndicatorHeight + down.implicitIndicatorHeight)
     implicitWidth: Math.max(implicitBackgroundWidth + leftInset + rightInset, contentItem.implicitWidth + leftPadding + rightPadding)
@@ -12,37 +12,37 @@ T.SpinBox {
     rightPadding: padding + (!mirrored ? (up.indicator ? up.indicator.width : 0) : 0)
 
     background: Rectangle {
-        border.color: control.activeFocus ? control.palette.highlight : control.palette.mid
-        color: control.palette.base
+        border.color: root.activeFocus ? root.palette.highlight : root.palette.mid
+        color: root.palette.base
         implicitHeight: 24
         implicitWidth: 120
         radius: 2
 
         Rectangle {
-            color: control.palette.mid
-            height: control.activeFocus ? parent.height - 2 : parent.height
+            color: root.palette.mid
+            height: root.activeFocus ? parent.height - 2 : parent.height
             width: 1
             x: {
-                const value = Math.max(control.up.indicator ? control.up.indicator.width : 0, control.down.indicator ? control.down.indicator.width : 0) + 2;
+                const value = Math.max(root.up.indicator ? root.up.indicator.width : 0, root.down.indicator ? root.down.indicator.width : 0) + 2;
 
-                return control.mirrored ? value : parent.width - value;
+                return root.mirrored ? value : parent.width - value;
             }
-            y: control.activeFocus ? 1 : 0
+            y: root.activeFocus ? 1 : 0
         }
     }
     contentItem: TextInput {
         id: textInput
 
         clip: width < implicitWidth
-        color: control.palette.text
-        font: control.font
+        color: root.palette.text
+        font: root.font
         horizontalAlignment: Qt.AlignHCenter
-        inputMethodHints: control.inputMethodHints
-        readOnly: !control.editable
-        selectedTextColor: control.palette.highlightedText
-        selectionColor: control.palette.highlight
-        text: control.displayText
-        validator: control.validator
+        inputMethodHints: root.inputMethodHints
+        readOnly: !root.editable
+        selectedTextColor: root.palette.highlightedText
+        selectionColor: root.palette.highlight
+        text: root.displayText
+        validator: root.validator
         verticalAlignment: Qt.AlignVCenter
 
         Shortcut {
@@ -65,15 +65,15 @@ T.SpinBox {
         }
     }
     down.indicator: PaddedRectangle {
-        bottomLeftRadius: control.mirrored ? 2 : 0
-        bottomRightRadius: control.mirrored ? 0 : 2
+        bottomLeftRadius: root.mirrored ? 2 : 0
+        bottomRightRadius: root.mirrored ? 0 : 2
         clip: true
-        color: Qt.darker(palette.button, control.down.pressed ? 1.2 : (control.down.hovered ? 0.8 : 1.0))
-        height: Math.round(control.height / 2) - 1
+        color: Qt.darker(palette.button, root.down.pressed ? 1.2 : (root.down.hovered ? 0.8 : 1.0))
+        height: Math.round(root.height / 2) - 1
         implicitHeight: 10
         implicitWidth: 15
-        x: control.mirrored ? 1 : control.width - width - 1
-        y: control.height - height - 1
+        x: root.mirrored ? 1 : root.width - width - 1
+        y: root.height - height - 1
 
         IconImage {
             color: palette.buttonText
@@ -85,13 +85,13 @@ T.SpinBox {
     }
     up.indicator: PaddedRectangle {
         clip: true
-        color: Qt.darker(palette.button, control.up.pressed ? 1.2 : (control.up.hovered ? 0.8 : 1.0))
-        height: Math.round(control.height / 2) - 1
+        color: Qt.darker(palette.button, root.up.pressed ? 1.2 : (root.up.hovered ? 0.8 : 1.0))
+        height: Math.round(root.height / 2) - 1
         implicitHeight: 10
         implicitWidth: 15
-        topLeftRadius: control.mirrored ? 2 : 0
-        topRightRadius: control.mirrored ? 0 : 2
-        x: control.mirrored ? 1 : control.width - width - 1
+        topLeftRadius: root.mirrored ? 2 : 0
+        topRightRadius: root.mirrored ? 0 : 2
+        x: root.mirrored ? 1 : root.width - width - 1
         y: 1
 
         IconImage {
@@ -103,8 +103,8 @@ T.SpinBox {
         }
     }
     validator: IntValidator {
-        bottom: Math.min(control.from, control.to)
-        locale: control.locale.name
-        top: Math.max(control.from, control.to)
+        bottom: Math.min(root.from, root.to)
+        locale: root.locale.name
+        top: Math.max(root.from, root.to)
     }
 }

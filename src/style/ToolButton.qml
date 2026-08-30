@@ -3,7 +3,7 @@ import QtQuick.Controls.impl
 import QtQuick.Templates as T
 
 T.ToolButton {
-    id: control
+    id: root
 
     implicitHeight: Math.max(implicitBackgroundHeight + topInset + bottomInset, implicitContentHeight + topPadding + bottomPadding)
     implicitWidth: Math.max(implicitBackgroundWidth + leftInset + rightInset, implicitContentWidth + leftPadding + rightPadding)
@@ -11,22 +11,22 @@ T.ToolButton {
     spacing: 6
 
     background: Rectangle {
-        border.color: control.visualFocus ? control.palette.highlight : "#00000000"
-        color: Qt.darker(control.highlighted ? control.palette.highlight : control.palette.button, control.down || control.checked ? 1.2 : (enabled && (control.hovered || control.visualFocus) ? 0.8 : 1.0))
+        border.color: root.visualFocus ? root.palette.highlight : "#00000000"
+        color: Qt.darker(root.highlighted ? root.palette.highlight : root.palette.button, root.down || root.checked ? 1.2 : (enabled && (root.hovered || root.visualFocus) ? 0.8 : 1.0))
         implicitHeight: 20
         implicitWidth: 20
         radius: 2
-        visible: control.down || control.checked || control.highlighted || control.visualFocus || (enabled && (control.hovered || control.visualFocus))
+        visible: root.down || root.checked || root.highlighted || root.visualFocus || (enabled && (root.hovered || root.visualFocus))
     }
     contentItem: IconLabel {
-        color: control.palette.buttonText
-        defaultIconColor: control.palette.buttonText
-        display: control.display
-        font: control.font
-        icon: control.icon
-        mirrored: control.mirrored
-        spacing: control.spacing
-        text: control.text
+        color: root.palette.buttonText
+        defaultIconColor: root.palette.buttonText
+        display: root.display
+        font: root.font
+        icon: root.icon
+        mirrored: root.mirrored
+        spacing: root.spacing
+        text: root.text
     }
 
     icon {

@@ -1,58 +1,58 @@
 import QtQuick
 
 Menu {
-    id: control
+    id: root
 
     required property Item editor
 
     Action {
-        enabled: control.editor.canUndo
+        enabled: root.editor.canUndo
         icon.name: "arrow-back-up"
         text: qsTr("Undo")
 
-        onTriggered: control.editor.undo()
+        onTriggered: root.editor.undo()
     }
 
     Action {
-        enabled: control.editor.canRedo
+        enabled: root.editor.canRedo
         icon.name: "arrow-forward-up"
         text: qsTr("Redo")
 
-        onTriggered: control.editor.redo()
+        onTriggered: root.editor.redo()
     }
 
     MenuSeparator {}
 
     Action {
-        enabled: !control.editor.readOnly && control.editor.selectedText.length > 0
+        enabled: !root.editor.readOnly && root.editor.selectedText.length > 0
         icon.name: "cut"
         text: qsTr("Cut")
 
-        onTriggered: control.editor.cut()
+        onTriggered: root.editor.cut()
     }
 
     Action {
-        enabled: control.editor.selectedText.length > 0
+        enabled: root.editor.selectedText.length > 0
         icon.name: "copy"
         text: qsTr("Copy")
 
-        onTriggered: control.editor.copy()
+        onTriggered: root.editor.copy()
     }
 
     Action {
-        enabled: !control.editor.readOnly
+        enabled: !root.editor.readOnly
         icon.name: "clipboard"
         text: qsTr("Paste")
 
-        onTriggered: control.editor.paste()
+        onTriggered: root.editor.paste()
     }
 
     Action {
-        enabled: !control.editor.readOnly && control.editor.selectedText.length > 0
+        enabled: !root.editor.readOnly && root.editor.selectedText.length > 0
         icon.name: "trash"
         text: qsTr("Delete")
 
-        onTriggered: control.editor.remove(control.editor.selectionStart, control.editor.selectionEnd)
+        onTriggered: root.editor.remove(root.editor.selectionStart, root.editor.selectionEnd)
     }
 
     MenuSeparator {}
@@ -61,6 +61,6 @@ Menu {
         icon.name: "select-all"
         text: qsTr("Select All")
 
-        onTriggered: control.editor.selectAll()
+        onTriggered: root.editor.selectAll()
     }
 }

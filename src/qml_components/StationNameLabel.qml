@@ -4,7 +4,7 @@ import QtQuick
 
 // TODO: sliding label OR elide
 Label {
-    id: control
+    id: root
 
     ToolTip.text: text
     ToolTip.visible: truncated && (hoverHandler.hovered || activeFocus)
@@ -17,11 +17,11 @@ Label {
         color: "#00000000"
 
         Rectangle {
-            border.color: control.activeFocus ? control.palette.highlight : "#00000000"
+            border.color: root.activeFocus ? root.palette.highlight : "#00000000"
             color: "#00000000"
-            height: Math.round(control.contentHeight) + 4
+            height: Math.round(root.contentHeight) + 4
             radius: 2
-            width: Math.round(control.contentWidth) + 4
+            width: Math.round(root.contentWidth) + 4
             x: -2
             y: -2
         }
@@ -32,7 +32,7 @@ Label {
             when: !Player.station.valid
 
             PropertyChanges {
-                control.text: qsTr("No station selected")
+                root.text: qsTr("No station selected")
             }
         },
         State {
@@ -40,7 +40,7 @@ Label {
             when: Player.station.valid
 
             PropertyChanges {
-                control.text: Player.station.name
+                root.text: Player.station.name
             }
         }
     ]

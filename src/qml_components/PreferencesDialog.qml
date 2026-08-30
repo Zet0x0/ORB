@@ -6,7 +6,7 @@ import QtQuick
 import QtQuick.Layouts
 
 Dialog {
-    id: control
+    id: root
 
     closePolicy: Popup.CloseOnEscape
     modal: true
@@ -29,7 +29,7 @@ Dialog {
 
             onClicked: {
                 propertyModel.applyChanges();
-                control.close();
+                root.close();
             }
         }
 
@@ -37,7 +37,7 @@ Dialog {
             DialogButtonBox.buttonRole: DialogButtonBox.RejectRole
             text: qsTr("Cancel")
 
-            onClicked: control.close()
+            onClicked: root.close()
         }
     }
 
@@ -109,7 +109,7 @@ Dialog {
         Frame {
             Layout.fillHeight: true
             Layout.fillWidth: true
-            Layout.maximumHeight: Math.round(control.parent.height * 0.7)
+            Layout.maximumHeight: Math.round(root.parent.height * 0.7)
             Layout.minimumHeight: 300
             Layout.minimumWidth: 300
             Layout.preferredHeight: Math.min(Layout.maximumHeight, settingsColumn.implicitHeight + topPadding + bottomPadding)

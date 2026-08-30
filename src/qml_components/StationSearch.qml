@@ -4,7 +4,7 @@ import QtQuick
 import QtQuick.Layouts
 
 StackLayout {
-    id: control
+    id: root
 
     required property ComboBox sourceSelector
 
@@ -70,8 +70,8 @@ StackLayout {
 
         onLinkActivated: link => {
             if (link === "#sourceSelector") {
-                control.sourceSelector.focus = true;
-                control.sourceSelector.focusReason = Qt.TabFocusReason;
+                root.sourceSelector.focus = true;
+                root.sourceSelector.focusReason = Qt.TabFocusReason;
             }
         }
 

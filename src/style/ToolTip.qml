@@ -2,7 +2,7 @@ import QtQuick
 import QtQuick.Templates as T
 
 T.ToolTip {
-    id: control
+    id: root
 
     closePolicy: T.Popup.CloseOnEscape | T.Popup.CloseOnPressOutsideParent | T.Popup.CloseOnReleaseOutsideParent
     implicitHeight: Math.max(implicitBackgroundHeight + topInset + bottomInset, implicitContentHeight + topPadding + bottomPadding)
@@ -13,14 +13,14 @@ T.ToolTip {
     y: -implicitHeight - 3
 
     background: Rectangle {
-        border.color: control.palette.toolTipText
-        color: control.palette.toolTipBase
+        border.color: root.palette.toolTipText
+        color: root.palette.toolTipBase
         radius: 2
     }
     contentItem: Text {
-        color: control.palette.toolTipText
-        font: control.font
-        text: control.text
+        color: root.palette.toolTipText
+        font: root.font
+        text: root.text
         wrapMode: Text.Wrap
     }
 }

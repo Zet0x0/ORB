@@ -2,7 +2,7 @@ import QtQuick
 import QtQuick.Templates as T
 
 T.ScrollIndicator {
-    id: control
+    id: root
 
     implicitHeight: Math.max(implicitBackgroundHeight + topInset + bottomInset, implicitContentHeight + topPadding + bottomPadding)
     implicitWidth: Math.max(implicitBackgroundWidth + leftInset + rightInset, implicitContentWidth + leftPadding + rightPadding)
@@ -11,16 +11,16 @@ T.ScrollIndicator {
     contentItem: Rectangle {
         id: indicator
 
-        color: control.palette.midlight
+        color: root.palette.midlight
         implicitHeight: 2
         implicitWidth: 2
         opacity: 0.0
         radius: Math.round(Math.min(width, height) / 2)
-        visible: control.size < 1.0
+        visible: root.size < 1.0
 
         states: State {
             name: "active"
-            when: control.active
+            when: root.active
 
             PropertyChanges {
                 indicator.opacity: 1.0

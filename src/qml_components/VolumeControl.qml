@@ -4,7 +4,7 @@ import QtQuick
 import QtQuick.Layouts
 
 RowLayout {
-    id: control
+    id: root
 
     IconButton {
         ToolTip.text: Player.muted ? qsTr("Unmute") : qsTr("Mute")
@@ -31,7 +31,7 @@ RowLayout {
         ToolTip.text: qsTr("Volume: %0%").arg(Math.round(value))
         ToolTip.visible: pressed || hovered || visualFocus
         from: 0
-        palette.accent: Player.muted ? control.palette.disabled.accent : control.palette.accent
+        palette.accent: Player.muted ? root.palette.disabled.accent : root.palette.accent
         stepSize: 1.0
         to: 100
         value: Player.volume

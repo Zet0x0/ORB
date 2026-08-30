@@ -4,7 +4,7 @@ import QtQuick
 import QtQuick.Templates as T
 
 T.Menu {
-    id: control
+    id: root
 
     property bool keyboardNavigated: false
 
@@ -36,14 +36,14 @@ T.Menu {
     z: 2
 
     T.Overlay.modal: Rectangle {
-        color: Qt.alpha(control.palette.dark, 0.1)
+        color: Qt.alpha(root.palette.dark, 0.1)
     }
     T.Overlay.modeless: Rectangle {
-        color: Qt.alpha(control.palette.dark, 0.1)
+        color: Qt.alpha(root.palette.dark, 0.1)
     }
     background: Rectangle {
-        border.color: control.palette.mid
-        color: control.palette.window
+        border.color: root.palette.mid
+        color: root.palette.window
         implicitHeight: 20
         implicitWidth: 200
     }
@@ -51,25 +51,25 @@ T.Menu {
         id: listView
 
         clip: true
-        currentIndex: control.currentIndex
+        currentIndex: root.currentIndex
         focus: true
         implicitHeight: contentHeight
-        interactive: Window.window ? contentHeight + control.topPadding + control.bottomPadding > control.height : false
+        interactive: Window.window ? contentHeight + root.topPadding + root.bottomPadding > root.height : false
         keyNavigationEnabled: false
-        model: control.contentModel
+        model: root.contentModel
 
         ScrollIndicator.vertical: ScrollIndicator {}
 
         Keys.onPressed: event => {
-            const last = control.selectableIndex(control.count - 1, -1);
-            const first = control.selectableIndex(0, 1);
+            const last = root.selectableIndex(root.count - 1, -1);
+            const first = root.selectableIndex(0, 1);
             let target = -1;
 
             switch (event.key) {
             case Qt.Key_Down:
                 {
-                    control.keyboardNavigated = true;
-                    target = control.selectableIndex(control.currentIndex + 1, 1);
+                    root.keyboardNavigated = true;
+                    target = root.selectableIndex(root.currentIndex + 1, 1);
 
                     if (target < 0) {
                         target = first;
@@ -79,8 +79,8 @@ T.Menu {
                 }
             case Qt.Key_Up:
                 {
-                    control.keyboardNavigated = true;
-                    target = control.currentIndex < 0 ? -1 : control.selectableIndex(control.currentIndex - 1, -1);
+                    root.keyboardNavigated = true;
+                    target = root.currentIndex < 0 ? -1 : root.selectableIndex(root.currentIndex - 1, -1);
 
                     if (target < 0) {
                         target = last;
@@ -90,14 +90,14 @@ T.Menu {
                 }
             case Qt.Key_Home:
                 {
-                    control.keyboardNavigated = true;
+                    root.keyboardNavigated = true;
                     target = first;
 
                     break;
                 }
             case Qt.Key_End:
                 {
-                    control.keyboardNavigated = true;
+                    root.keyboardNavigated = true;
                     target = last;
 
                     break;
@@ -105,7 +105,7 @@ T.Menu {
             case Qt.Key_Left:
             case Qt.Key_Right:
                 {
-                    control.keyboardNavigated = true;
+                    root.keyboardNavigated = true;
 
                     return;
                 }
@@ -117,7 +117,7 @@ T.Menu {
                 return;
             }
 
-            control.currentIndex = target;
+            root.currentIndex = target;
             event.accepted = true;
         }
 
@@ -126,17 +126,17 @@ T.Menu {
             property real lastY: 0
 
             onHoveredChanged: {
-                if (hovered || control.keyboardNavigated) {
+                if (hovered || root.keyboardNavigated) {
                     return;
                 }
 
-                const currentItem = control.currentIndex < 0 ? null : (control.itemAt(control.currentIndex) as MenuItem);
+                const currentItem = root.currentIndex < 0 ? null : (root.itemAt(root.currentIndex) as MenuItem);
 
                 if (currentItem && currentItem.subMenu && currentItem.subMenu.opened) {
                     return;
                 }
 
-                control.currentIndex = -1;
+                root.currentIndex = -1;
             }
             onPointChanged: {
                 if (!hovered || (point.position.x === lastX && point.position.y === lastY)) {
@@ -145,12 +145,12 @@ T.Menu {
 
                 lastX = point.position.x;
                 lastY = point.position.y;
-                control.keyboardNavigated = false;
+                root.keyboardNavigated = false;
 
                 const index = listView.indexAt(listView.contentX + point.position.x, listView.contentY + point.position.y);
 
-                if (index >= 0 && !control.isSelectable(index)) {
-                    control.currentIndex = -1;
+                if (index >= 0 && !root.isSelectable(index)) {
+                    root.currentIndex = -1;
                 }
             }
         }
