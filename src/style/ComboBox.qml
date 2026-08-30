@@ -92,7 +92,9 @@ T.ComboBox {
     }
     popup: T.Popup {
         bottomMargin: 6
+        // qmllint disable missing-property
         height: Math.min(contentItem.implicitHeight + 2, root.Window.height - topMargin - bottomMargin)
+        // qmllint enable missing-property
         padding: 1
         palette: root.palette
         topMargin: 6

@@ -3,7 +3,7 @@ import QtQuick
 Menu {
     id: root
 
-    required property Item editor
+    required property TextInput editor
 
     Action {
         enabled: root.editor.canUndo
