@@ -61,18 +61,49 @@ T.Menu {
         ScrollIndicator.vertical: ScrollIndicator {}
 
         Keys.onPressed: event => {
+            const last = control.selectableIndex(control.count - 1, -1);
+            const first = control.selectableIndex(0, 1);
+            let target = -1;
+
             switch (event.key) {
-            case Qt.Key_Up:
             case Qt.Key_Down:
                 {
                     control.keyboardNavigated = true;
+                    target = control.selectableIndex(control.currentIndex + 1, 1);
+
+                    if (target < 0) {
+                        target = first;
+                    }
+
+                    break;
+                }
+            case Qt.Key_Up:
+                {
+                    control.keyboardNavigated = true;
+                    target = control.currentIndex < 0 ? -1 : control.selectableIndex(control.currentIndex - 1, -1);
+
+                    if (target < 0) {
+                        target = last;
+                    }
+
+                    break;
+                }
+            case Qt.Key_Home:
+                {
+                    control.keyboardNavigated = true;
+                    target = first;
+
+                    break;
+                }
+            case Qt.Key_End:
+                {
+                    control.keyboardNavigated = true;
+                    target = last;
 
                     break;
                 }
             case Qt.Key_Left:
             case Qt.Key_Right:
-            case Qt.Key_Home:
-            case Qt.Key_End:
                 {
                     control.keyboardNavigated = true;
 
@@ -82,19 +113,12 @@ T.Menu {
                 return;
             }
 
-            const first = control.selectableIndex(0, 1);
-
-            if (first < 0) {
+            if (target < 0) {
                 return;
             }
 
-            if (event.key === Qt.Key_Down && control.selectableIndex(control.currentIndex + 1, 1) < 0) {
-                control.currentIndex = first;
-                event.accepted = true;
-            } else if (event.key === Qt.Key_Up && (control.currentIndex < 0 || control.selectableIndex(control.currentIndex - 1, -1) < 0)) {
-                control.currentIndex = control.selectableIndex(control.count - 1, -1);
-                event.accepted = true;
-            }
+            control.currentIndex = target;
+            event.accepted = true;
         }
 
         HoverHandler {
