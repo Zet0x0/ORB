@@ -7,7 +7,7 @@ import QtQuick.Layouts
 Control {
     id: root
 
-    ToolTip.text: qsTr("Attempt %0 of %1 failed. Retrying in %2s - click to retry now.").arg(Player.retryAttempt).arg(Settings.player.maxRetries).arg(Player.retrySecondsRemaining)
+    ToolTip.text: qsTr("Playback failed - retrying in %0s (retry %1 of %2). Click to retry now").arg(Player.retrySecondsRemaining).arg(Player.retryAttempt).arg(Settings.player.maxRetries)
     ToolTip.visible: Player.state === Player.Retrying && (hovered || visualFocus)
     activeFocusOnTab: Player.state === Player.Retrying || activeFocus
     padding: 2
