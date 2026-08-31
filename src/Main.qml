@@ -261,15 +261,12 @@ MainWindow {
 
                 ToolTip.text: qsTr("Station search source")
                 ToolTip.visible: hovered || visualFocus
-                currentValue: Settings.sources.lastSearchSource
                 model: SourceController.getSources()
                 textRole: "name"
                 valueRole: "key"
 
                 Component.onCompleted: {
-                    if (currentIndex === -1) {
-                        currentIndex = 0;
-                    }
+                    currentIndex = Math.max(0, indexOfValue(Settings.sources.lastSearchSource));
                 }
                 onCurrentValueChanged: {
                     SourceController.setSource(currentValue);
