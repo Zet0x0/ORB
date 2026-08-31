@@ -26,7 +26,10 @@ qint64 Utilities::currentTimestamp() {
 }
 
 QString Utilities::requestPathFromRestReply(QRestReply &reply) {
-    return reply.networkReply()->request().url().path();
+    const QNetworkReply *networkReply = reply.networkReply();
+
+    return networkReply == nullptr ? QString()
+                                   : networkReply->request().url().path();
 }
 
 void Utilities::copyToClipboard(const QString &text) {
