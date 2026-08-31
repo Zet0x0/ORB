@@ -167,10 +167,11 @@ Dialog {
                                     SpinBox {
                                         editable: true
                                         from: propertyDelegate.min
+                                        live: true
                                         to: propertyDelegate.max
                                         value: propertyDelegate.value
 
-                                        onValueModified: propertyModel.setValue(propertyDelegate.index, value)
+                                        onValueChanged: propertyModel.setValue(propertyDelegate.index, value)
                                     }
                                 }
 
