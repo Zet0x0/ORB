@@ -91,6 +91,8 @@ void RadioRecord::handleSearchEndpointResult(const QJsonDocument &json) {
 }
 
 void RadioRecord::onSearchRequestFinished(QRestReply &reply) {
+    m_runningReply = nullptr;
+
     if (!reply.isSuccess()) {
         raiseError(tr("Search error"), reply.networkReply()->errorString());
 
