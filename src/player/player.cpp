@@ -397,7 +397,7 @@ int Player::retrySecondsRemaining() const {
     return m_retrySecondsRemaining;
 }
 
-void Player::setStation(const Station &newStation, bool play) {
+void Player::setStation(const Station &newStation, bool playImmediately) {
     cancelRetry();
 
     if (m_state == State::Retrying) {
@@ -406,7 +406,8 @@ void Player::setStation(const Station &newStation, bool play) {
 
     if (m_state == State::Playing) {
         const bool alreadyStopping = m_pendingStationChange.has_value();
-        m_pendingStationChange = PendingStationChange{newStation, play};
+        m_pendingStationChange =
+            PendingStationChange{newStation, playImmediately};
 
         if (!alreadyStopping) {
             sendStop(AsyncReplyId::StoppingForStationChange);
@@ -421,8 +422,8 @@ void Player::setStation(const Station &newStation, bool play) {
         emit stationChanged();
     }
 
-    if (play) {
-        this->play();
+    if (playImmediately) {
+        play();
     }
 }
 

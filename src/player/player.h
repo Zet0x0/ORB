@@ -143,7 +143,7 @@ public:
     int retrySecondsRemaining() const;
 
 public slots:
-    void setStation(const Station &newStation, bool play = false);
+    void setStation(const Station &newStation, bool playImmediately = false);
 
     void play() const;
     void stop();
