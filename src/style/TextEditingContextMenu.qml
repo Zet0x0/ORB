@@ -5,6 +5,9 @@ Menu {
 
     required property TextInput editor
 
+    onClosed: editor.cursorVisible = Qt.binding(() => editor.activeFocus)
+    onOpened: editor.cursorVisible = true
+
     Action {
         enabled: root.editor.canUndo
         icon.name: "arrow-back-up"

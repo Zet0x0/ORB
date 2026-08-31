@@ -14,7 +14,7 @@ T.TextField {
     verticalAlignment: TextInput.AlignVCenter
 
     background: Rectangle {
-        border.color: root.activeFocus ? root.palette.highlight : "#00000000"
+        border.color: root.activeFocus || contextMenu.visible ? root.palette.highlight : "#00000000"
         color: root.palette.base
         implicitHeight: 24
         implicitWidth: 120

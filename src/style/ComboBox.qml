@@ -14,7 +14,7 @@ T.ComboBox {
     rightPadding: padding + (mirrored || !indicator || !indicator.visible ? 0 : indicator.width + spacing)
 
     background: Rectangle {
-        readonly property bool highlighted: root.visualFocus || root.contentItem.activeFocus
+        readonly property bool highlighted: root.visualFocus || root.contentItem.activeFocus || contextMenu.visible
 
         border.color: highlighted ? root.palette.highlight : "#00000000"
         color: Qt.darker(root.palette.button, root.down ? 1.2 : (enabled && (root.hovered || root.visualFocus) ? 0.8 : 1.0))

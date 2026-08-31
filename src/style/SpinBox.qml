@@ -12,7 +12,11 @@ T.SpinBox {
     rightPadding: padding + (!mirrored ? (up.indicator ? up.indicator.width : 0) : 0)
 
     background: Rectangle {
-        border.color: root.activeFocus ? root.palette.highlight : root.palette.mid
+        id: background
+
+        readonly property bool focused: root.activeFocus || contextMenu.visible
+
+        border.color: focused ? root.palette.highlight : root.palette.mid
         color: root.palette.base
         implicitHeight: 24
         implicitWidth: 120
@@ -20,14 +24,14 @@ T.SpinBox {
 
         Rectangle {
             color: root.palette.mid
-            height: root.activeFocus ? parent.height - 2 : parent.height
+            height: background.focused ? parent.height - 2 : parent.height
             width: 1
             x: {
                 const value = Math.max(root.up.indicator ? root.up.indicator.width : 0, root.down.indicator ? root.down.indicator.width : 0) + 2;
 
                 return root.mirrored ? value : parent.width - value;
             }
-            y: root.activeFocus ? 1 : 0
+            y: background.focused ? 1 : 0
         }
     }
     contentItem: TextInput {
