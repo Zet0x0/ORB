@@ -19,6 +19,10 @@ void SourceController::setupSourceConnections(Source *source) const {
 }
 
 void SourceController::cancelSearch() {
+    if (!m_source) {
+        return;
+    }
+
     m_source->cancelSearch();
     setSearchState(SearchState::Idle);
 }
@@ -171,13 +175,17 @@ void SourceController::setSource(const QString &newSourceName) {
 void SourceController::search(const QString &query) {
     cancelSearch();
 
+    if (!m_source) {
+        return;
+    }
+
     m_source->search(query);
 }
 
 void SourceController::showDefaultStations() {
     cancelSearch();
 
-    if (!canShowDefaultStations()) {
+    if (!m_source || !canShowDefaultStations()) {
         return;
     }
 
