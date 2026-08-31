@@ -60,10 +60,13 @@ T.ComboBox {
             onActivated: contextMenu.popup(textField.leftPadding, textField.cursorRectangle.y + textField.cursorRectangle.height)
         }
 
-        TapHandler {
+        MouseArea {
             acceptedButtons: Qt.RightButton
+            anchors.fill: parent
+            cursorShape: root.editable ? Qt.IBeamCursor : Qt.ArrowCursor
+            enabled: root.editable
 
-            onTapped: event => contextMenu.popup(event.position)
+            onClicked: contextMenu.popup()
         }
 
         TextEditingContextMenu {

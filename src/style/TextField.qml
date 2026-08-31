@@ -28,10 +28,12 @@ T.TextField {
         onActivated: contextMenu.popup(root.leftPadding, root.cursorRectangle.y + root.cursorRectangle.height)
     }
 
-    TapHandler {
+    MouseArea {
         acceptedButtons: Qt.RightButton
+        anchors.fill: parent
+        cursorShape: Qt.IBeamCursor
 
-        onTapped: event => contextMenu.popup(event.position)
+        onClicked: contextMenu.popup()
     }
 
     Text {

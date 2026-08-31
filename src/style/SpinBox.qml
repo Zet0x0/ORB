@@ -52,10 +52,12 @@ T.SpinBox {
             onActivated: contextMenu.popup(textInput.leftPadding, textInput.cursorRectangle.y + textInput.cursorRectangle.height)
         }
 
-        TapHandler {
+        MouseArea {
             acceptedButtons: Qt.RightButton
+            anchors.fill: parent
+            cursorShape: root.editable ? Qt.IBeamCursor : Qt.ArrowCursor
 
-            onTapped: event => contextMenu.popup(event.position)
+            onClicked: contextMenu.popup()
         }
 
         TextEditingContextMenu {
