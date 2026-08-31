@@ -8,6 +8,9 @@ struct ResolvedField {
     QMetaProperty property;
     QString label;
     QString subcategory;
+
+    int min;
+    int max;
 };
 
 QList<ResolvedField> resolvedFields(const SettingsGroup *group);

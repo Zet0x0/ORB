@@ -141,6 +141,8 @@ Dialog {
 
                                 required property int index
                                 required property string label
+                                required property int max
+                                required property int min
                                 readonly property bool showSubcategoryHeader: subcategory !== "" && (index === 0 || propertyModel.data(propertyModel.index(index - 1, 0), SettingsPropertyModel.SubcategoryRole) !== subcategory)
                                 required property string subcategory
                                 required property string type
@@ -163,6 +165,9 @@ Dialog {
                                     id: intComponent
 
                                     SpinBox {
+                                        editable: true
+                                        from: propertyDelegate.min
+                                        to: propertyDelegate.max
                                         value: propertyDelegate.value
 
                                         onValueModified: propertyModel.setValue(propertyDelegate.index, value)

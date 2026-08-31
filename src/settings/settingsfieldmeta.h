@@ -7,4 +7,8 @@ struct SettingsFieldMeta {
 
     QString label;
     QString subcategory;
+
+    // Only for int-typed fields
+    int min = 0;
+    int max = 99;
 };
