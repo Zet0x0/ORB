@@ -33,23 +33,32 @@ Frame {
         color: palette.window
         radius: 2
 
-        SequentialAnimation {
-            id: flashAnimation
+        Rectangle {
+            id: flashOverlay
 
-            loops: 3
+            anchors.fill: parent
+            color: AppColors.semantic.danger
+            opacity: 0
+            radius: parent.radius
 
-            ColorAnimation {
-                duration: 200
-                property: "color"
-                target: bannerBackground
-                to: Qt.tint(root.palette.window, Qt.alpha(AppColors.semantic.danger, 0.2))
-            }
+            SequentialAnimation {
+                id: flashAnimation
 
-            ColorAnimation {
-                duration: 200
-                property: "color"
-                target: bannerBackground
-                to: root.palette.window
+                loops: 3
+
+                NumberAnimation {
+                    duration: 200
+                    property: "opacity"
+                    target: flashOverlay
+                    to: 0.2
+                }
+
+                NumberAnimation {
+                    duration: 200
+                    property: "opacity"
+                    target: flashOverlay
+                    to: 0
+                }
             }
         }
     }
