@@ -2,6 +2,7 @@
 #include "../common/utilities.h"
 #include "../settings/settings.h"
 #include "mpvproperties.h"
+#include <QCoreApplication>
 
 namespace {
 constexpr int RetryMaxDelaySeconds = 30;
@@ -32,6 +33,22 @@ Player::Player(QObject *parent)
 
     setupConnections();
     setupObservations();
+
+    connect(qApp, &QCoreApplication::aboutToQuit, this, &Player::shutdown);
+}
+
+void Player::shutdown() {
+    if (m_shutDown) {
+        return;
+    }
+
+    m_shutDown = true;
+
+    m_retryTimer->stop();
+    m_stabilityTimer->stop();
+
+    m_workerThread->quit();
+    m_workerThread->wait();
 }
 
 void Player::setupConnections() const {
@@ -357,8 +374,7 @@ void Player::onPlaybackStable() {
 }
 
 Player::~Player() {
-    m_workerThread->quit();
-    m_workerThread->wait();
+    shutdown();
 }
 
 Station Player::station() const {
