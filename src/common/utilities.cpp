@@ -48,5 +48,9 @@ QRect Utilities::getScreenAvailableGeometry(const QPoint &point) {
         screen = QGuiApplication::primaryScreen();
     }
 
+    if (screen == nullptr) {
+        return QRect();
+    }
+
     return screen->availableGeometry();
 }
