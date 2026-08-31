@@ -8,6 +8,7 @@
 #include <QQmlComponent>
 #include <QQuickStyle>
 #include <QQuickWindow>
+#include <QSettings>
 
 namespace {
 void applyColorGroup(QPalette &palette, QPalette::ColorGroup group,
@@ -52,6 +53,8 @@ int main(int argc, char *argv[]) {
     QCoreApplication::setOrganizationDomain(QStringLiteral("com.zet0x0.orb"));
     QCoreApplication::setApplicationName(QStringLiteral("ORB"));
     QCoreApplication::setApplicationVersion(QStringLiteral("0.1.0"));
+
+    QSettings::setDefaultFormat(QSettings::IniFormat);
 
     QGuiApplication::setQuitOnLastWindowClosed(false);
 
