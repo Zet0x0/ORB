@@ -6,11 +6,7 @@ UrlValidator::UrlValidator(QObject *parent) : QValidator(parent) {}
 QValidator::State UrlValidator::validate(QString &input, int &pos) const {
     Q_UNUSED(pos)
 
-    if (input.startsWith(' ') || input.endsWith(' ')) {
-        return QValidator::Invalid;
-    }
-
-    if (input.isEmpty()) {
+    if (input.isEmpty() || input != input.trimmed()) {
         return QValidator::Intermediate;
     }
 
