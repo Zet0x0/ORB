@@ -56,10 +56,17 @@ void SettingsPropertyModel::rebuildEntries() {
         }
     }
 
-    std::stable_sort(
-        m_entries.begin(), m_entries.end(), [](const Entry &a, const Entry &b) {
-            return a.subcategory.isEmpty() && !b.subcategory.isEmpty();
-        });
+    std::stable_sort(m_entries.begin(), m_entries.end(),
+                     [](const Entry &a, const Entry &b) {
+                         const bool aEmpty = a.subcategory.isEmpty();
+                         const bool bEmpty = b.subcategory.isEmpty();
+
+                         if (aEmpty != bEmpty) {
+                             return aEmpty;
+                         }
+
+                         return a.subcategory < b.subcategory;
+                     });
 }
 
 int SettingsPropertyModel::rowCount(const QModelIndex &parent) const {
