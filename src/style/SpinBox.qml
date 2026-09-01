@@ -34,40 +34,49 @@ T.SpinBox {
             y: background.focused ? 1 : 0
         }
     }
-    contentItem: TextInput {
-        id: textInput
+    // HACK: trying to keep textInput's width even to prevent text
+    // from going out of selection rectangle's bounds horizontally
+    contentItem: Item {
+        implicitHeight: textInput.implicitHeight
+        implicitWidth: textInput.implicitWidth
 
-        clip: width < implicitWidth
-        color: root.palette.text
-        font: root.font
-        horizontalAlignment: Qt.AlignHCenter
-        inputMethodHints: root.inputMethodHints
-        readOnly: !root.editable
-        selectedTextColor: root.palette.highlightedText
-        selectionColor: root.palette.highlight
-        text: root.displayText
-        validator: root.validator
-        verticalAlignment: Qt.AlignVCenter
+        TextInput {
+            id: textInput
 
-        Shortcut {
-            enabled: textInput.activeFocus
-            sequences: ["Menu", "Shift+F10"]
+            clip: width < implicitWidth
+            color: root.palette.text
+            font: root.font
+            height: parent.height
+            horizontalAlignment: Qt.AlignHCenter
+            inputMethodHints: root.inputMethodHints
+            readOnly: !root.editable
+            selectedTextColor: root.palette.highlightedText
+            selectionColor: root.palette.highlight
+            text: root.displayText
+            validator: root.validator
+            verticalAlignment: Qt.AlignVCenter
+            width: parent.width - parent.width % 2
 
-            onActivated: contextMenu.popup(textInput.leftPadding, textInput.cursorRectangle.y + textInput.cursorRectangle.height)
-        }
+            Shortcut {
+                enabled: textInput.activeFocus
+                sequences: ["Menu", "Shift+F10"]
 
-        MouseArea {
-            acceptedButtons: Qt.RightButton
-            anchors.fill: parent
-            cursorShape: root.editable ? Qt.IBeamCursor : Qt.ArrowCursor
+                onActivated: contextMenu.popup(textInput.leftPadding, textInput.cursorRectangle.y + textInput.cursorRectangle.height)
+            }
 
-            onClicked: contextMenu.popup()
-        }
+            MouseArea {
+                acceptedButtons: Qt.RightButton
+                anchors.fill: parent
+                cursorShape: root.editable ? Qt.IBeamCursor : Qt.ArrowCursor
 
-        TextEditingContextMenu {
-            id: contextMenu
+                onClicked: contextMenu.popup()
+            }
 
-            editor: textInput
+            TextEditingContextMenu {
+                id: contextMenu
+
+                editor: textInput
+            }
         }
     }
     down.indicator: PaddedRectangle {
