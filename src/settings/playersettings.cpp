@@ -100,7 +100,7 @@ int PlayerSettings::maxRetries() const {
 }
 
 void PlayerSettings::setMaxRetries(int newMaxRetries) {
-    newMaxRetries = qMax(0, newMaxRetries);
+    newMaxRetries = qMax(1, newMaxRetries);
 
     if (m_maxRetries == newMaxRetries) {
         return;
