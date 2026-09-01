@@ -49,30 +49,8 @@ QtObject {
         window: "#121212"
         windowText: "#6e6e6e"
     }
-    // normally the same as `active`
-    readonly property ColorGroup inactive: ColorGroup {
-        accent: "#a0f"
-        alternateBase: "#303030"
-        base: "#242424"
-        brightText: "#fff"
-        button: "#383838"
-        buttonText: "#e0e0e0"
-        dark: "#0a0a0a"
-        highlight: "#a0f"
-        highlightedText: "#fff"
-        light: "#707070"
-        link: "#b23cf5"
-        linkVisited: "#cf88ea"
-        mid: "#212121"
-        midlight: "#545454"
-        placeholderText: "#707070"
-        shadow: "#000"
-        text: "#e0e0e0"
-        toolTipBase: "#333"
-        toolTipText: "#fff"
-        window: "#121212"
-        windowText: "#e0e0e0"
-    }
+    // Should be identical to `active` group
+    readonly property ColorGroup inactive: active
     readonly property SemanticColors semantic: SemanticColors {
         danger: "#f00"
         info: "#007fda"
