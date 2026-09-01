@@ -29,7 +29,7 @@ QString PlayerSettings::settingsSubcategory() const {
 QList<SettingsFieldMeta> PlayerSettings::settingsFields() const {
     return {
         {"retryOnError", tr("Retry on playback error")},
-        {"maxRetries", tr("Max retry attempts")},
+        {"maxRetries", tr("Max retry attempts"), QString(), 1, 99},
     };
 }
 
@@ -100,7 +100,7 @@ int PlayerSettings::maxRetries() const {
 }
 
 void PlayerSettings::setMaxRetries(int newMaxRetries) {
-    newMaxRetries = qMax(0, newMaxRetries);
+    newMaxRetries = qMax(1, newMaxRetries);
 
     if (m_maxRetries == newMaxRetries) {
         return;

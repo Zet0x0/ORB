@@ -7,7 +7,7 @@ void write(QSettings *settings, const QString &key, const QVariant &value) {
 
 int readInt(QSettings *settings, const QString &key, int defaultValue) {
     bool ok = false;
-    const int value = settings->value(key).toInt(&ok);
+    const int value = settings->value(key, defaultValue).toInt(&ok);
 
     return ok ? value : defaultValue;
 }

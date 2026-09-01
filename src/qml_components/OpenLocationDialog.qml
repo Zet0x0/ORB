@@ -6,7 +6,7 @@ import QtQuick
 import QtQuick.Layouts
 
 Dialog {
-    id: control
+    id: root
 
     property station pendingStation
 
@@ -50,7 +50,7 @@ Dialog {
 
             validator: UrlValidator {}
 
-            onAccepted: control.accept()
+            onAccepted: root.accept()
         }
     }
 }

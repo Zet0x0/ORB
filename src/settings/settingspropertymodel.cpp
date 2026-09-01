@@ -51,15 +51,22 @@ void SettingsPropertyModel::rebuildEntries() {
 
         for (const SettingsIntrospection::ResolvedField &field :
              std::as_const(fields)) {
-            m_entries.append(
-                {groupObject, field.property, field.label, field.subcategory});
+            m_entries.append({groupObject, field.property, field.label,
+                              field.subcategory, field.min, field.max});
         }
     }
 
-    std::stable_sort(
-        m_entries.begin(), m_entries.end(), [](const Entry &a, const Entry &b) {
-            return a.subcategory.isEmpty() && !b.subcategory.isEmpty();
-        });
+    std::stable_sort(m_entries.begin(), m_entries.end(),
+                     [](const Entry &a, const Entry &b) {
+                         const bool aEmpty = a.subcategory.isEmpty();
+                         const bool bEmpty = b.subcategory.isEmpty();
+
+                         if (aEmpty != bEmpty) {
+                             return aEmpty;
+                         }
+
+                         return a.subcategory < b.subcategory;
+                     });
 }
 
 int SettingsPropertyModel::rowCount(const QModelIndex &parent) const {
@@ -96,6 +103,12 @@ QVariant SettingsPropertyModel::data(const QModelIndex &index, int role) const {
 
     case SubcategoryRole:
         return entry.subcategory;
+
+    case MinRole:
+        return entry.min;
+
+    case MaxRole:
+        return entry.max;
 
     default:
         return QVariant();
@@ -187,7 +200,9 @@ QHash<int, QByteArray> SettingsPropertyModel::roleNames() const {
         {LabelRole, QByteArrayLiteral("label")},
         {TypeRole, QByteArrayLiteral("type")},
         {ValueRole, QByteArrayLiteral("value")},
-        {SubcategoryRole, QByteArrayLiteral("subcategory")}};
+        {SubcategoryRole, QByteArrayLiteral("subcategory")},
+        {MinRole, QByteArrayLiteral("min")},
+        {MaxRole, QByteArrayLiteral("max")}};
 
     return roles;
 }

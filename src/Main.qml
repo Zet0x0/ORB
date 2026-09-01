@@ -8,7 +8,34 @@ import QtQuick
 import QtQuick.Layouts
 
 MainWindow {
-    id: applicationWindow
+    id: root
+
+    function persistSession() {
+        Settings.window.x = x;
+        Settings.window.y = y;
+
+        Settings.window.width = width;
+        Settings.window.height = height;
+
+        Settings.player.lastStation = Player.station;
+        Settings.player.volume = Player.volume;
+        Settings.player.muted = Player.muted;
+
+        Settings.sources.lastSearchSource = sourceSelector.currentValue;
+    }
+
+    function restoreWindowPosition() {
+        if (!Settings.window.hasPosition) {
+            return;
+        }
+
+        const savedPosition = Qt.point(Settings.window.x, Settings.window.y);
+
+        if (Utilities.isPointOnScreen(savedPosition)) {
+            x = savedPosition.x;
+            y = savedPosition.y;
+        }
+    }
 
     height: Settings.window.height
     maximumHeight: Screen.height
@@ -58,12 +85,11 @@ MainWindow {
         Menu {
             title: qsTr("&Playback")
 
-            // HACK: keeping one MenuItem with text based
-            // on Player.state will guarantee failure to
-            // render the underscores for P in Play and
-            // S in Stop - that's the reason there are
-            // two buttons for one function, using a weird
-            // `height` hack (QTBUG-???)
+            // HACK: A MenuItem whose `text` changes at runtime stops rendering its
+            // mnemonic underline (`&`) for the new label, so instead of one item
+            // that toggles Play/Stop we keep two fixed-text items and kill off
+            // the hidden one by setting height to 0
+            // Which QTBUG is this???
 
             MenuItem {
                 enabled: visible && Player.station.valid
@@ -103,12 +129,7 @@ MainWindow {
 
             MenuSeparator {}
 
-            // HACK: keeping one MenuItem with text based
-            // on Player.muted will guarantee failure to
-            // render the underscores for M in Muted and
-            // U in Unmuted - that's the reason there are
-            // two buttons for one function, using a weird
-            // `height` hack (QTBUG-???)
+            // HACK: Using the same hack as the Play/Stop items
 
             MenuItem {
                 enabled: visible
@@ -142,34 +163,50 @@ MainWindow {
     palette: AppPalette {}
 
     Component.onCompleted: {
-        if (Settings.window.x >= 0 && Settings.window.y >= 0) {
-            x = Settings.window.x;
-            y = Settings.window.y;
-        }
+        restoreWindowPosition();
 
         Player.station = Settings.player.lastStation;
         Player.volume = Settings.player.volume;
         Player.muted = Settings.player.muted;
     }
-    Component.onDestruction: {
-        Settings.window.x = x;
-        Settings.window.y = y;
-
-        Settings.window.width = width;
-        Settings.window.height = height;
-
-        Settings.player.lastStation = Player.station;
-        Settings.player.volume = Player.volume;
-        Settings.player.muted = Player.muted;
-
-        Settings.sources.lastSearchSource = sourceSelector.currentValue;
-    }
-    onClosing: {
+    Component.onDestruction: persistSession()
+    onClosing: close => {
         if (Settings.tray.enabled && Settings.tray.closeToTray) {
+            close.accepted = false;
+            hide();
+
             return;
         }
 
         Qt.quit();
+    }
+    onHeightChanged: persistTimer.restart()
+    onWidthChanged: persistTimer.restart()
+    onXChanged: persistTimer.restart()
+    onYChanged: persistTimer.restart()
+
+    Timer {
+        id: persistTimer
+
+        interval: 10 * 1000 // 10 seconds
+
+        onTriggered: root.persistSession()
+    }
+
+    Connections {
+        function onMutedChanged() {
+            persistTimer.restart();
+        }
+
+        function onStationChanged() {
+            persistTimer.restart();
+        }
+
+        function onVolumeChanged() {
+            persistTimer.restart();
+        }
+
+        target: Player
     }
 
     AboutDialog {
@@ -187,10 +224,10 @@ MainWindow {
     SystemTrayIcon {
         id: systemTrayIcon
 
-        applicationWindow: applicationWindow
+        applicationWindow: root
 
         trayMenu: SystemTrayMenu {
-            palette: applicationWindow.palette
+            palette: root.palette
         }
     }
 
@@ -261,15 +298,12 @@ MainWindow {
 
                 ToolTip.text: qsTr("Station search source")
                 ToolTip.visible: hovered || visualFocus
-                currentValue: Settings.sources.lastSearchSource
                 model: SourceController.getSources()
                 textRole: "name"
                 valueRole: "key"
 
                 Component.onCompleted: {
-                    if (currentIndex === -1) {
-                        currentIndex = 0;
-                    }
+                    currentIndex = Math.max(0, indexOfValue(Settings.sources.lastSearchSource));
                 }
                 onCurrentValueChanged: {
                     SourceController.setSource(currentValue);

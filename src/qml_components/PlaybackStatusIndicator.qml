@@ -5,16 +5,16 @@ import QtQuick
 import QtQuick.Layouts
 
 Control {
-    id: control
+    id: root
 
-    ToolTip.text: qsTr("Attempt %0 of %1 failed. Retrying in %2s - click to retry now.").arg(Player.retryAttempt).arg(Settings.player.maxRetries).arg(Player.retrySecondsRemaining)
+    ToolTip.text: qsTr("Playback failed - retrying in %0s (retry %1 of %2). Click to retry now").arg(Player.retrySecondsRemaining).arg(Player.retryAttempt).arg(Settings.player.maxRetries)
     ToolTip.visible: Player.state === Player.Retrying && (hovered || visualFocus)
     activeFocusOnTab: Player.state === Player.Retrying || activeFocus
     padding: 2
     visible: Player.state === Player.Loading || Player.state === Player.Retrying
 
     background: Rectangle {
-        border.color: control.visualFocus ? control.palette.highlight : "#00000000"
+        border.color: root.visualFocus ? root.palette.highlight : "#00000000"
         color: "#00000000"
         radius: 2
     }
@@ -22,7 +22,7 @@ Control {
         BusyIndicator {
             Layout.fillHeight: true
             Layout.preferredWidth: height
-            running: control.visible
+            running: root.visible
         }
 
         Label {

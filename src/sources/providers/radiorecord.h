@@ -18,7 +18,7 @@ class RadioRecord : public Source {
 private:
     QNetworkRequestFactory m_api{{RadioRecordConstants::BaseApiUrl}};
 
-    QNetworkReply *m_runningReply = nullptr;
+    QPointer<QNetworkReply> m_runningReply;
 
     QJsonArray extractStationsFromJson(const QJsonDocument &json) const;
 
@@ -32,8 +32,11 @@ private:
     void handleStationsEndpointResult(const QJsonDocument &json);
     void handleSearchEndpointResult(const QJsonDocument &json);
 
+    bool finishReply(QRestReply &reply, QJsonDocument *json);
+
 private slots:
     void onSearchRequestFinished(QRestReply &reply);
+    void onDefaultStationsRequestFinished(QRestReply &reply);
 
 public:
     void cancelSearch() override;

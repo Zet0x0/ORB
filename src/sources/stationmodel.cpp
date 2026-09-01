@@ -1,5 +1,7 @@
 #include "stationmodel.h"
 
+StationModel::StationModel(QObject *parent) : QAbstractListModel(parent) {}
+
 int StationModel::rowCount(const QModelIndex &parent) const {
     Q_UNUSED(parent)
 

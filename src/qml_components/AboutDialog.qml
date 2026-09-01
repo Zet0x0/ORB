@@ -3,7 +3,7 @@ import QtQuick
 import QtQuick.Layouts
 
 Dialog {
-    id: control
+    id: root
 
     modal: true
     standardButtons: Dialog.Ok
@@ -37,7 +37,7 @@ Dialog {
             Label {
                 id: bodyLabel
 
-                Layout.preferredWidth: Math.min(bodyFontMetrics.averageCharacterWidth * 45, (control.parent?.width ?? 480) * 0.8)
+                Layout.preferredWidth: Math.min(bodyFontMetrics.averageCharacterWidth * 45, (root.parent?.width ?? 480) * 0.8)
                 text: qsTr("**O**nline **R**adio **B**rowser & Player (ORB) is an open-source project for browsing through and playing online radio stations from the internet.")
                 textFormat: Text.MarkdownText
                 wrapMode: Label.Wrap

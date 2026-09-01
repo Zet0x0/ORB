@@ -2,7 +2,7 @@ import QtQuick
 import QtQuick.Templates as T
 
 T.TextField {
-    id: control
+    id: root
 
     color: palette.text
     implicitHeight: Math.max(implicitBackgroundHeight + topInset + bottomInset, contentHeight + topPadding + bottomPadding, placeholder.implicitHeight + topPadding + bottomPadding)
@@ -14,46 +14,48 @@ T.TextField {
     verticalAlignment: TextInput.AlignVCenter
 
     background: Rectangle {
-        border.color: control.activeFocus ? control.palette.highlight : "#00000000"
-        color: control.palette.base
+        border.color: root.activeFocus || contextMenu.visible ? root.palette.highlight : "#00000000"
+        color: root.palette.base
         implicitHeight: 24
         implicitWidth: 120
         radius: 2
     }
 
     Shortcut {
-        enabled: control.activeFocus
+        enabled: root.activeFocus
         sequences: ["Menu", "Shift+F10"]
 
-        onActivated: contextMenu.popup(control.leftPadding, control.cursorRectangle.y + control.cursorRectangle.height)
+        onActivated: contextMenu.popup(root.leftPadding, root.cursorRectangle.y + root.cursorRectangle.height)
     }
 
-    TapHandler {
+    MouseArea {
         acceptedButtons: Qt.RightButton
+        anchors.fill: parent
+        cursorShape: Qt.IBeamCursor
 
-        onTapped: event => contextMenu.popup(event.position)
+        onClicked: contextMenu.popup()
     }
 
     Text {
         id: placeholder
 
-        color: control.placeholderTextColor
+        color: root.placeholderTextColor
         elide: Text.ElideRight
-        font: control.font
-        height: control.height - (control.topPadding + control.bottomPadding)
-        horizontalAlignment: control.horizontalAlignment
-        renderType: control.renderType
-        text: control.placeholderText
-        verticalAlignment: control.verticalAlignment
-        visible: !control.length && !control.preeditText && (!control.activeFocus || control.horizontalAlignment !== Qt.AlignHCenter)
-        width: control.width - (control.leftPadding + control.rightPadding)
-        x: control.leftPadding
-        y: control.topPadding
+        font: root.font
+        height: root.height - (root.topPadding + root.bottomPadding)
+        horizontalAlignment: root.horizontalAlignment
+        renderType: root.renderType
+        text: root.placeholderText
+        verticalAlignment: root.verticalAlignment
+        visible: !root.length && !root.preeditText && (!root.activeFocus || root.horizontalAlignment !== Qt.AlignHCenter)
+        width: root.width - (root.leftPadding + root.rightPadding)
+        x: root.leftPadding
+        y: root.topPadding
     }
 
     TextEditingContextMenu {
         id: contextMenu
 
-        editor: control
+        editor: root
     }
 }

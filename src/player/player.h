@@ -55,6 +55,7 @@ private:
 
     MpvController *m_mpvController = nullptr;
     QThread *m_workerThread = nullptr;
+    bool m_shutDown = false;
 
     std::optional<QString> m_pendingNowPlaying;
     std::optional<PendingStationChange> m_pendingStationChange;
@@ -82,6 +83,8 @@ private:
 
     void setupConnections() const;
     void setupObservations() const;
+
+    void shutdown();
 
     void observePropertyAsync(const QString &property, mpv_format format,
                               AsyncReplyId id = AsyncReplyId::None) const;
@@ -143,7 +146,7 @@ public:
     int retrySecondsRemaining() const;
 
 public slots:
-    void setStation(const Station &newStation, bool play = false);
+    void setStation(const Station &newStation, bool playImmediately = false);
 
     void play() const;
     void stop();

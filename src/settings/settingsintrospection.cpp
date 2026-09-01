@@ -54,7 +54,8 @@ QList<ResolvedField> resolvedFields(const SettingsGroup *group) {
             {property,
              field.label.isEmpty() ? label(field.propertyName) : field.label,
              field.subcategory.isEmpty() ? group->settingsSubcategory()
-                                         : field.subcategory});
+                                         : field.subcategory,
+             field.min, field.max});
     }
 
     return result;

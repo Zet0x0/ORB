@@ -3,7 +3,7 @@ import ORB.Style
 import QtQuick
 
 TextField {
-    id: control
+    id: root
 
     required property ComboBox sourceSelector
 
@@ -28,14 +28,14 @@ TextField {
         id: clearSearchFieldButton
 
         ToolTip.text: qsTr("Clear")
-        enabled: control.enabled
+        enabled: root.enabled
         flat: true
         icon.name: "circle-x"
         implicitHeight: parent.height
 
         onClicked: {
-            control.clear();
-            control.engageSearch();
+            root.clear();
+            root.engageSearch();
         }
 
         anchors {

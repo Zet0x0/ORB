@@ -5,7 +5,7 @@ import QtQuick
 import QtQuick.Layouts
 
 Frame {
-    id: control
+    id: root
 
     property bool keyPressed: false
     required property station station
@@ -25,8 +25,8 @@ Frame {
     padding: 0
 
     background: Rectangle {
-        border.color: control.ListView.isCurrentItem && control.ListView.view.activeFocus ? palette.highlight : "#00000000"
-        color: Qt.darker(palette.base, tapHandler.pressed || control.keyPressed ? 1.2 : (enabled && (control.hovered || control.visualFocus || (control.ListView.isCurrentItem && control.ListView.view.activeFocus)) ? 0.8 : 1.0))
+        border.color: root.ListView.isCurrentItem && root.ListView.view.activeFocus ? palette.highlight : "#00000000"
+        color: Qt.darker(palette.base, tapHandler.pressed || root.keyPressed ? 1.2 : (enabled && (root.hovered || root.visualFocus || (root.ListView.isCurrentItem && root.ListView.view.activeFocus)) ? 0.8 : 1.0))
     }
 
     Keys.onPressed: event => {
@@ -58,12 +58,12 @@ Frame {
     TapHandler {
         id: tapHandler
 
-        onTapped: control.handleInteraction()
+        onTapped: root.handleInteraction()
     }
 
     Control {
         anchors.fill: parent
-        padding: 8 + (control.background as Rectangle).border.width
+        padding: 8 + (root.background as Rectangle).border.width
 
         contentItem: RowLayout {
             StationImage {
@@ -71,17 +71,17 @@ Frame {
                 Layout.fillWidth: false
                 Layout.preferredHeight: 48
                 Layout.preferredWidth: 48
-                imageUrl: control.station.imageUrl
+                imageUrl: root.station.imageUrl
             }
 
             Label {
                 Layout.fillHeight: true
                 Layout.fillWidth: true
                 Layout.maximumHeight: 48
-                ToolTip.text: control.station.name
-                ToolTip.visible: truncated && (enabled && (control.hovered || control.visualFocus || (control.ListView.isCurrentItem && control.ListView.view.activeFocus)))
+                ToolTip.text: root.station.name
+                ToolTip.visible: truncated && (enabled && (root.hovered || root.visualFocus || (root.ListView.isCurrentItem && root.ListView.view.activeFocus)))
                 elide: Text.ElideRight
-                text: control.station.name
+                text: root.station.name
                 textFormat: Text.PlainText
                 verticalAlignment: Qt.AlignVCenter
                 wrapMode: Text.Wrap

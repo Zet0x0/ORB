@@ -19,6 +19,9 @@ private:
         QMetaProperty property;
         QString label;
         QString subcategory;
+
+        int min;
+        int max;
     };
 
     struct PendingChange {
@@ -44,7 +47,9 @@ public:
         LabelRole,
         TypeRole,
         ValueRole,
-        SubcategoryRole
+        SubcategoryRole,
+        MinRole,
+        MaxRole
     };
     Q_ENUM(PropertyRoles)
 

@@ -3,7 +3,7 @@ import QtQuick.Controls.impl
 import QtQuick.Templates as T
 
 T.BusyIndicator {
-    id: control
+    id: root
 
     implicitHeight: Math.max(implicitBackgroundHeight + topInset + bottomInset, implicitContentHeight + topPadding + bottomPadding)
     implicitWidth: Math.max(implicitBackgroundWidth + leftInset + rightInset, implicitContentWidth + leftPadding + rightPadding)
@@ -13,7 +13,7 @@ T.BusyIndicator {
         implicitWidth: 28
 
         IconImage {
-            color: control.palette.windowText
+            color: root.palette.windowText
             height: width
             name: "dots"
             sourceSize: Qt.size(width, height)
@@ -23,7 +23,7 @@ T.BusyIndicator {
                 duration: 600
                 from: 0
                 loops: Animation.Infinite
-                running: control.running && control.visible
+                running: root.running && root.visible
                 to: 360
             }
         }

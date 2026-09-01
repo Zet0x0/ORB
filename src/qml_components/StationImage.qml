@@ -3,7 +3,7 @@ import QtQuick
 import QtQuick.Layouts
 
 StackLayout {
-    id: control
+    id: root
 
     required property string imageUrl
 
@@ -37,7 +37,7 @@ StackLayout {
 
         asynchronous: true
         fillMode: Image.PreserveAspectCrop
-        source: control.imageUrl
+        source: root.imageUrl
 
         sourceSize {
             height: parent.height

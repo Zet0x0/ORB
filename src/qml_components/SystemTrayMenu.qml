@@ -4,7 +4,7 @@ import ORB.Style
 import QtQuick
 
 Window {
-    id: window
+    id: root
 
     property var lastPosition: null
 
@@ -46,7 +46,7 @@ Window {
     Menu {
         id: menu
 
-        onClosed: window.hide()
+        onClosed: root.hide()
 
         Action {
             enabled: Player.station.valid

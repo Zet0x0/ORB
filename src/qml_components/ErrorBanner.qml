@@ -4,7 +4,7 @@ import QtQuick
 import QtQuick.Layouts
 
 Frame {
-    id: control
+    id: root
 
     property errorInfo displayedError
     required property errorInfo error
@@ -33,23 +33,32 @@ Frame {
         color: palette.window
         radius: 2
 
-        SequentialAnimation {
-            id: flashAnimation
+        Rectangle {
+            id: flashOverlay
 
-            loops: 3
+            anchors.fill: parent
+            color: AppColors.semantic.danger
+            opacity: 0
+            radius: parent.radius
 
-            ColorAnimation {
-                duration: 200
-                property: "color"
-                target: bannerBackground
-                to: Qt.tint(control.palette.window, Qt.alpha(AppColors.semantic.danger, 0.2))
-            }
+            SequentialAnimation {
+                id: flashAnimation
 
-            ColorAnimation {
-                duration: 200
-                property: "color"
-                target: bannerBackground
-                to: control.palette.window
+                loops: 3
+
+                NumberAnimation {
+                    duration: 200
+                    property: "opacity"
+                    target: flashOverlay
+                    to: 0.2
+                }
+
+                NumberAnimation {
+                    duration: 200
+                    property: "opacity"
+                    target: flashOverlay
+                    to: 0
+                }
             }
         }
     }
@@ -80,7 +89,7 @@ Frame {
 
         interval: 5000
 
-        onTriggered: control.dismissed()
+        onTriggered: root.dismissed()
     }
 
     RowLayout {
@@ -94,7 +103,7 @@ Frame {
                 elide: Text.ElideRight
                 font.bold: true
                 maximumLineCount: 1
-                text: control.displayedError.title
+                text: root.displayedError.title
                 textFormat: Text.PlainText
             }
 
@@ -102,7 +111,7 @@ Frame {
                 Layout.fillHeight: true
                 Layout.fillWidth: true
                 elide: Text.ElideRight
-                text: control.displayedError.message
+                text: root.displayedError.message
                 textFormat: Text.PlainText
                 wrapMode: Label.Wrap
             }
@@ -113,7 +122,7 @@ Frame {
             ToolTip.text: qsTr("Copy to clipboard")
             icon.name: "copy"
 
-            onClicked: Utilities.copyToClipboard(`${control.displayedError.title}\n\n${control.displayedError.message}`)
+            onClicked: Utilities.copyToClipboard(`${root.displayedError.title}\n\n${root.displayedError.message}`)
         }
 
         IconButton {
@@ -121,7 +130,7 @@ Frame {
             ToolTip.text: qsTr("Dismiss")
             icon.name: "x"
 
-            onClicked: control.dismissed()
+            onClicked: root.dismissed()
         }
     }
 }

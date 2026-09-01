@@ -4,7 +4,7 @@ import QtQuick
 import QtQuick.Templates as T
 
 T.Dialog {
-    id: control
+    id: root
 
     implicitHeight: Math.max(implicitBackgroundHeight + topInset + bottomInset, implicitContentHeight + topPadding + bottomPadding + (implicitHeaderHeight > 0 ? implicitHeaderHeight + spacing : 0) + (implicitFooterHeight > 0 ? implicitFooterHeight + spacing : 0))
     implicitWidth: Math.max(implicitBackgroundWidth + leftInset + rightInset, implicitContentWidth + leftPadding + rightPadding, implicitHeaderWidth, implicitFooterWidth)
@@ -12,14 +12,14 @@ T.Dialog {
     z: 1
 
     T.Overlay.modal: Rectangle {
-        color: Qt.alpha(control.palette.dark, 0.33)
+        color: Qt.alpha(root.palette.dark, 0.33)
     }
     T.Overlay.modeless: Rectangle {
-        color: Qt.alpha(control.palette.dark, 0.33)
+        color: Qt.alpha(root.palette.dark, 0.33)
     }
     background: Rectangle {
-        border.color: control.palette.mid
-        color: control.palette.window
+        border.color: root.palette.mid
+        color: root.palette.window
         radius: 2
     }
     footer: DialogButtonBox {
@@ -29,8 +29,8 @@ T.Dialog {
         elide: Label.ElideRight
         font.bold: true
         padding: 6
-        text: control.title
-        visible: control.title && parent?.parent === T.Overlay.overlay
+        text: root.title
+        visible: root.title && parent?.parent === T.Overlay.overlay
 
         background: Rectangle {
             color: "#00000000"
@@ -38,7 +38,7 @@ T.Dialog {
             width: parent.width
 
             Rectangle {
-                color: control.palette.mid
+                color: root.palette.mid
                 height: 1
                 width: parent.width
                 y: parent.height - height

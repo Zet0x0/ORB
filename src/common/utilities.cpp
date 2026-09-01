@@ -25,10 +25,6 @@ qint64 Utilities::currentTimestamp() {
     return QDateTime::currentSecsSinceEpoch();
 }
 
-QString Utilities::requestPathFromRestReply(QRestReply &reply) {
-    return reply.networkReply()->request().url().path();
-}
-
 void Utilities::copyToClipboard(const QString &text) {
     QGuiApplication::clipboard()->setText(text);
 }
@@ -48,5 +44,13 @@ QRect Utilities::getScreenAvailableGeometry(const QPoint &point) {
         screen = QGuiApplication::primaryScreen();
     }
 
+    if (screen == nullptr) {
+        return QRect();
+    }
+
     return screen->availableGeometry();
+}
+
+bool Utilities::isPointOnScreen(const QPoint &point) {
+    return QGuiApplication::screenAt(point) != nullptr;
 }

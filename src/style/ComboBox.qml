@@ -6,7 +6,7 @@ import QtQuick.Templates as T
 import QtQuick.Window
 
 T.ComboBox {
-    id: control
+    id: root
 
     implicitHeight: Math.max(implicitBackgroundHeight + topInset + bottomInset, implicitContentHeight + topPadding + bottomPadding, implicitIndicatorHeight + topPadding + bottomPadding)
     implicitWidth: Math.max(implicitBackgroundWidth + leftInset + rightInset, implicitContentWidth + leftPadding + rightPadding)
@@ -14,43 +14,43 @@ T.ComboBox {
     rightPadding: padding + (mirrored || !indicator || !indicator.visible ? 0 : indicator.width + spacing)
 
     background: Rectangle {
-        readonly property bool highlighted: control.visualFocus || control.contentItem.activeFocus
+        readonly property bool highlighted: root.visualFocus || root.contentItem.activeFocus || contextMenu.visible
 
-        border.color: highlighted ? control.palette.highlight : "#00000000"
-        color: Qt.darker(control.palette.button, control.down ? 1.2 : (enabled && (control.hovered || control.visualFocus) ? 0.8 : 1.0))
+        border.color: highlighted ? root.palette.highlight : "#00000000"
+        color: Qt.darker(root.palette.button, root.down ? 1.2 : (enabled && (root.hovered || root.visualFocus) ? 0.8 : 1.0))
         implicitHeight: 24
         implicitWidth: 120
         radius: 2
-        visible: !control.flat || control.down
+        visible: !root.flat || root.down
     }
     contentItem: T.TextField {
         id: textField
 
-        autoScroll: control.editable
+        autoScroll: root.editable
         bottomPadding: 4
-        color: control.editable ? control.palette.text : control.palette.buttonText
-        enabled: control.editable
+        color: root.editable ? root.palette.text : root.palette.buttonText
+        enabled: root.editable
         implicitHeight: contentHeight + topPadding + bottomPadding
-        inputMethodHints: control.inputMethodHints
-        leftPadding: 4 - control.padding
-        readOnly: control.down
-        rightPadding: 4 - control.padding
-        selectByMouse: control.selectTextByMouse
-        selectedTextColor: control.palette.highlightedText
-        selectionColor: control.palette.highlight
-        text: control.editable ? control.editText : control.displayText
+        inputMethodHints: root.inputMethodHints
+        leftPadding: 4 - root.padding
+        readOnly: root.down
+        rightPadding: 4 - root.padding
+        selectByMouse: root.selectTextByMouse
+        selectedTextColor: root.palette.highlightedText
+        selectionColor: root.palette.highlight
+        text: root.editable ? root.editText : root.displayText
         topPadding: 4
-        validator: control.validator
+        validator: root.validator
         verticalAlignment: Text.AlignVCenter
 
         background: PaddedRectangle {
             clip: true
-            color: control.palette.base
-            leftPadding: control.mirrored ? -2 : padding
+            color: root.palette.base
+            leftPadding: root.mirrored ? -2 : padding
             padding: 1
             radius: 2
-            rightPadding: !control.mirrored ? -2 : padding
-            visible: control.editable && !control.flat
+            rightPadding: !root.mirrored ? -2 : padding
+            visible: root.editable && !root.flat
         }
 
         Shortcut {
@@ -60,10 +60,13 @@ T.ComboBox {
             onActivated: contextMenu.popup(textField.leftPadding, textField.cursorRectangle.y + textField.cursorRectangle.height)
         }
 
-        TapHandler {
+        MouseArea {
             acceptedButtons: Qt.RightButton
+            anchors.fill: parent
+            cursorShape: root.editable ? Qt.IBeamCursor : Qt.ArrowCursor
+            enabled: root.editable
 
-            onTapped: event => contextMenu.popup(event.position)
+            onClicked: contextMenu.popup()
         }
 
         TextEditingContextMenu {
@@ -76,39 +79,41 @@ T.ComboBox {
         required property int index
         required property var model
 
-        font.weight: control.currentIndex === index ? Font.Bold : Font.Normal
-        highlighted: control.highlightedIndex === index
-        hoverEnabled: control.hoverEnabled
-        text: model[control.textRole]
+        font.weight: root.currentIndex === index ? Font.Bold : Font.Normal
+        highlighted: root.highlightedIndex === index
+        hoverEnabled: root.hoverEnabled
+        text: model[root.textRole]
         width: ListView.view.width
     }
     indicator: IconImage {
-        color: control.editable ? control.palette.text : control.palette.buttonText
+        color: root.editable ? root.palette.text : root.palette.buttonText
         fillMode: Image.Pad
         name: "chevron-down"
         width: 20
-        x: control.mirrored ? control.padding : control.width - width - control.padding
-        y: control.topPadding + Math.round((control.availableHeight - height) / 2)
+        x: root.mirrored ? root.padding : root.width - width - root.padding
+        y: root.topPadding + Math.round((root.availableHeight - height) / 2)
     }
     popup: T.Popup {
         bottomMargin: 6
-        height: Math.min(contentItem.implicitHeight + 2, control.Window.height - topMargin - bottomMargin)
+        // qmllint disable missing-property
+        height: Math.min(contentItem.implicitHeight + 2, root.Window.height - topMargin - bottomMargin)
+        // qmllint enable missing-property
         padding: 1
-        palette: control.palette
+        palette: root.palette
         topMargin: 6
-        width: control.width
+        width: root.width
 
         background: Rectangle {
-            border.color: control.palette.mid
-            color: control.popup.palette.window
+            border.color: root.palette.mid
+            color: root.popup.palette.window
         }
         contentItem: ListView {
             clip: true
-            currentIndex: control.highlightedIndex
+            currentIndex: root.highlightedIndex
             highlightMoveDuration: 0
             highlightRangeMode: ListView.ApplyRange
             implicitHeight: contentHeight
-            model: control.delegateModel
+            model: root.delegateModel
 
             ScrollIndicator.vertical: ScrollIndicator {}
         }

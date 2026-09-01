@@ -41,7 +41,7 @@ private:
 
     Source *m_source = nullptr;
     QString m_currentSourceKey;
-    SearchState m_searchState;
+    SearchState m_searchState = SearchState::Idle;
     ErrorInfo m_error;
 
     StationModel *m_stationModel = nullptr;

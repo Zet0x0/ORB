@@ -3,7 +3,6 @@
 #include "singleton.h"
 #include <QPoint>
 #include <QRect>
-#include <QRestReply>
 
 class Utilities : public QObject, public Singleton<Utilities> {
     Q_OBJECT
@@ -18,11 +17,11 @@ public:
 
     static qint64 currentTimestamp();
 
-    static QString requestPathFromRestReply(QRestReply &reply);
-
     Q_INVOKABLE static void copyToClipboard(const QString &text);
     Q_INVOKABLE static QString pasteFromClipboard();
 
     Q_INVOKABLE static QPoint getGlobalCursorPos();
     Q_INVOKABLE static QRect getScreenAvailableGeometry(const QPoint &point);
+
+    Q_INVOKABLE static bool isPointOnScreen(const QPoint &point);
 };

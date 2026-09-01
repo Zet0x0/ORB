@@ -3,7 +3,7 @@ import QtQuick.Controls.impl
 import QtQuick.Templates as T
 
 T.ItemDelegate {
-    id: control
+    id: root
 
     implicitHeight: Math.max(implicitBackgroundHeight + topInset + bottomInset, implicitContentHeight + topPadding + bottomPadding, implicitIndicatorHeight + topPadding + bottomPadding)
     implicitWidth: Math.max(implicitBackgroundWidth + leftInset + rightInset, implicitContentWidth + leftPadding + rightPadding)
@@ -11,20 +11,20 @@ T.ItemDelegate {
     spacing: 6
 
     background: Rectangle {
-        color: Qt.darker(control.palette.base, control.down || control.checked ? 1.2 : (enabled && (control.hovered || control.visualFocus) ? 0.8 : 1.0))
+        color: Qt.darker(root.palette.base, root.down || root.checked ? 1.2 : (enabled && (root.hovered || root.visualFocus) ? 0.8 : 1.0))
         implicitHeight: 20
         implicitWidth: 100
-        visible: control.down || control.hovered || control.visualFocus || control.checked || control.highlighted
+        visible: root.down || root.hovered || root.visualFocus || root.checked || root.highlighted
     }
     contentItem: IconLabel {
-        alignment: control.display === IconLabel.IconOnly || control.display === IconLabel.TextUnderIcon ? Qt.AlignCenter : Qt.AlignLeft
-        color: control.palette.text
-        display: control.display
-        font: control.font
-        icon: control.icon
-        mirrored: control.mirrored
-        spacing: control.spacing
-        text: control.text
+        alignment: root.display === IconLabel.IconOnly || root.display === IconLabel.TextUnderIcon ? Qt.AlignCenter : Qt.AlignLeft
+        color: root.palette.text
+        display: root.display
+        font: root.font
+        icon: root.icon
+        mirrored: root.mirrored
+        spacing: root.spacing
+        text: root.text
     }
 
     icon {

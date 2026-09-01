@@ -2,7 +2,7 @@ import QtQuick
 import QtQuick.Templates as T
 
 T.DialogButtonBox {
-    id: control
+    id: root
 
     alignment: Qt.AlignRight
     implicitHeight: Math.max(implicitBackgroundHeight + topInset + bottomInset, implicitContentHeight + topPadding + bottomPadding)
@@ -16,7 +16,7 @@ T.DialogButtonBox {
         implicitWidth: 80
 
         Rectangle {
-            color: control.palette.mid
+            color: root.palette.mid
             height: 1
             width: parent.width
         }
@@ -24,10 +24,10 @@ T.DialogButtonBox {
     contentItem: ListView {
         boundsBehavior: Flickable.StopAtBounds
         implicitWidth: contentWidth
-        model: control.contentModel
+        model: root.contentModel
         orientation: ListView.Horizontal
         snapMode: ListView.SnapToItem
-        spacing: control.spacing
+        spacing: root.spacing
     }
     delegate: Button {}
 }
