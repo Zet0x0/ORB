@@ -1,7 +1,7 @@
 #include "sourcecontroller.h"
 
 SourceController::SourceController(QObject *parent)
-    : QObject(parent), m_stationModel(new StationModel) {}
+    : QObject(parent), m_stationModel(new StationModel(this)) {}
 
 void SourceController::undoSourceConnections(Source *source) const {
     disconnect(source, nullptr, this, nullptr);

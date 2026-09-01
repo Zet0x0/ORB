@@ -32,8 +32,11 @@ private:
     void handleStationsEndpointResult(const QJsonDocument &json);
     void handleSearchEndpointResult(const QJsonDocument &json);
 
+    bool finishReply(QRestReply &reply, QJsonDocument *json);
+
 private slots:
     void onSearchRequestFinished(QRestReply &reply);
+    void onDefaultStationsRequestFinished(QRestReply &reply);
 
 public:
     void cancelSearch() override;

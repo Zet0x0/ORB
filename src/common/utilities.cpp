@@ -25,13 +25,6 @@ qint64 Utilities::currentTimestamp() {
     return QDateTime::currentSecsSinceEpoch();
 }
 
-QString Utilities::requestPathFromRestReply(QRestReply &reply) {
-    const QNetworkReply *networkReply = reply.networkReply();
-
-    return networkReply == nullptr ? QString()
-                                   : networkReply->request().url().path();
-}
-
 void Utilities::copyToClipboard(const QString &text) {
     QGuiApplication::clipboard()->setText(text);
 }

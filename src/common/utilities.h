@@ -3,7 +3,6 @@
 #include "singleton.h"
 #include <QPoint>
 #include <QRect>
-#include <QRestReply>
 
 class Utilities : public QObject, public Singleton<Utilities> {
     Q_OBJECT
@@ -17,8 +16,6 @@ public:
     static QString escapeControlCharacters(QString string);
 
     static qint64 currentTimestamp();
-
-    static QString requestPathFromRestReply(QRestReply &reply);
 
     Q_INVOKABLE static void copyToClipboard(const QString &text);
     Q_INVOKABLE static QString pasteFromClipboard();

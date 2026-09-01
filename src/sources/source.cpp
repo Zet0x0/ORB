@@ -20,6 +20,13 @@ bool Source::parseJson(QRestReply &reply, QJsonDocument *json) {
         return false;
     }
 
+    if (!jsonDocument) {
+        raiseError(tr("Parse error"),
+                   tr("The server returned an empty or non-JSON response"));
+
+        return false;
+    }
+
     *json = *jsonDocument;
 
     return true;

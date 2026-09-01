@@ -15,6 +15,8 @@ public:
     enum StationRoles { StationRole = Qt::UserRole };
     Q_ENUM(StationRoles)
 
+    explicit StationModel(QObject *parent = nullptr);
+
     Q_INVOKABLE int
     rowCount(const QModelIndex &parent = QModelIndex()) const override;
 
