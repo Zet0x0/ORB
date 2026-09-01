@@ -9,6 +9,7 @@
 #include <QQuickStyle>
 #include <QQuickWindow>
 #include <QSettings>
+#include <cctype>
 
 namespace {
 void applyColorGroup(QPalette &palette, QPalette::ColorGroup group,

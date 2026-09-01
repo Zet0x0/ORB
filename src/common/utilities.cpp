@@ -50,3 +50,7 @@ QRect Utilities::getScreenAvailableGeometry(const QPoint &point) {
 
     return screen->availableGeometry();
 }
+
+bool Utilities::isPointOnScreen(const QPoint &point) {
+    return QGuiApplication::screenAt(point) != nullptr;
+}

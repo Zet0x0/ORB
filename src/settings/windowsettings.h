@@ -10,6 +10,9 @@ class WindowSettings : public SettingsGroup {
 
     Q_PROPERTY(int x READ x WRITE setX NOTIFY xChanged FINAL)
     Q_PROPERTY(int y READ y WRITE setY NOTIFY yChanged FINAL)
+    // Whether an explicit position is stored; not a setting
+    Q_PROPERTY(
+        bool hasPosition READ hasPosition NOTIFY hasPositionChanged FINAL)
 
     Q_PROPERTY(int width READ width WRITE setWidth NOTIFY widthChanged FINAL)
     Q_PROPERTY(
@@ -20,9 +23,12 @@ private:
 
     int m_x;
     int m_y;
+    bool m_hasPosition = false;
 
     int m_width;
     int m_height;
+
+    void refreshHasPosition();
 
 public:
     explicit WindowSettings(QObject *parent = nullptr);
@@ -32,6 +38,8 @@ public:
     int y() const;
     void setY(int newY);
 
+    bool hasPosition() const;
+
     int width() const;
     void setWidth(int newWidth);
     int height() const;
@@ -40,6 +48,7 @@ public:
 signals:
     void xChanged();
     void yChanged();
+    void hasPositionChanged();
 
     void widthChanged();
     void heightChanged();
