@@ -32,7 +32,7 @@ T.CheckBox {
             height: width
             name: "check"
             sourceSize: Qt.size(width, height)
-            visible: root.checkState === Qt.Checked || (root.checked && root.checkState === undefined)
+            visible: root.checkState === Qt.Checked
             width: parent.width
             x: Math.round((parent.width - width) / 2)
             y: Math.round((parent.height - height) / 2)
