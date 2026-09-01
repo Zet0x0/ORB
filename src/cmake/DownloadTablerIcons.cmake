@@ -1,6 +1,7 @@
 set(TABLER_ICONS_VERSION "3.45.0")
 set(TABLER_ICONS_SHA256
     "7fc0b57bd994865f2b0aee6a163cdce26da03056ae6d82d38fe3a6b24538cb93")
+
 set(TABLER_ICONS_URL
     "https://github.com/tabler/tabler-icons/archive/refs/tags/v${TABLER_ICONS_VERSION}.tar.gz"
 )
