@@ -6,6 +6,11 @@ qt_add_qml_module(
     ORB.QmlComponents
     OUTPUT_DIRECTORY
     "${CMAKE_BINARY_DIR}/ORB/QmlComponents"
+    DEPENDENCIES
+    ORB.Common
+    ORB.Player
+    ORB.Settings
+    ORB.Sources
     QML_FILES
     MainWindow.qml
     StationImage.qml
@@ -29,4 +34,5 @@ qt_add_qml_module(
     PlaybackStatusIndicator.qml
     NO_PLUGIN)
 
-target_link_libraries(qml_components PRIVATE style)
+target_link_libraries(qml_components PRIVATE common player settings sources
+                                             style)

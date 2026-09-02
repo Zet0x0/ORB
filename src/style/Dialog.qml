@@ -12,10 +12,10 @@ T.Dialog {
     z: 1
 
     T.Overlay.modal: Rectangle {
-        color: Qt.alpha(root.palette.dark, 0.33)
+        color: root.palette.dark.alpha(0.33)
     }
     T.Overlay.modeless: Rectangle {
-        color: Qt.alpha(root.palette.dark, 0.33)
+        color: root.palette.dark.alpha(0.33)
     }
     background: Rectangle {
         border.color: root.palette.mid

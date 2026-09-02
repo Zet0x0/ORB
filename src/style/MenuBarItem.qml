@@ -11,7 +11,7 @@ T.MenuBarItem {
     spacing: 6
 
     background: Rectangle {
-        color: Qt.lighter(root.palette.base, 1.2)
+        color: root.palette.base.lighter(1.2)
         implicitHeight: 20
         implicitWidth: 20
         visible: root.down || root.hovered || root.visualFocus || (root.menu && root.menu.opened) || (root.highlighted && !root.menuBar.hovered)

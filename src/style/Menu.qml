@@ -36,10 +36,10 @@ T.Menu {
     z: 2
 
     T.Overlay.modal: Rectangle {
-        color: Qt.alpha(root.palette.dark, 0.1)
+        color: root.palette.dark.alpha(0.1)
     }
     T.Overlay.modeless: Rectangle {
-        color: Qt.alpha(root.palette.dark, 0.1)
+        color: root.palette.dark.alpha(0.1)
     }
     background: Rectangle {
         border.color: root.palette.mid

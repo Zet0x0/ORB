@@ -83,7 +83,7 @@ T.SpinBox {
         bottomLeftRadius: root.mirrored ? 2 : 0
         bottomRightRadius: root.mirrored ? 0 : 2
         clip: true
-        color: Qt.darker(palette.button, root.down.pressed ? 1.2 : (root.down.hovered ? 0.8 : 1.0))
+        color: palette.button.darker(root.down.pressed ? 1.2 : (root.down.hovered ? 0.8 : 1.0))
         height: Math.round(root.height / 2) - 1
         implicitHeight: 10
         implicitWidth: 15
@@ -100,7 +100,7 @@ T.SpinBox {
     }
     up.indicator: PaddedRectangle {
         clip: true
-        color: Qt.darker(palette.button, root.up.pressed ? 1.2 : (root.up.hovered ? 0.8 : 1.0))
+        color: palette.button.darker(root.up.pressed ? 1.2 : (root.up.hovered ? 0.8 : 1.0))
         height: Math.round(root.height / 2) - 1
         implicitHeight: 10
         implicitWidth: 15

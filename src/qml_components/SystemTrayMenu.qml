@@ -14,7 +14,7 @@ Window {
         }
     }
 
-    function popup(position) {
+    function popup(position: point): void {
         lastPosition = position;
         reposition();
 

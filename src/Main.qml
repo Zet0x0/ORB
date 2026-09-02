@@ -29,11 +29,12 @@ MainWindow {
             return;
         }
 
-        const savedPosition = Qt.point(Settings.window.x, Settings.window.y);
+        const savedX = Settings.window.x;
+        const savedY = Settings.window.y;
 
-        if (Utilities.isPointOnScreen(savedPosition)) {
-            x = savedPosition.x;
-            y = savedPosition.y;
+        if (Utilities.isPointOnScreen(Qt.point(savedX, savedY))) {
+            x = savedX;
+            y = savedY;
         }
     }
 

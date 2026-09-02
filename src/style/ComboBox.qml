@@ -8,6 +8,8 @@ import QtQuick.Window
 T.ComboBox {
     id: root
 
+    readonly property real windowHeight: Window.height
+
     implicitHeight: Math.max(implicitBackgroundHeight + topInset + bottomInset, implicitContentHeight + topPadding + bottomPadding, implicitIndicatorHeight + topPadding + bottomPadding)
     implicitWidth: Math.max(implicitBackgroundWidth + leftInset + rightInset, implicitContentWidth + leftPadding + rightPadding)
     leftPadding: padding + (!mirrored || !indicator || !indicator.visible ? 0 : indicator.width + spacing)
@@ -17,7 +19,7 @@ T.ComboBox {
         readonly property bool highlighted: root.visualFocus || root.contentItem.activeFocus || contextMenu.visible
 
         border.color: highlighted ? root.palette.highlight : "#00000000"
-        color: Qt.darker(root.palette.button, root.down ? 1.2 : (enabled && (root.hovered || root.visualFocus) ? 0.8 : 1.0))
+        color: root.palette.button.darker(root.down ? 1.2 : (enabled && (root.hovered || root.visualFocus) ? 0.8 : 1.0))
         implicitHeight: 24
         implicitWidth: 120
         radius: 2
@@ -95,9 +97,7 @@ T.ComboBox {
     }
     popup: T.Popup {
         bottomMargin: 6
-        // qmllint disable missing-property
-        height: Math.min(contentItem.implicitHeight + 2, root.Window.height - topMargin - bottomMargin)
-        // qmllint enable missing-property
+        height: Math.min(contentItem.implicitHeight + 2, root.windowHeight - topMargin - bottomMargin)
         padding: 1
         palette: root.palette
         topMargin: 6
@@ -105,7 +105,7 @@ T.ComboBox {
 
         background: Rectangle {
             border.color: root.palette.mid
-            color: root.popup.palette.window
+            color: root.palette.window
         }
         contentItem: ListView {
             clip: true

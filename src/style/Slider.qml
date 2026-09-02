@@ -27,7 +27,7 @@ T.Slider {
     }
     handle: Rectangle {
         border.color: root.visualFocus ? root.palette.highlight : "#00000000"
-        color: Qt.darker(root.palette.button, root.pressed ? 1.2 : (enabled && (handleHoverHandler.hovered || root.visualFocus) ? 0.8 : 1.0))
+        color: root.palette.button.darker(root.pressed ? 1.2 : (enabled && (handleHoverHandler.hovered || root.visualFocus) ? 0.8 : 1.0))
         implicitHeight: 13
         implicitWidth: 13
         radius: 2

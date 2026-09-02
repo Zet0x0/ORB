@@ -42,7 +42,7 @@ MarqueeLabel {
         enabled: root.activeFocus
         sequences: ["Menu", "Shift+F10"]
 
-        onActivated: contextMenu.popup(0, root.height)
+        onActivated: contextMenu.popup(Qt.point(0, root.height))
     }
 
     TapHandler {

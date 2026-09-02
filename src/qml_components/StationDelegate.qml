@@ -25,8 +25,10 @@ Frame {
     padding: 0
 
     background: Rectangle {
+        id: background
+
         border.color: root.ListView.isCurrentItem && root.ListView.view.activeFocus ? palette.highlight : "#00000000"
-        color: Qt.darker(palette.base, tapHandler.pressed || root.keyPressed ? 1.2 : (enabled && (root.hovered || root.visualFocus || (root.ListView.isCurrentItem && root.ListView.view.activeFocus)) ? 0.8 : 1.0))
+        color: palette.base.darker(tapHandler.pressed || root.keyPressed ? 1.2 : (enabled && (root.hovered || root.visualFocus || (root.ListView.isCurrentItem && root.ListView.view.activeFocus)) ? 0.8 : 1.0))
     }
 
     Keys.onPressed: event => {
@@ -63,7 +65,7 @@ Frame {
 
     Control {
         anchors.fill: parent
-        padding: 8 + (root.background as Rectangle).border.width
+        padding: 8 + background.border.width
 
         contentItem: RowLayout {
             StationImage {

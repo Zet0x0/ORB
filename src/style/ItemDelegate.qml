@@ -11,7 +11,7 @@ T.ItemDelegate {
     spacing: 6
 
     background: Rectangle {
-        color: Qt.darker(root.palette.base, root.down || root.checked ? 1.2 : (enabled && (root.hovered || root.visualFocus) ? 0.8 : 1.0))
+        color: root.palette.base.darker(root.down || root.checked ? 1.2 : (enabled && (root.hovered || root.visualFocus) ? 0.8 : 1.0))
         implicitHeight: 20
         implicitWidth: 100
         visible: root.down || root.hovered || root.visualFocus || root.checked || root.highlighted

@@ -14,10 +14,6 @@ QString InterfaceSettings::settingsCategory() const {
     return tr("Interface");
 }
 
-QString InterfaceSettings::settingsSubcategory() const {
-    return tr("Labels");
-}
-
 QList<SettingsFieldMeta> InterfaceSettings::settingsFields() const {
     return {
         {"slidingLabels", tr("Slide long labels instead of truncating them")},

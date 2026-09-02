@@ -10,7 +10,7 @@ Dialog {
 
     property station pendingStation
 
-    function openWithText(text) {
+    function openWithText(text: string): void {
         urlField.text = text.trim();
 
         open();

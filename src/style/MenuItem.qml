@@ -23,7 +23,7 @@ T.MenuItem {
     background: Rectangle {
         readonly property bool active: root.enabled && (root.hovered || root.visualFocus || (root.subMenu && root.subMenu.opened) || root.highlighted)
 
-        color: Qt.darker(root.palette.base, root.down ? 1.2 : (active ? 0.8 : 1.0))
+        color: root.palette.base.darker(root.down ? 1.2 : (active ? 0.8 : 1.0))
         implicitHeight: 20
         implicitWidth: 150
         visible: root.down || active
@@ -45,7 +45,7 @@ T.MenuItem {
         text: root.text
     }
     indicator: Rectangle {
-        color: Qt.darker(root.palette.base, root.down ? 1.0 : 1.2)
+        color: root.palette.base.darker(root.down ? 1.0 : 1.2)
         implicitHeight: 14
         implicitWidth: 14
         visible: root.checkable

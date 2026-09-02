@@ -12,7 +12,7 @@ T.ToolButton {
 
     background: Rectangle {
         border.color: root.visualFocus ? root.palette.highlight : "#00000000"
-        color: Qt.darker(root.highlighted ? root.palette.highlight : root.palette.button, root.down || root.checked ? 1.2 : (enabled && (root.hovered || root.visualFocus) ? 0.8 : 1.0))
+        color: (root.highlighted ? root.palette.highlight : root.palette.button).darker(root.down || root.checked ? 1.2 : (enabled && (root.hovered || root.visualFocus) ? 0.8 : 1.0))
         implicitHeight: 20
         implicitWidth: 20
         radius: 2

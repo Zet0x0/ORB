@@ -26,7 +26,7 @@ Menu {
     MenuSeparator {}
 
     Action {
-        enabled: !root.editor.readOnly && root.editor.selectedText.length > 0
+        enabled: !root.editor.readOnly && root.editor.selectionEnd > root.editor.selectionStart
         icon.name: "cut"
         text: qsTr("Cut")
 
@@ -34,7 +34,7 @@ Menu {
     }
 
     Action {
-        enabled: root.editor.selectedText.length > 0
+        enabled: root.editor.selectionEnd > root.editor.selectionStart
         icon.name: "copy"
         text: qsTr("Copy")
 
@@ -50,7 +50,7 @@ Menu {
     }
 
     Action {
-        enabled: !root.editor.readOnly && root.editor.selectedText.length > 0
+        enabled: !root.editor.readOnly && root.editor.selectionEnd > root.editor.selectionStart
         icon.name: "trash"
         text: qsTr("Delete")
 

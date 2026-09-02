@@ -39,7 +39,7 @@ Frame {
             anchors.fill: parent
             color: AppColors.semantic.danger
             opacity: 0
-            radius: parent.radius
+            radius: bannerBackground.radius
 
             SequentialAnimation {
                 id: flashAnimation
