@@ -33,7 +33,7 @@ Label {
         color: "#00000000"
 
         Rectangle {
-            border.color: root.activeFocus ? root.palette.highlight : "#00000000"
+            border.color: root.activeFocus || contextMenu.visible ? root.palette.highlight : "#00000000"
             color: "#00000000"
             height: Math.round(root.contentHeight) + 4
             radius: 2
