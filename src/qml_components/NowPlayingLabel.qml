@@ -3,19 +3,16 @@ import ORB.Player
 import ORB.Style
 import QtQuick
 
-// TODO: sliding label OR elide
-Label {
+MarqueeLabel {
     id: root
 
     readonly property bool showingInfo: Player.station.valid && Player.state !== Player.Stopped && Player.nowPlaying !== ""
 
     ToolTip.text: text
-    ToolTip.visible: truncated && (hoverHandler.hovered || activeFocus)
+    ToolTip.visible: truncated && !marqueeing && (hoverHandler.hovered || activeFocus)
     activeFocusOnTab: true
-    color: showingInfo ? palette.windowText : palette.disabled.windowText
-    elide: Text.ElideRight
     font.italic: !showingInfo
-    maximumLineCount: 1
+    paused: hoverHandler.hovered || contextMenu.visible
     text: {
         if (!Player.station.valid || Player.state === Player.Stopped) {
             return qsTr("Not playing anything currently");
@@ -27,20 +24,18 @@ Label {
 
         return Player.nowPlaying;
     }
+    textColor: showingInfo ? palette.windowText : palette.disabled.windowText
     textFormat: Text.PlainText
 
-    background: Rectangle {
+    Rectangle {
+        border.color: root.activeFocus || contextMenu.visible ? root.palette.highlight : "#00000000"
         color: "#00000000"
-
-        Rectangle {
-            border.color: root.activeFocus || contextMenu.visible ? root.palette.highlight : "#00000000"
-            color: "#00000000"
-            height: Math.round(root.contentHeight) + 4
-            radius: 2
-            width: Math.round(root.contentWidth) + 4
-            x: -2
-            y: -2
-        }
+        height: Math.round(root.contentHeight) + 4
+        radius: 2
+        width: Math.round(root.boxWidth) + 4
+        x: -2
+        y: -2
+        z: 1
     }
 
     Shortcut {
@@ -56,7 +51,7 @@ Label {
         onTapped: event => {
             const position = event.position;
 
-            if (position.x <= root.contentWidth && position.y <= root.contentHeight) {
+            if (position.x <= root.boxWidth && position.y <= root.contentHeight) {
                 contextMenu.popup(position);
             }
         }
