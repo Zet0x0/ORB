@@ -17,6 +17,7 @@ qt_add_qml_module(
     StationSearchField.qml
     StationNameLabel.qml
     NowPlayingLabel.qml
+    MarqueeLabel.qml
     StationSearch.qml
     LayoutScrollBar.qml
     AboutDialog.qml
