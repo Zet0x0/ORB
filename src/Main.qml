@@ -253,17 +253,15 @@ MainWindow {
                     Layout.fillWidth: true
                 }
 
-                Row {
+                RowLayout {
                     Layout.fillWidth: true
-                    spacing: parent.spacing
 
                     StationNameLabel {
-                        width: Math.min(parent.width - (elapsedLabel.visible ? elapsedLabel.width + parent.spacing : 0), implicitWidth)
+                        Layout.fillWidth: true
+                        Layout.maximumWidth: implicitWidth
                     }
 
-                    ElapsedLabel {
-                        id: elapsedLabel
-                    }
+                    ElapsedLabel {}
                 }
 
                 RowLayout {
