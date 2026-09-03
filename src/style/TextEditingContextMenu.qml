@@ -3,8 +3,15 @@ import QtQuick
 Menu {
     id: root
 
+    property bool _editorWasFocused: false
     required property TextInput editor
 
+    onAboutToShow: _editorWasFocused = editor.activeFocus
+    onClosed: {
+        if (!_editorWasFocused) {
+            editor.cursorVisible = false;
+        }
+    }
     onOpened: editor.cursorVisible = true
 
     Action {
