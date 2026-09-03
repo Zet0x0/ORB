@@ -323,7 +323,7 @@ MainWindow {
             ComboBox {
                 id: sourceSelector
 
-                ToolTip.text: qsTr("Station search source")
+                ToolTip.text: qsTr("Station source")
                 ToolTip.visible: hovered || visualFocus
                 model: SourceController.getSources()
                 textRole: "name"
