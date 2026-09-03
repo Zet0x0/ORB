@@ -17,9 +17,13 @@ qt_add_qml_module(
     stationmodel.cpp
     station.h
     station.cpp
+    favorites.h
+    favorites.cpp
     providers/nullsource.h
     providers/nullsource.cpp
     providers/radiorecord.h
-    providers/radiorecord.cpp)
+    providers/radiorecord.cpp
+    providers/favoritessource.h
+    providers/favoritessource.cpp)
 
 target_link_libraries(sources PRIVATE common)

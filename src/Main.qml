@@ -66,6 +66,28 @@ MainWindow {
 
             MenuSeparator {}
 
+            // HACK: Using the same hack as Play/Stop
+
+            MenuItem {
+                enabled: visible && Player.station.valid
+                height: visible ? implicitHeight : 0
+                text: qsTr("&Add Station to Favorites")
+                visible: !favoriteButton.favorited
+
+                onTriggered: Favorites.add(Player.station)
+            }
+
+            MenuItem {
+                enabled: visible
+                height: visible ? implicitHeight : 0
+                text: qsTr("&Remove Station from Favorites")
+                visible: favoriteButton.favorited
+
+                onTriggered: Favorites.remove(Player.station)
+            }
+
+            MenuSeparator {}
+
             Action {
                 text: qsTr("&Quit")
 
@@ -130,7 +152,7 @@ MainWindow {
 
             MenuSeparator {}
 
-            // HACK: Using the same hack as the Play/Stop items
+            // HACK: Using the same hack as Play/Stop
 
             MenuItem {
                 enabled: visible
@@ -266,6 +288,12 @@ MainWindow {
                 }
 
                 RowLayout {
+                    FavoriteButton {
+                        id: favoriteButton
+
+                        station: Player.station
+                    }
+
                     PlayButton {
                         id: playButton
                     }

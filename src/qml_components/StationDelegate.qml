@@ -88,6 +88,16 @@ Frame {
                 verticalAlignment: Qt.AlignVCenter
                 wrapMode: Text.Wrap
             }
+
+            FavoriteButton {
+                readonly property bool shown: favorited || root.hovered || root.visualFocus || (root.ListView.isCurrentItem && root.ListView.view.activeFocus)
+
+                Layout.alignment: Qt.AlignVCenter
+                enabled: shown
+                flat: true
+                opacity: shown ? 1 : 0
+                station: root.station
+            }
         }
     }
 }
