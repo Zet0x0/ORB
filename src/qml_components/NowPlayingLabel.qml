@@ -9,7 +9,7 @@ MarqueeLabel {
     readonly property bool showingInfo: Player.station.valid && Player.state !== Player.Stopped && Player.nowPlaying !== ""
 
     ToolTip.text: text
-    ToolTip.visible: truncated && !marqueeing && (hoverHandler.hovered || activeFocus)
+    ToolTip.visible: overflowing && !marqueeing && (hoverHandler.hovered || activeFocus)
     activeFocusOnTab: true
     font.italic: !showingInfo
     paused: hoverHandler.hovered || contextMenu.visible
@@ -25,7 +25,6 @@ MarqueeLabel {
         return Player.nowPlaying;
     }
     textColor: showingInfo ? palette.windowText : palette.disabled.windowText
-    textFormat: Text.PlainText
 
     Rectangle {
         border.color: root.activeFocus || contextMenu.visible ? root.palette.highlight : "#00000000"
