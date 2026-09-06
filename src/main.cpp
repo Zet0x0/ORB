@@ -51,8 +51,6 @@ QPalette paletteFromQmlPalette(QObject *qmlPalette) {
 }
 
 int main(int argc, char *argv[]) {
-    QCoreApplication::setOrganizationName(QStringLiteral("zet0x0"));
-    QCoreApplication::setOrganizationDomain(QStringLiteral("com.zet0x0.orb"));
     QCoreApplication::setApplicationName(QStringLiteral("ORB"));
     QCoreApplication::setApplicationVersion(QStringLiteral("0.1.0"));
 
