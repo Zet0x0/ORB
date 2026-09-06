@@ -60,17 +60,25 @@ StackLayout {
             activeFocusOnTab: true
             boundsBehavior: Flickable.StopAtBounds
             clip: true
+            highlightMoveDuration: 0
+            highlightRangeMode: ListView.ApplyRange
             keyNavigationWraps: true
             model: SourceController.stationModel()
             pixelAligned: true
+            preferredHighlightBegin: 0
+            preferredHighlightEnd: height
             spacing: 5
 
             delegate: StationDelegate {
                 width: ListView.view.width
             }
 
+            onActiveFocusChanged: {
+                if (activeFocus) {
+                    Qt.callLater(positionViewAtIndex, currentIndex, ListView.Contain);
+                }
+            }
             onCountChanged: currentIndex = count === 0 ? -1 : 0
-            onCurrentItemChanged: positionViewAtIndex(currentIndex, ListView.Contain)
         }
 
         LayoutScrollBar {
