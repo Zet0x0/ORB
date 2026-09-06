@@ -7,10 +7,12 @@ import QtQuick
 Label {
     id: root
 
+    readonly property real availableTextWidth: width - leftPadding - rightPadding
     readonly property real boxWidth: marqueeing ? width : contentWidth
     property color fadeColor: palette.window
     property real fadeWidth: 12 // width of each edge fade gradient, in pixels
-    readonly property bool marqueeing: sliding && truncated
+    readonly property bool marqueeing: sliding && overflowing
+    readonly property bool overflowing: availableTextWidth > 0 && metrics.advanceWidth > availableTextWidth + 1
     property bool paused: false
     property real scrollSpacing: 64 // gap between the repeated copies, in pixels
 
@@ -27,6 +29,7 @@ Label {
     color: marqueeing ? "#00000000" : textColor
     elide: Text.ElideRight
     maximumLineCount: 1
+    textFormat: Text.PlainText
 
     onTextChanged: Qt.callLater(restartScroll)
 

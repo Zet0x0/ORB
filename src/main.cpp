@@ -1,3 +1,4 @@
+#include "sources/providers/favoritessource.h"
 #include "sources/providers/nullsource.h"
 #include "sources/providers/radiorecord.h"
 #include "sources/sourcecontroller.h"
@@ -50,8 +51,6 @@ QPalette paletteFromQmlPalette(QObject *qmlPalette) {
 }
 
 int main(int argc, char *argv[]) {
-    QCoreApplication::setOrganizationName(QStringLiteral("zet0x0"));
-    QCoreApplication::setOrganizationDomain(QStringLiteral("com.zet0x0.orb"));
     QCoreApplication::setApplicationName(QStringLiteral("ORB"));
     QCoreApplication::setApplicationVersion(QStringLiteral("0.1.0"));
 
@@ -97,6 +96,9 @@ int main(int argc, char *argv[]) {
         sourceController->registerSource(
             SourceControllerConstants::NullSourceKey.toString(),
             QObject::tr("Not selected"), new NullSource);
+        sourceController->registerSource(QStringLiteral("favorites"),
+                                         QObject::tr("Favorites"),
+                                         new FavoritesSource);
         sourceController->registerSource(QStringLiteral("radio-record"),
                                          QObject::tr("Radio Record"),
                                          new RadioRecord);
