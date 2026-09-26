@@ -174,6 +174,16 @@ MainWindow {
         }
 
         Menu {
+            title: qsTr("&Tools")
+
+            Action {
+                text: qsTr("&Log Messages...")
+
+                onTriggered: logDialog.open()
+            }
+        }
+
+        Menu {
             title: qsTr("&Help")
 
             Action {
@@ -234,6 +244,10 @@ MainWindow {
 
     AboutDialog {
         id: aboutDialog
+    }
+
+    LogDialog {
+        id: logDialog
     }
 
     OpenLocationDialog {
@@ -339,11 +353,26 @@ MainWindow {
                 }
             }
 
-            StationSearchField {
+            SearchTextField {
                 id: stationSearchField
 
+                function engageSearch(): void {
+                    const query = text.trim();
+
+                    if (query.length === 0) {
+                        SourceController.showDefaultStations();
+
+                        return;
+                    }
+
+                    SourceController.search(text);
+                }
+
                 Layout.fillWidth: true
-                sourceSelector: sourceSelector
+                enabled: !SourceController.currentSourceIsNull
+
+                onAccepted: engageSearch()
+                onCleared: engageSearch()
             }
 
             IconButton {

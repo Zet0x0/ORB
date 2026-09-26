@@ -7,7 +7,7 @@ Dialog {
 
     modal: true
     standardButtons: Dialog.Ok
-    title: qsTr("About %0").arg(Qt.application.name)
+    title: qsTr("About ORB")
     x: Math.round((parent.width - width) / 2)
     y: Math.round((parent.height - height) / 2)
 
@@ -30,7 +30,7 @@ Dialog {
 
         ColumnLayout {
             Label {
-                text: qsTr("## %0 %1").arg(Qt.application.name).arg(Qt.application.version)
+                text: qsTr("## ORB %0").arg(Qt.application.version)
                 textFormat: Text.MarkdownText
             }
 

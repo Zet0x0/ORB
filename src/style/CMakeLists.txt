@@ -36,4 +36,6 @@ qt_add_qml_module(
     ScrollIndicator.qml
     SpinBox.qml
     ComboBox.qml
+    HorizontalHeaderView.qml
+    HorizontalHeaderViewDelegate.qml
     NO_PLUGIN)

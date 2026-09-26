@@ -1,3 +1,4 @@
+#include "logging/logger.h"
 #include "sources/providers/favoritessource.h"
 #include "sources/providers/nullsource.h"
 #include "sources/providers/radiorecord.h"
@@ -9,7 +10,6 @@
 #include <QQmlComponent>
 #include <QQuickStyle>
 #include <QQuickWindow>
-#include <QSettings>
 #include <cctype>
 
 namespace {
@@ -54,13 +54,12 @@ int main(int argc, char *argv[]) {
     QCoreApplication::setApplicationName(QStringLiteral("ORB"));
     QCoreApplication::setApplicationVersion(QStringLiteral("0.1.0"));
 
-    QSettings::setDefaultFormat(QSettings::IniFormat);
+    Logger::install();
 
     QGuiApplication::setQuitOnLastWindowClosed(false);
 
     QQuickStyle::setStyle(QStringLiteral("ORB.Style"));
     QQuickWindow::setGraphicsApi(QSGRendererInterface::OpenGL);
-
     QIcon::setThemeName("ORB");
 
     QGuiApplication app(argc, argv);

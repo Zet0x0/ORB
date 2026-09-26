@@ -38,11 +38,7 @@ StackLayout {
         asynchronous: true
         fillMode: Image.PreserveAspectCrop
         source: root.imageUrl
-
-        sourceSize {
-            height: parent.height
-            width: parent.width
-        }
+        sourceSize: Qt.size(parent.width, parent.height)
     }
 
     // Image.Loading

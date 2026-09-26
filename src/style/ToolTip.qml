@@ -11,6 +11,7 @@ T.ToolTip {
     padding: 6
     x: parent ? Math.round((parent.width - implicitWidth) / 2) : 0
     y: -implicitHeight - 3
+    z: 999
 
     background: Rectangle {
         border.color: root.palette.toolTipText

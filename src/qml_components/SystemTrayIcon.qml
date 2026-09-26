@@ -11,7 +11,7 @@ SystemTrayIcon {
     icon.source: "qrc:/icons/ORB.svg"
     tooltip: {
         if (!Player.station.valid) {
-            return Qt.application.name;
+            return "ORB";
         }
 
         if (Player.nowPlaying !== "") {
