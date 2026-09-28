@@ -12,7 +12,7 @@ T.SpinBox {
     padding: 4
     // HACK: trying to keep textInput's width even to prevent text
     // from going out of selection rectangle's bounds horizontally
-    rightPadding: padding + (!mirrored ? (up.indicator ? up.indicator.width : 0) : 0) + (width - 2 * padding - (up.indicator ? up.indicator.width : 0)) % 2
+    rightPadding: padding + (!mirrored ? (up.indicator ? up.indicator.width : 0) : 0) + Math.max(0, width - 2 * padding - (up.indicator ? up.indicator.width : 0) - textInput.contentWidth) % 2
 
     background: Rectangle {
         id: background
