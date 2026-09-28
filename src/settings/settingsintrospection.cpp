@@ -1,4 +1,5 @@
 #include "settingsintrospection.h"
+#include "settings.h"
 #include <QCoreApplication>
 
 namespace SettingsIntrospection {
@@ -35,6 +36,30 @@ QString categoryName(const QByteArray &id) {
     return QCoreApplication::translate("SettingsCategory", id.constData());
 }
 
+QList<SettingsGroup *> groups() {
+    QList<SettingsGroup *> result;
+
+    Settings *root = Settings::instance();
+    const QMetaObject *metaObject = root->metaObject();
+
+    for (int i = QObject::staticMetaObject.propertyCount();
+         i < metaObject->propertyCount(); ++i) {
+        const QMetaProperty property = metaObject->property(i);
+
+        if (!property.metaType().flags().testFlag(
+                QMetaType::PointerToQObject)) {
+            continue;
+        }
+
+        if (SettingsGroup *group = qobject_cast<SettingsGroup *>(
+                property.read(root).value<QObject *>())) {
+            result.append(group);
+        }
+    }
+
+    return result;
+}
+
 QList<ResolvedField> resolvedFields(const SettingsGroup *group) {
     QList<ResolvedField> result;
 
@@ -59,13 +84,20 @@ QList<ResolvedField> resolvedFields(const SettingsGroup *group) {
             continue;
         }
 
+        const QByteArray subcategoryId = field.subcategory.isEmpty()
+                                           ? group->settingsSubcategory()
+                                           : field.subcategory;
+
         result.append(
-            {property,
-             field.label.isEmpty() ? label(field.propertyName) : field.label,
-             categoryName(field.subcategory.isEmpty()
-                              ? group->settingsSubcategory()
-                              : field.subcategory),
-             field.min, field.max});
+            {.property = property,
+             .label = field.label.isEmpty() ? label(field.propertyName)
+                                            : field.label,
+             .categoryId = field.category.isEmpty() ? group->settingsCategory()
+                                                    : field.category,
+             .subcategoryId = subcategoryId,
+             .subcategory = categoryName(subcategoryId),
+             .min = field.min,
+             .max = field.max});
     }
 
     return result;

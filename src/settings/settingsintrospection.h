@@ -7,12 +7,17 @@ namespace SettingsIntrospection {
 struct ResolvedField {
     QMetaProperty property;
     QString label;
+    QByteArray categoryId;
+    QByteArray subcategoryId;
     // Translated for display
     QString subcategory;
 
     int min;
     int max;
 };
+
+// Groups exposed by the Settings singleton, in declared order
+QList<SettingsGroup *> groups();
 
 QList<ResolvedField> resolvedFields(const SettingsGroup *group);
 

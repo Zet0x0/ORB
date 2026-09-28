@@ -37,9 +37,11 @@ QByteArray PlayerSettings::settingsSubcategory() const {
 
 QList<SettingsFieldMeta> PlayerSettings::settingsFields() const {
     return {
-        {"retryOnError", tr("Retry on error")},
-        {"maxRetries", tr("Max retry attempts"), QByteArray(), MaxRetriesMin,
-         MaxRetriesMax},
+        {.propertyName = "retryOnError", .label = tr("Retry on error")},
+        {.propertyName = "maxRetries",
+         .label = tr("Retry attempts"),
+         .min = MaxRetriesMin,
+         .max = MaxRetriesMax},
     };
 }
 

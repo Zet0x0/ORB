@@ -1,51 +1,32 @@
 #include "settingscategorymodel.h"
-#include "settings.h"
 #include "settingsgroup.h"
 #include "settingsintrospection.h"
 #include <QCollator>
 
-SettingsCategoryModel::SettingsCategoryModel(QObject *parent)
-    : QAbstractListModel(parent) {
-    rebuildCategories();
-}
-
 void SettingsCategoryModel::rebuildCategories() {
     m_categories.clear();
 
-    QObject *root = Settings::instance();
-    const QMetaObject *metaObject = root->metaObject();
+    const QList<SettingsGroup *> groups = SettingsIntrospection::groups();
 
-    for (int i = QObject::staticMetaObject.propertyCount();
-         i < metaObject->propertyCount(); ++i) {
-        const QMetaProperty property = metaObject->property(i);
+    // Only show categories that actually have fields in them
+    for (const SettingsGroup *group : groups) {
+        const QList<SettingsIntrospection::ResolvedField> fields =
+            SettingsIntrospection::resolvedFields(group);
 
-        if (!property.metaType().flags().testFlag(
-                QMetaType::PointerToQObject)) {
-            continue;
-        }
+        for (const SettingsIntrospection::ResolvedField &field :
+             std::as_const(fields)) {
+            const bool exists =
+                std::any_of(m_categories.cbegin(), m_categories.cend(),
+                            [&](const Category &category) {
+                                return category.id == field.categoryId;
+                            });
 
-        auto *group = qobject_cast<SettingsGroup *>(
-            property.read(root).value<QObject *>());
-
-        if (!group || SettingsIntrospection::resolvedFields(group).isEmpty()) {
-            continue;
-        }
-
-        const QByteArray categoryId = group->settingsCategory();
-
-        auto existingCategory =
-            std::find_if(m_categories.begin(), m_categories.end(),
-                         [&](const Category &category) {
-                             return category.id == categoryId;
-                         });
-
-        if (existingCategory == m_categories.end()) {
-            m_categories.append(
-                {categoryId,
-                 SettingsIntrospection::categoryName(categoryId),
-                 {group}});
-        } else {
-            existingCategory->groups.append(group);
+            if (!exists) {
+                m_categories.append(
+                    {.id = field.categoryId,
+                     .name = SettingsIntrospection::categoryName(
+                         field.categoryId)});
+            }
         }
     }
 
@@ -55,6 +36,11 @@ void SettingsCategoryModel::rebuildCategories() {
               [&collator](const Category &a, const Category &b) {
                   return collator.compare(a.name, b.name) < 0;
               });
+}
+
+SettingsCategoryModel::SettingsCategoryModel(QObject *parent)
+    : QAbstractListModel(parent) {
+    rebuildCategories();
 }
 
 int SettingsCategoryModel::rowCount(const QModelIndex &parent) const {
@@ -72,15 +58,8 @@ QVariant SettingsCategoryModel::data(const QModelIndex &index, int role) const {
     case NameRole:
         return category.name;
 
-    case GroupsRole: {
-        QVariantList groups;
-
-        for (QObject *group : category.groups) {
-            groups.append(QVariant::fromValue(group));
-        }
-
-        return groups;
-    }
+    case IdRole:
+        return QString::fromUtf8(category.id);
 
     default:
         return QVariant();
@@ -90,7 +69,7 @@ QVariant SettingsCategoryModel::data(const QModelIndex &index, int role) const {
 QHash<int, QByteArray> SettingsCategoryModel::roleNames() const {
     static const QHash<int, QByteArray> roles{
         {NameRole, QByteArrayLiteral("name")},
-        {GroupsRole, QByteArrayLiteral("groups")}};
+        {IdRole, QByteArrayLiteral("categoryId")}};
 
     return roles;
 }

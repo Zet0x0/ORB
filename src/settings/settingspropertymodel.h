@@ -8,8 +8,8 @@ class SettingsPropertyModel : public QAbstractListModel {
     Q_OBJECT
     QML_ELEMENT
 
-    Q_PROPERTY(
-        QVariant groups READ groups WRITE setGroups NOTIFY groupsChanged FINAL)
+    Q_PROPERTY(QString categoryId READ categoryId WRITE setCategoryId NOTIFY
+                   categoryIdChanged FINAL)
     Q_PROPERTY(bool hasPendingChanges READ hasPendingChanges NOTIFY
                    hasPendingChangesChanged FINAL)
 
@@ -18,6 +18,7 @@ private:
         QObject *target;
         QMetaProperty property;
         QString label;
+        QByteArray subcategoryId;
         QString subcategory;
 
         int min;
@@ -30,7 +31,7 @@ private:
         QVariant value;
     };
 
-    QList<QObject *> m_groups;
+    QByteArray m_categoryId;
     QList<Entry> m_entries;
     QList<PendingChange> m_pendingChanges;
 
@@ -48,6 +49,7 @@ public:
         TypeRole,
         ValueRole,
         SubcategoryRole,
+        SubcategoryStartRole,
         MinRole,
         MaxRole
     };
@@ -55,8 +57,8 @@ public:
 
     explicit SettingsPropertyModel(QObject *parent = nullptr);
 
-    QVariant groups() const;
-    void setGroups(const QVariant &newGroups);
+    QString categoryId() const;
+    void setCategoryId(const QString &newCategoryId);
 
     Q_INVOKABLE int
     rowCount(const QModelIndex &parent = QModelIndex()) const override;
@@ -76,6 +78,6 @@ public:
     Q_INVOKABLE void discardChanges();
 
 signals:
-    void groupsChanged();
+    void categoryIdChanged();
     void hasPendingChangesChanged();
 };

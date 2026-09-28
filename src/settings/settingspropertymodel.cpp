@@ -2,71 +2,116 @@
 #include "settingsgroup.h"
 #include "settingsintrospection.h"
 
-SettingsPropertyModel::SettingsPropertyModel(QObject *parent)
-    : QAbstractListModel(parent) {}
-
-QVariant SettingsPropertyModel::groups() const {
-    QVariantList result;
-
-    for (QObject *group : m_groups) {
-        result.append(QVariant::fromValue(group));
-    }
-
-    return result;
-}
-
-void SettingsPropertyModel::setGroups(const QVariant &newGroups) {
-    QList<QObject *> groups;
-
-    const QVariantList newGroupsList = newGroups.toList();
-
-    for (const QVariant &value : std::as_const(newGroupsList)) {
-        if (QObject *group = value.value<QObject *>()) {
-            groups.append(group);
-        }
-    }
-
-    if (m_groups == groups) {
-        return;
-    }
-
-    beginResetModel();
-
-    m_groups = groups;
-    rebuildEntries();
-
-    endResetModel();
-
-    emit groupsChanged();
-}
-
 void SettingsPropertyModel::rebuildEntries() {
     m_entries.clear();
 
-    for (QObject *groupObject : std::as_const(m_groups)) {
-        auto *group = qobject_cast<SettingsGroup *>(groupObject);
+    if (m_categoryId.isEmpty()) {
+        return;
+    }
 
+    const QList<SettingsGroup *> groups = SettingsIntrospection::groups();
+
+    for (SettingsGroup *group : groups) {
         const QList<SettingsIntrospection::ResolvedField> fields =
             SettingsIntrospection::resolvedFields(group);
 
         for (const SettingsIntrospection::ResolvedField &field :
              std::as_const(fields)) {
-            m_entries.append({groupObject, field.property, field.label,
-                              field.subcategory, field.min, field.max});
+            if (field.categoryId != m_categoryId) {
+                continue;
+            }
+
+            m_entries.append({.target = group,
+                              .property = field.property,
+                              .label = field.label,
+                              .subcategoryId = field.subcategoryId,
+                              .subcategory = field.subcategory,
+                              .min = field.min,
+                              .max = field.max});
+        }
+    }
+
+    // Fields without a subcategory go first, then go the subcategories in
+    // declared order
+    QList<QByteArray> subcategoryOrder{QByteArray()};
+
+    for (const Entry &entry : std::as_const(m_entries)) {
+        if (!subcategoryOrder.contains(entry.subcategoryId)) {
+            subcategoryOrder.append(entry.subcategoryId);
         }
     }
 
     std::stable_sort(m_entries.begin(), m_entries.end(),
-                     [](const Entry &a, const Entry &b) {
-                         const bool aEmpty = a.subcategory.isEmpty();
-                         const bool bEmpty = b.subcategory.isEmpty();
-
-                         if (aEmpty != bEmpty) {
-                             return aEmpty;
-                         }
-
-                         return a.subcategory < b.subcategory;
+                     [&subcategoryOrder](const Entry &a, const Entry &b) {
+                         return subcategoryOrder.indexOf(a.subcategoryId) <
+                                subcategoryOrder.indexOf(b.subcategoryId);
                      });
+}
+
+void SettingsPropertyModel::clearPendingChanges() {
+    if (m_pendingChanges.isEmpty()) {
+        return;
+    }
+
+    m_pendingChanges.clear();
+
+    if (!m_entries.isEmpty()) {
+        emit dataChanged(index(0), index(m_entries.size() - 1), {ValueRole});
+    }
+
+    emit hasPendingChangesChanged();
+}
+
+int
+SettingsPropertyModel::pendingChangeIndex(QObject *target,
+                                          const QMetaProperty &property) const {
+    for (int i = 0; i < m_pendingChanges.size(); ++i) {
+        const PendingChange &change = m_pendingChanges.at(i);
+
+        if (change.target == target &&
+            change.property.propertyIndex() == property.propertyIndex()) {
+            return i;
+        }
+    }
+
+    return -1;
+}
+
+QString SettingsPropertyModel::propertyType(const QMetaProperty &property) {
+    switch (property.metaType().id()) {
+    case QMetaType::Bool:
+        return QStringLiteral("bool");
+
+    case QMetaType::Int:
+        return QStringLiteral("int");
+
+    default:
+        return QStringLiteral("string");
+    }
+}
+
+SettingsPropertyModel::SettingsPropertyModel(QObject *parent)
+    : QAbstractListModel(parent) {}
+
+QString SettingsPropertyModel::categoryId() const {
+    return QString::fromUtf8(m_categoryId);
+}
+
+void SettingsPropertyModel::setCategoryId(const QString &newCategoryId) {
+    const QByteArray categoryId = newCategoryId.toUtf8();
+
+    if (m_categoryId == categoryId) {
+        return;
+    }
+
+    beginResetModel();
+
+    m_categoryId = categoryId;
+    rebuildEntries();
+
+    endResetModel();
+
+    emit categoryIdChanged();
 }
 
 int SettingsPropertyModel::rowCount(const QModelIndex &parent) const {
@@ -104,6 +149,12 @@ QVariant SettingsPropertyModel::data(const QModelIndex &index, int role) const {
     case SubcategoryRole:
         return entry.subcategory;
 
+    case SubcategoryStartRole:
+        return !entry.subcategoryId.isEmpty() &&
+               (index.row() == 0 ||
+                m_entries.at(index.row() - 1).subcategoryId !=
+                    entry.subcategoryId);
+
     case MinRole:
         return entry.min;
 
@@ -132,7 +183,9 @@ bool SettingsPropertyModel::setData(const QModelIndex &index,
     } else if (pendingIndex != -1) {
         m_pendingChanges[pendingIndex].value = value;
     } else {
-        m_pendingChanges.append({entry.target, entry.property, value});
+        m_pendingChanges.append({.target = entry.target,
+                                 .property = entry.property,
+                                 .value = value});
     }
 
     emit dataChanged(index, index, {ValueRole});
@@ -141,27 +194,26 @@ bool SettingsPropertyModel::setData(const QModelIndex &index,
     return true;
 }
 
+QHash<int, QByteArray> SettingsPropertyModel::roleNames() const {
+    static const QHash<int, QByteArray> roles{
+        {NameRole, QByteArrayLiteral("name")},
+        {LabelRole, QByteArrayLiteral("label")},
+        {TypeRole, QByteArrayLiteral("type")},
+        {ValueRole, QByteArrayLiteral("value")},
+        {SubcategoryRole, QByteArrayLiteral("subcategory")},
+        {SubcategoryStartRole, QByteArrayLiteral("subcategoryStart")},
+        {MinRole, QByteArrayLiteral("min")},
+        {MaxRole, QByteArrayLiteral("max")}};
+
+    return roles;
+}
+
 void SettingsPropertyModel::setValue(int row, const QVariant &value) {
     setData(index(row), value, ValueRole);
 }
 
 bool SettingsPropertyModel::hasPendingChanges() const {
     return !m_pendingChanges.isEmpty();
-}
-
-int
-SettingsPropertyModel::pendingChangeIndex(QObject *target,
-                                          const QMetaProperty &property) const {
-    for (int i = 0; i < m_pendingChanges.size(); ++i) {
-        const PendingChange &change = m_pendingChanges.at(i);
-
-        if (change.target == target &&
-            change.property.propertyIndex() == property.propertyIndex()) {
-            return i;
-        }
-    }
-
-    return -1;
 }
 
 void SettingsPropertyModel::applyChanges() {
@@ -178,44 +230,4 @@ void SettingsPropertyModel::applyChanges() {
 
 void SettingsPropertyModel::discardChanges() {
     clearPendingChanges();
-}
-
-void SettingsPropertyModel::clearPendingChanges() {
-    if (m_pendingChanges.isEmpty()) {
-        return;
-    }
-
-    m_pendingChanges.clear();
-
-    if (!m_entries.isEmpty()) {
-        emit dataChanged(index(0), index(m_entries.size() - 1), {ValueRole});
-    }
-
-    emit hasPendingChangesChanged();
-}
-
-QHash<int, QByteArray> SettingsPropertyModel::roleNames() const {
-    static const QHash<int, QByteArray> roles{
-        {NameRole, QByteArrayLiteral("name")},
-        {LabelRole, QByteArrayLiteral("label")},
-        {TypeRole, QByteArrayLiteral("type")},
-        {ValueRole, QByteArrayLiteral("value")},
-        {SubcategoryRole, QByteArrayLiteral("subcategory")},
-        {MinRole, QByteArrayLiteral("min")},
-        {MaxRole, QByteArrayLiteral("max")}};
-
-    return roles;
-}
-
-QString SettingsPropertyModel::propertyType(const QMetaProperty &property) {
-    switch (property.metaType().id()) {
-    case QMetaType::Bool:
-        return QStringLiteral("bool");
-
-    case QMetaType::Int:
-        return QStringLiteral("int");
-
-    default:
-        return QStringLiteral("string");
-    }
 }

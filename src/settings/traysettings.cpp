@@ -23,8 +23,8 @@ QByteArray TraySettings::settingsSubcategory() const {
 
 QList<SettingsFieldMeta> TraySettings::settingsFields() const {
     return {
-        {"enabled", tr("Enabled")},
-        {"closeToTray", tr("Close window to tray")},
+        {.propertyName = "enabled", .label = tr("Enabled")},
+        {.propertyName = "closeToTray", .label = tr("Close to tray")},
     };
 }
 

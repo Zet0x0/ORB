@@ -11,12 +11,16 @@ InterfaceSettings::InterfaceSettings(QObject *parent)
 }
 
 QByteArray InterfaceSettings::settingsCategory() const {
-    return QT_TRANSLATE_NOOP("SettingsCategory", "Interface");
+    return QT_TRANSLATE_NOOP("SettingsCategory", "Appearance");
+}
+
+QByteArray InterfaceSettings::settingsSubcategory() const {
+    return QT_TRANSLATE_NOOP("SettingsCategory", "General");
 }
 
 QList<SettingsFieldMeta> InterfaceSettings::settingsFields() const {
     return {
-        {"slidingLabels", tr("Slide long labels instead of truncating them")},
+        {.propertyName = "slidingLabels", .label = tr("Slide long labels")},
     };
 }
 

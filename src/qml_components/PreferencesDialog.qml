@@ -46,7 +46,7 @@ Dialog {
     SettingsPropertyModel {
         id: propertyModel
 
-        groups: categoryList.currentItem ? (categoryList.currentItem as CategoryDelegate).groups : []
+        categoryId: categoryList.currentItem ? (categoryList.currentItem as CategoryDelegate).categoryId : ""
     }
 
     RowLayout {
@@ -143,8 +143,8 @@ Dialog {
                                 required property string label
                                 required property int max
                                 required property int min
-                                readonly property bool showSubcategoryHeader: subcategory !== "" && (index === 0 || propertyModel.data(propertyModel.index(index - 1, 0), SettingsPropertyModel.SubcategoryRole) !== subcategory)
                                 required property string subcategory
+                                required property bool subcategoryStart
                                 required property string type
                                 required property var value
 
@@ -187,24 +187,20 @@ Dialog {
 
                                 Label {
                                     Layout.topMargin: propertyDelegate.index === 0 ? 0 : 8
-                                    font.bold: true
-                                    text: propertyDelegate.subcategory
-                                    textFormat: Text.PlainText
-                                    visible: propertyDelegate.showSubcategoryHeader
+                                    text: qsTr("### %0").arg(propertyDelegate.subcategory)
+                                    textFormat: Text.MarkdownText
+                                    visible: propertyDelegate.subcategoryStart
                                 }
 
                                 RowLayout {
                                     Layout.fillWidth: true
 
                                     Label {
+                                        Layout.fillWidth: true
                                         text: propertyDelegate.label
                                         textFormat: Text.PlainText
                                         visible: propertyDelegate.type !== "bool"
-                                    }
-
-                                    Item {
-                                        Layout.fillWidth: true
-                                        visible: propertyDelegate.type !== "bool"
+                                        wrapMode: Text.Wrap
                                     }
 
                                     Loader {
@@ -238,7 +234,7 @@ Dialog {
     }
 
     component CategoryDelegate: ItemDelegate {
-        required property var groups
+        required property string categoryId
         required property int index
         required property string name
 

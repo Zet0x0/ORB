@@ -20,6 +20,7 @@ public:
     explicit InterfaceSettings(QObject *parent = nullptr);
 
     QByteArray settingsCategory() const override;
+    QByteArray settingsSubcategory() const override;
     QList<SettingsFieldMeta> settingsFields() const override;
 
     bool slidingLabels() const;
