@@ -16,17 +16,14 @@ LoggingSettings::LoggingSettings(QObject *parent)
 }
 
 QByteArray LoggingSettings::settingsCategory() const {
-    return QT_TRANSLATE_NOOP("SettingsCategory", "System");
-}
-
-QByteArray LoggingSettings::settingsSubcategory() const {
     return QT_TRANSLATE_NOOP("SettingsCategory", "Logging");
 }
 
 QList<SettingsFieldMeta> LoggingSettings::settingsFields() const {
     return {
-        {"maxEntries", tr("Maximum lines shown in log dialog"), QByteArray(),
-         MaxEntriesMin, MaxEntriesMax},
+        {"maxEntries", tr("Maximum lines shown in log dialog"),
+         QT_TRANSLATE_NOOP("SettingsCategory", "Interface"), MaxEntriesMin,
+         MaxEntriesMax},
     };
 }
 

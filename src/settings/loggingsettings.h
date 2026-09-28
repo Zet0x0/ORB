@@ -20,7 +20,6 @@ public:
     explicit LoggingSettings(QObject *parent = nullptr);
 
     QByteArray settingsCategory() const override;
-    QByteArray settingsSubcategory() const override;
     QList<SettingsFieldMeta> settingsFields() const override;
 
     int maxEntries() const;
