@@ -2,12 +2,12 @@
 
 SettingsGroup::SettingsGroup(QObject *parent) : QObject(parent) {}
 
-QString SettingsGroup::settingsCategory() const {
-    return tr("Invalid");
+QByteArray SettingsGroup::settingsCategory() const {
+    return QT_TRANSLATE_NOOP("SettingsCategory", "Invalid");
 }
 
-QString SettingsGroup::settingsSubcategory() const {
-    return QString();
+QByteArray SettingsGroup::settingsSubcategory() const {
+    return QByteArray();
 }
 
 QList<SettingsFieldMeta> SettingsGroup::settingsFields() const {

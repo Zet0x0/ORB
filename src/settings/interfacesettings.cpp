@@ -10,8 +10,8 @@ InterfaceSettings::InterfaceSettings(QObject *parent)
         SettingsIO::readBool(m_settings, QStringLiteral("slidingLabels"), true);
 }
 
-QString InterfaceSettings::settingsCategory() const {
-    return tr("Interface");
+QByteArray InterfaceSettings::settingsCategory() const {
+    return QT_TRANSLATE_NOOP("SettingsCategory", "Interface");
 }
 
 QList<SettingsFieldMeta> InterfaceSettings::settingsFields() const {

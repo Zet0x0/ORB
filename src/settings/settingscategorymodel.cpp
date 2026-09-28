@@ -31,16 +31,19 @@ void SettingsCategoryModel::rebuildCategories() {
             continue;
         }
 
-        const QString categoryName = group->settingsCategory();
+        const QByteArray categoryId = group->settingsCategory();
 
         auto existingCategory =
             std::find_if(m_categories.begin(), m_categories.end(),
                          [&](const Category &category) {
-                             return category.name == categoryName;
+                             return category.id == categoryId;
                          });
 
         if (existingCategory == m_categories.end()) {
-            m_categories.append({categoryName, {group}});
+            m_categories.append(
+                {categoryId,
+                 SettingsIntrospection::categoryName(categoryId),
+                 {group}});
         } else {
             existingCategory->groups.append(group);
         }

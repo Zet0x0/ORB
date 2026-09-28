@@ -9,8 +9,9 @@ class SettingsGroup : public QObject {
 public:
     explicit SettingsGroup(QObject *parent = nullptr);
 
-    virtual QString settingsCategory() const;
-    virtual QString settingsSubcategory() const;
+    // QT_TRANSLATE_NOOP("SettingsCategory", "...")
+    virtual QByteArray settingsCategory() const;
+    virtual QByteArray settingsSubcategory() const;
 
     virtual QList<SettingsFieldMeta> settingsFields() const;
 };

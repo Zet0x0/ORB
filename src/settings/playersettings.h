@@ -35,8 +35,8 @@ private:
 public:
     explicit PlayerSettings(QObject *parent = nullptr);
 
-    QString settingsCategory() const override;
-    QString settingsSubcategory() const override;
+    QByteArray settingsCategory() const override;
+    QByteArray settingsSubcategory() const override;
     QList<SettingsFieldMeta> settingsFields() const override;
 
     Station lastStation() const;

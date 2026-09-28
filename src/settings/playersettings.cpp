@@ -27,18 +27,18 @@ PlayerSettings::PlayerSettings(QObject *parent)
                                        5, MaxRetriesMin, MaxRetriesMax);
 }
 
-QString PlayerSettings::settingsCategory() const {
-    return tr("Player");
+QByteArray PlayerSettings::settingsCategory() const {
+    return QT_TRANSLATE_NOOP("SettingsCategory", "Player");
 }
 
-QString PlayerSettings::settingsSubcategory() const {
-    return tr("Playback");
+QByteArray PlayerSettings::settingsSubcategory() const {
+    return QT_TRANSLATE_NOOP("SettingsCategory", "Playback");
 }
 
 QList<SettingsFieldMeta> PlayerSettings::settingsFields() const {
     return {
         {"retryOnError", tr("Retry on error")},
-        {"maxRetries", tr("Max retry attempts"), QString(), MaxRetriesMin,
+        {"maxRetries", tr("Max retry attempts"), QByteArray(), MaxRetriesMin,
          MaxRetriesMax},
     };
 }

@@ -13,12 +13,12 @@ TraySettings::TraySettings(QObject *parent)
         SettingsIO::readBool(m_settings, QStringLiteral("closeToTray"), false);
 }
 
-QString TraySettings::settingsCategory() const {
-    return tr("System");
+QByteArray TraySettings::settingsCategory() const {
+    return QT_TRANSLATE_NOOP("SettingsCategory", "System");
 }
 
-QString TraySettings::settingsSubcategory() const {
-    return tr("Tray");
+QByteArray TraySettings::settingsSubcategory() const {
+    return QT_TRANSLATE_NOOP("SettingsCategory", "Tray");
 }
 
 QList<SettingsFieldMeta> TraySettings::settingsFields() const {

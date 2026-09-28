@@ -1,4 +1,5 @@
 #include "settingsintrospection.h"
+#include <QCoreApplication>
 
 namespace SettingsIntrospection {
 QString label(const QByteArray &propertyName) {
@@ -24,6 +25,14 @@ QString label(const QByteArray &propertyName) {
     }
 
     return result;
+}
+
+QString categoryName(const QByteArray &id) {
+    if (id.isEmpty()) {
+        return QString();
+    }
+
+    return QCoreApplication::translate("SettingsCategory", id.constData());
 }
 
 QList<ResolvedField> resolvedFields(const SettingsGroup *group) {
@@ -53,8 +62,9 @@ QList<ResolvedField> resolvedFields(const SettingsGroup *group) {
         result.append(
             {property,
              field.label.isEmpty() ? label(field.propertyName) : field.label,
-             field.subcategory.isEmpty() ? group->settingsSubcategory()
-                                         : field.subcategory,
+             categoryName(field.subcategory.isEmpty()
+                              ? group->settingsSubcategory()
+                              : field.subcategory),
              field.min, field.max});
     }
 

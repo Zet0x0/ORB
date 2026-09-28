@@ -9,6 +9,7 @@ class SettingsCategoryModel : public QAbstractListModel {
 
 private:
     struct Category {
+        QByteArray id;
         QString name;
         QList<QObject *> groups;
     };

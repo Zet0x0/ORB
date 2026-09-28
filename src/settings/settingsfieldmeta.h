@@ -6,7 +6,7 @@ struct SettingsFieldMeta {
     QByteArray propertyName;
 
     QString label;
-    QString subcategory;
+    QByteArray subcategory;
 
     // Only for int-typed fields
     int min = 0;
