@@ -3,6 +3,9 @@
 #include "settingsio.h"
 
 namespace {
+constexpr int VolumeMin = 0;
+constexpr int VolumeMax = 100;
+
 constexpr int MaxRetriesMin = 1;
 constexpr int MaxRetriesMax = 99;
 }
@@ -14,15 +17,14 @@ PlayerSettings::PlayerSettings(QObject *parent)
     m_lastStation = Station::fromMap(
         m_settings->value(QStringLiteral("lastStation")).toMap());
 
-    m_volume = SettingsIO::readInt(m_settings, QStringLiteral("volume"), 100);
+    m_volume = SettingsIO::readInt(m_settings, QStringLiteral("volume"), 100,
+                                   VolumeMin, VolumeMax);
     m_muted = SettingsIO::readBool(m_settings, QStringLiteral("muted"), false);
 
     m_retryOnError =
         SettingsIO::readBool(m_settings, QStringLiteral("retryOnError"), true);
-    m_maxRetries =
-        qBound(MaxRetriesMin,
-               SettingsIO::readInt(m_settings, QStringLiteral("maxRetries"), 5),
-               MaxRetriesMax);
+    m_maxRetries = SettingsIO::readInt(m_settings, QStringLiteral("maxRetries"),
+                                       5, MaxRetriesMin, MaxRetriesMax);
 }
 
 QString PlayerSettings::settingsCategory() const {
@@ -62,6 +64,8 @@ int PlayerSettings::volume() const {
 }
 
 void PlayerSettings::setVolume(int newVolume) {
+    newVolume = qBound(VolumeMin, newVolume, VolumeMax);
+
     if (m_volume == newVolume) {
         return;
     }

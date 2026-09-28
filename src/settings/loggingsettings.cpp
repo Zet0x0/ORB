@@ -11,10 +11,8 @@ LoggingSettings::LoggingSettings(QObject *parent)
     : SettingsGroup(parent), m_settings(SettingsFactory::create(this)) {
     m_settings->beginGroup(QStringLiteral("logging"));
 
-    m_maxEntries = qBound(
-        MaxEntriesMin,
-        SettingsIO::readInt(m_settings, QStringLiteral("maxEntries"), 2000),
-        MaxEntriesMax);
+    m_maxEntries = SettingsIO::readInt(m_settings, QStringLiteral("maxEntries"),
+                                       2000, MaxEntriesMin, MaxEntriesMax);
 }
 
 QString LoggingSettings::settingsCategory() const {

@@ -12,6 +12,11 @@ int readInt(QSettings *settings, const QString &key, int defaultValue) {
     return ok ? value : defaultValue;
 }
 
+int readInt(QSettings *settings, const QString &key, int defaultValue, int min,
+            int max) {
+    return qBound(min, readInt(settings, key, defaultValue), max);
+}
+
 bool readBool(QSettings *settings, const QString &key, bool defaultValue) {
     return settings->value(key, defaultValue).toBool();
 }
