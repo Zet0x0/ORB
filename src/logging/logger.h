@@ -45,10 +45,8 @@ private:
         QString message;
     };
 
-    static constexpr int MaxEntries = 2000;
-    static constexpr int MaxLogFiles = 30;
-
     QList<Entry> m_entries;
+    int m_maxEntries = 2000;
 
     QtMessageHandler m_previousHandler = nullptr;
     QThread *m_guiThread = nullptr;
@@ -89,6 +87,8 @@ public:
 
     int count() const;
     QUrl directoryUrl() const;
+
+    void setMaxEntries(int newMaxEntries);
 
 signals:
     void countChanged();

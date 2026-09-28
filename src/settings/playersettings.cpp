@@ -2,6 +2,11 @@
 #include "settingsfactory.h"
 #include "settingsio.h"
 
+namespace {
+constexpr int MaxRetriesMin = 1;
+constexpr int MaxRetriesMax = 99;
+}
+
 PlayerSettings::PlayerSettings(QObject *parent)
     : SettingsGroup(parent), m_settings(SettingsFactory::create(this)) {
     m_settings->beginGroup(QStringLiteral("player"));
@@ -15,7 +20,9 @@ PlayerSettings::PlayerSettings(QObject *parent)
     m_retryOnError =
         SettingsIO::readBool(m_settings, QStringLiteral("retryOnError"), true);
     m_maxRetries =
-        SettingsIO::readInt(m_settings, QStringLiteral("maxRetries"), 5);
+        qBound(MaxRetriesMin,
+               SettingsIO::readInt(m_settings, QStringLiteral("maxRetries"), 5),
+               MaxRetriesMax);
 }
 
 QString PlayerSettings::settingsCategory() const {
@@ -29,7 +36,8 @@ QString PlayerSettings::settingsSubcategory() const {
 QList<SettingsFieldMeta> PlayerSettings::settingsFields() const {
     return {
         {"retryOnError", tr("Retry on error")},
-        {"maxRetries", tr("Max retry attempts"), QString(), 1, 99},
+        {"maxRetries", tr("Max retry attempts"), QString(), MaxRetriesMin,
+         MaxRetriesMax},
     };
 }
 
@@ -100,7 +108,7 @@ int PlayerSettings::maxRetries() const {
 }
 
 void PlayerSettings::setMaxRetries(int newMaxRetries) {
-    newMaxRetries = qMax(1, newMaxRetries);
+    newMaxRetries = qBound(MaxRetriesMin, newMaxRetries, MaxRetriesMax);
 
     if (m_maxRetries == newMaxRetries) {
         return;

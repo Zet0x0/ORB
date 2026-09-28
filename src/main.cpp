@@ -1,4 +1,5 @@
 #include "logging/logger.h"
+#include "settings/settings.h"
 #include "sources/providers/favoritessource.h"
 #include "sources/providers/nullsource.h"
 #include "sources/providers/radiorecord.h"
@@ -53,6 +54,7 @@ QPalette paletteFromQmlPalette(QObject *qmlPalette) {
 int main(int argc, char *argv[]) {
     QCoreApplication::setApplicationName(QStringLiteral("ORB"));
     QCoreApplication::setApplicationVersion(QStringLiteral("0.1.0"));
+    QCoreApplication::setOrganizationDomain(QStringLiteral("com.zet0x0.orb"));
 
     Logger::install();
 
@@ -64,6 +66,19 @@ int main(int argc, char *argv[]) {
 
     QGuiApplication app(argc, argv);
     QQmlApplicationEngine engine;
+
+    {
+        LoggingSettings *loggingSettings = Settings::instance()->logging();
+        Logger *logger = Logger::instance();
+
+        logger->setMaxEntries(loggingSettings->maxEntries());
+
+        QObject::connect(loggingSettings, &LoggingSettings::maxEntriesChanged,
+                         logger, [loggingSettings, logger]() {
+                             logger->setMaxEntries(
+                                 loggingSettings->maxEntries());
+                         });
+    }
 
     QObject::connect(
         &engine, &QQmlApplicationEngine::objectCreationFailed, &app,

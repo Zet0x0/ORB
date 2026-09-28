@@ -6,6 +6,10 @@
 #include <QThread>
 #include <QVariant>
 
+namespace {
+constexpr int MaxLogFiles = 30;
+}
+
 Logger::Logger(QObject *parent) : QAbstractTableModel(parent) {}
 
 QString Logger::directoryPath() {
@@ -159,7 +163,7 @@ void Logger::appendEntry(Entry entry) {
         m_appendingEntry = false;
     });
 
-    const bool isFull = m_entries.size() >= MaxEntries;
+    const bool isFull = m_entries.size() >= m_maxEntries;
 
     if (isFull) {
         beginRemoveRows(QModelIndex(), 0, 0);
@@ -274,4 +278,26 @@ int Logger::count() const {
 
 QUrl Logger::directoryUrl() const {
     return QUrl::fromLocalFile(directoryPath());
+}
+
+void Logger::setMaxEntries(int newMaxEntries) {
+    newMaxEntries = qMax(1, newMaxEntries);
+
+    if (m_maxEntries == newMaxEntries) {
+        return;
+    }
+
+    m_maxEntries = newMaxEntries;
+
+    const int excess = m_entries.size() - m_maxEntries;
+
+    if (excess <= 0) {
+        return;
+    }
+
+    beginRemoveRows(QModelIndex(), 0, excess - 1);
+    m_entries.remove(0, excess);
+    endRemoveRows();
+
+    emit countChanged();
 }
