@@ -1,14 +1,11 @@
 #include "logger.h"
 #include <QCoreApplication>
 #include <QDir>
+#include <QFileInfo>
 #include <QScopeGuard>
 #include <QStandardPaths>
 #include <QThread>
 #include <QVariant>
-
-namespace {
-constexpr int MaxLogFiles = 30;
-}
 
 Logger::Logger(QObject *parent) : QAbstractTableModel(parent) {}
 
@@ -102,13 +99,6 @@ void Logger::openLogFile() {
 
     QDir().mkpath(directory.absolutePath());
 
-    const QStringList existing =
-        directory.entryList({QStringLiteral("*.log")}, QDir::Files, QDir::Name);
-
-    for (int i = 0; i < existing.size() - (MaxLogFiles - 1); ++i) {
-        QFile::remove(directory.filePath(existing.at(i)));
-    }
-
     const QDateTime currentDateTime = QDateTime::currentDateTime();
 
     const QString base =
@@ -137,7 +127,7 @@ void Logger::openLogFile() {
 
     m_logStream << headerMessage << '\n';
     m_logStream << QStringLiteral("Logging for PID %0 since %1")
-                       .arg(QString::number(qApp->applicationPid()),
+                       .arg(QString::number(QCoreApplication::applicationPid()),
                             currentDateTime.toString(Qt::ISODate))
                 << '\n';
     m_logStream << QStringLiteral("=").repeated(headerMessage.size()) << '\n';
@@ -300,4 +290,20 @@ void Logger::setMaxEntries(int newMaxEntries) {
     endRemoveRows();
 
     emit countChanged();
+}
+
+void Logger::setMaxFiles(int maxFiles) {
+    maxFiles = qMax(1, maxFiles);
+
+    const QDir directory(directoryPath());
+
+    QStringList existing =
+        directory.entryList({QStringLiteral("*.log")}, QDir::Files, QDir::Name);
+
+    // never touch the one being written to
+    existing.removeOne(QFileInfo(m_logFile.fileName()).fileName());
+
+    for (int i = 0; i < existing.size() - (maxFiles - 1); ++i) {
+        QFile::remove(directory.filePath(existing.at(i)));
+    }
 }

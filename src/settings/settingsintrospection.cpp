@@ -1,5 +1,6 @@
 #include "settingsintrospection.h"
 #include "settings.h"
+#include "settingscategories.h"
 #include <QCoreApplication>
 
 namespace SettingsIntrospection {
@@ -94,6 +95,19 @@ QList<ResolvedField> resolvedFields(const SettingsGroup *group) {
         if (field.category.isEmpty()) {
             qWarning() << "SettingsIntrospection:" << metaObject->className()
                        << "property" << field.propertyName << "has no category";
+
+            continue;
+        }
+
+        if (std::none_of(std::cbegin(SettingsCategory::Order),
+                         std::cend(SettingsCategory::Order),
+                         [&field](const char *id) {
+                             return field.category == id;
+                         })) {
+            qWarning() << "SettingsIntrospection:" << metaObject->className()
+                       << "property" << field.propertyName << "has category"
+                       << field.category
+                       << "not listed in SettingsCategory::Order";
 
             continue;
         }

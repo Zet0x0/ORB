@@ -89,6 +89,7 @@ public:
     QUrl directoryUrl() const;
 
     void setMaxEntries(int newMaxEntries);
+    void setMaxFiles(int maxFiles);
 
 signals:
     void countChanged();

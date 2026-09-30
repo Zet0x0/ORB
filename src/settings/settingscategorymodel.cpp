@@ -1,41 +1,33 @@
 #include "settingscategorymodel.h"
+#include "settingscategories.h"
 #include "settingsgroup.h"
 #include "settingsintrospection.h"
-#include <QCollator>
 
 void SettingsCategoryModel::rebuildCategories() {
     m_categories.clear();
 
     const QList<SettingsGroup *> groups = SettingsIntrospection::groups();
 
-    // Only show categories that actually have fields in them
+    QSet<QByteArray> usedIds;
+
     for (const SettingsGroup *group : groups) {
         const QList<SettingsIntrospection::ResolvedField> fields =
             SettingsIntrospection::resolvedFields(group);
 
         for (const SettingsIntrospection::ResolvedField &field :
              std::as_const(fields)) {
-            const bool exists =
-                std::any_of(m_categories.cbegin(), m_categories.cend(),
-                            [&](const Category &category) {
-                                return category.id == field.categoryId;
-                            });
-
-            if (!exists) {
-                m_categories.append(
-                    {.id = field.categoryId,
-                     .name = SettingsIntrospection::categoryName(
-                         field.categoryId)});
-            }
+            usedIds.insert(field.categoryId);
         }
     }
 
-    QCollator collator;
-
-    std::sort(m_categories.begin(), m_categories.end(),
-              [&collator](const Category &a, const Category &b) {
-                  return collator.compare(a.name, b.name) < 0;
-              });
+    // only show categories that have UI-shown fields in them,
+    // in the order from settingscategories.h
+    for (const char *id : SettingsCategory::Order) {
+        if (usedIds.contains(id)) {
+            m_categories.append(
+                {.id = id, .name = SettingsIntrospection::categoryName(id)});
+        }
+    }
 }
 
 SettingsCategoryModel::SettingsCategoryModel(QObject *parent)

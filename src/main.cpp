@@ -72,11 +72,16 @@ int main(int argc, char *argv[]) {
         Logger *logger = Logger::instance();
 
         logger->setMaxEntries(loggingSettings->maxEntries());
+        logger->setMaxFiles(loggingSettings->maxFiles());
 
         QObject::connect(loggingSettings, &LoggingSettings::maxEntriesChanged,
                          logger, [loggingSettings, logger]() {
                              logger->setMaxEntries(
                                  loggingSettings->maxEntries());
+                         });
+        QObject::connect(loggingSettings, &LoggingSettings::maxFilesChanged,
+                         logger, [loggingSettings, logger]() {
+                             logger->setMaxFiles(loggingSettings->maxFiles());
                          });
     }
 
