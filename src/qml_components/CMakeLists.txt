@@ -35,6 +35,7 @@ qt_add_qml_module(
     LogDialog.qml
     ErrorBanner.qml
     PlaybackStatusIndicator.qml
+    TickedSlider.qml
     NO_PLUGIN)
 
 target_link_libraries(qml_components PRIVATE common logging player settings

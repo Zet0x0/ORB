@@ -97,7 +97,8 @@ QList<ResolvedField> resolvedFields(const SettingsGroup *group) {
              .subcategoryId = subcategoryId,
              .subcategory = categoryName(subcategoryId),
              .min = field.min,
-             .max = field.max});
+             .max = field.max,
+             .step = field.step});
     }
 
     return result;

@@ -27,7 +27,8 @@ void SettingsPropertyModel::rebuildEntries() {
                               .subcategoryId = field.subcategoryId,
                               .subcategory = field.subcategory,
                               .min = field.min,
-                              .max = field.max});
+                              .max = field.max,
+                              .step = field.step});
         }
     }
 
@@ -161,6 +162,9 @@ QVariant SettingsPropertyModel::data(const QModelIndex &index, int role) const {
     case MaxRole:
         return entry.max;
 
+    case StepRole:
+        return entry.step;
+
     default:
         return QVariant();
     }
@@ -203,7 +207,8 @@ QHash<int, QByteArray> SettingsPropertyModel::roleNames() const {
         {SubcategoryRole, QByteArrayLiteral("subcategory")},
         {SubcategoryStartRole, QByteArrayLiteral("subcategoryStart")},
         {MinRole, QByteArrayLiteral("min")},
-        {MaxRole, QByteArrayLiteral("max")}};
+        {MaxRole, QByteArrayLiteral("max")},
+        {StepRole, QByteArrayLiteral("step")}};
 
     return roles;
 }

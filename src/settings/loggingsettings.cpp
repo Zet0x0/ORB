@@ -4,7 +4,7 @@
 
 namespace {
 constexpr int MaxEntriesMin = 100;
-constexpr int MaxEntriesMax = 100000;
+constexpr int MaxEntriesMax = 20000;
 }
 
 LoggingSettings::LoggingSettings(QObject *parent)
@@ -27,7 +27,8 @@ QList<SettingsFieldMeta> LoggingSettings::settingsFields() const {
          .subcategory =
              QT_TRANSLATE_NOOP("SettingsCategory", "Log Messages Dialog"),
          .min = MaxEntriesMin,
-         .max = MaxEntriesMax},
+         .max = MaxEntriesMax,
+         .step = 100},
     };
 }
 

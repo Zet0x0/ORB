@@ -14,6 +14,7 @@ struct ResolvedField {
 
     int min;
     int max;
+    int step;
 };
 
 // Groups exposed by the Settings singleton, in declared order

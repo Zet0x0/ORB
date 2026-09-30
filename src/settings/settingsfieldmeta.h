@@ -13,4 +13,5 @@ struct SettingsFieldMeta {
     // Only for int-typed fields
     int min = 0;
     int max = 99;
+    int step = 1;
 };

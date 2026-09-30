@@ -143,6 +143,7 @@ Dialog {
                                 required property string label
                                 required property int max
                                 required property int min
+                                required property int step
                                 required property string subcategory
                                 required property bool subcategoryStart
                                 required property string type
@@ -164,14 +165,13 @@ Dialog {
                                 Component {
                                     id: intComponent
 
-                                    SpinBox {
-                                        editable: true
+                                    TickedSlider {
                                         from: propertyDelegate.min
-                                        live: true
+                                        stepSize: propertyDelegate.step
                                         to: propertyDelegate.max
                                         value: propertyDelegate.value
 
-                                        onValueChanged: propertyModel.setValue(propertyDelegate.index, value)
+                                        onMoved: propertyModel.setValue(propertyDelegate.index, Math.round(value))
                                     }
                                 }
 
@@ -186,14 +186,15 @@ Dialog {
                                 }
 
                                 Label {
-                                    Layout.topMargin: propertyDelegate.index === 0 ? 0 : 8
+                                    Layout.topMargin: propertyDelegate.index === 0 ? 0 : 4
                                     text: qsTr("### %0").arg(propertyDelegate.subcategory)
                                     textFormat: Text.MarkdownText
                                     visible: propertyDelegate.subcategoryStart
                                 }
 
-                                RowLayout {
+                                GridLayout {
                                     Layout.fillWidth: true
+                                    columns: propertyDelegate.type === "int" ? 1 : 2
 
                                     Label {
                                         Layout.fillWidth: true
@@ -204,7 +205,7 @@ Dialog {
                                     }
 
                                     Loader {
-                                        Layout.fillWidth: propertyDelegate.type === "string"
+                                        Layout.fillWidth: propertyDelegate.type !== "bool"
                                         sourceComponent: {
                                             switch (propertyDelegate.type) {
                                             case "bool":

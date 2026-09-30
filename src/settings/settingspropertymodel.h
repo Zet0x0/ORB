@@ -23,6 +23,7 @@ private:
 
         int min;
         int max;
+        int step;
     };
 
     struct PendingChange {
@@ -51,7 +52,8 @@ public:
         SubcategoryRole,
         SubcategoryStartRole,
         MinRole,
-        MaxRole
+        MaxRole,
+        StepRole
     };
     Q_ENUM(PropertyRoles)
 
