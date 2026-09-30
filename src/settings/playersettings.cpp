@@ -28,11 +28,11 @@ PlayerSettings::PlayerSettings(QObject *parent)
 }
 
 QByteArray PlayerSettings::settingsCategory() const {
-    return QT_TRANSLATE_NOOP("SettingsCategory", "Player");
+    return QT_TRANSLATE_NOOP("SettingsCategory", "Playback");
 }
 
 QByteArray PlayerSettings::settingsSubcategory() const {
-    return QT_TRANSLATE_NOOP("SettingsCategory", "Playback");
+    return QT_TRANSLATE_NOOP("SettingsCategory", "General");
 }
 
 QList<SettingsFieldMeta> PlayerSettings::settingsFields() const {
