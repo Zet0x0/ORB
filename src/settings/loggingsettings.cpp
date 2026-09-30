@@ -1,5 +1,5 @@
 #include "loggingsettings.h"
-#include "settingsfactory.h"
+#include "settingscategories.h"
 #include "settingsio.h"
 
 namespace {
@@ -8,24 +8,17 @@ constexpr int MaxEntriesMax = 20000;
 }
 
 LoggingSettings::LoggingSettings(QObject *parent)
-    : SettingsGroup(parent), m_settings(SettingsFactory::create(this)) {
-    m_settings->beginGroup(QStringLiteral("logging"));
-
+    : SettingsGroup(parent, QStringLiteral("logging")) {
     m_maxEntries = SettingsIO::readInt(m_settings, QStringLiteral("maxEntries"),
                                        2000, MaxEntriesMin, MaxEntriesMax);
-}
-
-QByteArray LoggingSettings::settingsCategory() const {
-    return QT_TRANSLATE_NOOP("SettingsCategory", "Logging");
 }
 
 QList<SettingsFieldMeta> LoggingSettings::settingsFields() const {
     return {
         {.propertyName = "maxEntries",
          .label = tr("Messages to show"),
-         .category = QT_TRANSLATE_NOOP("SettingsCategory", "Appearance"),
-         .subcategory =
-             QT_TRANSLATE_NOOP("SettingsCategory", "Log Messages Dialog"),
+         .category = SettingsCategory::Appearance,
+         .subcategory = SettingsSubcategory::LogMessagesDialog,
          .min = MaxEntriesMin,
          .max = MaxEntriesMax,
          .step = 100},

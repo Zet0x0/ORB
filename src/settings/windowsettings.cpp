@@ -1,11 +1,8 @@
 #include "windowsettings.h"
-#include "settingsfactory.h"
 #include "settingsio.h"
 
 WindowSettings::WindowSettings(QObject *parent)
-    : SettingsGroup(parent), m_settings(SettingsFactory::create(this)) {
-    m_settings->beginGroup(QStringLiteral("window"));
-
+    : SettingsGroup(parent, QStringLiteral("window")) {
     m_x = SettingsIO::readInt(m_settings, QStringLiteral("x"), 0);
     m_y = SettingsIO::readInt(m_settings, QStringLiteral("y"), 0);
     refreshHasPosition();

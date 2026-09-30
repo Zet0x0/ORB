@@ -3,7 +3,8 @@
 Settings::Settings(QObject *parent)
     : QObject(parent), m_window(new WindowSettings(this)),
       m_sources(new SourcesSettings(this)), m_player(new PlayerSettings(this)),
-      m_tray(new TraySettings(this)), m_interface(new InterfaceSettings(this)),
+      m_tray(new TraySettings(this)),
+      m_appearance(new AppearanceSettings(this)),
       m_logging(new LoggingSettings(this)) {}
 
 WindowSettings *Settings::window() const {
@@ -22,8 +23,8 @@ TraySettings *Settings::tray() const {
     return m_tray;
 }
 
-InterfaceSettings *Settings::interface() const {
-    return m_interface;
+AppearanceSettings *Settings::appearance() const {
+    return m_appearance;
 }
 
 LoggingSettings *Settings::logging() const {

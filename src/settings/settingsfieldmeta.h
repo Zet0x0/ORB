@@ -6,7 +6,7 @@ struct SettingsFieldMeta {
     QByteArray propertyName;
 
     QString label;
-    // Empty ones fall back to the group's
+    // IDs from settingscategories.h
     QByteArray category;
     QByteArray subcategory;
 

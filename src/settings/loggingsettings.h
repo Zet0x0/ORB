@@ -2,7 +2,6 @@
 
 #include "settingsgroup.h"
 #include <QQmlEngine>
-#include <QSettings>
 
 class LoggingSettings : public SettingsGroup {
     Q_OBJECT
@@ -12,14 +11,11 @@ class LoggingSettings : public SettingsGroup {
                    maxEntriesChanged FINAL)
 
 private:
-    QSettings *m_settings;
-
     int m_maxEntries;
 
 public:
     explicit LoggingSettings(QObject *parent = nullptr);
 
-    QByteArray settingsCategory() const override;
     QList<SettingsFieldMeta> settingsFields() const override;
 
     int maxEntries() const;

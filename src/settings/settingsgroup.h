@@ -2,16 +2,16 @@
 
 #include "settingsfieldmeta.h"
 #include <QObject>
+#include <QSettings>
 
 class SettingsGroup : public QObject {
     Q_OBJECT
 
-public:
-    explicit SettingsGroup(QObject *parent = nullptr);
+protected:
+    QSettings *m_settings;
 
-    // QT_TRANSLATE_NOOP("SettingsCategory", "...")
-    virtual QByteArray settingsCategory() const;
-    virtual QByteArray settingsSubcategory() const;
+public:
+    explicit SettingsGroup(QObject *parent, const QString &section);
 
     virtual QList<SettingsFieldMeta> settingsFields() const;
 };

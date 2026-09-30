@@ -2,7 +2,6 @@
 
 #include "settingsgroup.h"
 #include <QQmlEngine>
-#include <QSettings>
 
 class SourcesSettings : public SettingsGroup {
     Q_OBJECT
@@ -12,8 +11,6 @@ class SourcesSettings : public SettingsGroup {
                    setLastSearchSource NOTIFY lastSearchSourceChanged FINAL)
 
 private:
-    QSettings *m_settings;
-
     QString m_lastSearchSource;
 
 public:

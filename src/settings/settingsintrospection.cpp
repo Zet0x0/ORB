@@ -75,30 +75,39 @@ QList<ResolvedField> resolvedFields(const SettingsGroup *group) {
             metaObject->indexOfProperty(field.propertyName.constData());
 
         if (propertyIndex == -1) {
+            qWarning() << "SettingsIntrospection:" << metaObject->className()
+                       << "has no property" << field.propertyName;
+
             continue;
         }
 
         const QMetaProperty property = metaObject->property(propertyIndex);
 
         if (!property.isWritable() || !property.hasNotifySignal()) {
+            qWarning() << "SettingsIntrospection:" << metaObject->className()
+                       << "property" << field.propertyName
+                       << "needs to be writable and have a NOTIFY";
+
             continue;
         }
 
-        const QByteArray subcategoryId = field.subcategory.isEmpty()
-                                           ? group->settingsSubcategory()
-                                           : field.subcategory;
+        if (field.category.isEmpty()) {
+            qWarning() << "SettingsIntrospection:" << metaObject->className()
+                       << "property" << field.propertyName << "has no category";
 
-        result.append(
-            {.property = property,
-             .label = field.label.isEmpty() ? label(field.propertyName)
-                                            : field.label,
-             .categoryId = field.category.isEmpty() ? group->settingsCategory()
-                                                    : field.category,
-             .subcategoryId = subcategoryId,
-             .subcategory = categoryName(subcategoryId),
-             .min = field.min,
-             .max = field.max,
-             .step = field.step});
+            continue;
+        }
+
+        result.append({.property = property,
+                       .label = field.label.isEmpty()
+                                  ? label(field.propertyName)
+                                  : field.label,
+                       .categoryId = field.category,
+                       .subcategoryId = field.subcategory,
+                       .subcategory = categoryName(field.subcategory),
+                       .min = field.min,
+                       .max = field.max,
+                       .step = field.step});
     }
 
     return result;

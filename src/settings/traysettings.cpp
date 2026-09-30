@@ -1,11 +1,9 @@
 #include "traysettings.h"
-#include "settingsfactory.h"
+#include "settingscategories.h"
 #include "settingsio.h"
 
 TraySettings::TraySettings(QObject *parent)
-    : SettingsGroup(parent), m_settings(SettingsFactory::create(this)) {
-    m_settings->beginGroup(QStringLiteral("tray"));
-
+    : SettingsGroup(parent, QStringLiteral("tray")) {
     m_enabled =
         SettingsIO::readBool(m_settings, QStringLiteral("enabled"), true);
 
@@ -13,18 +11,16 @@ TraySettings::TraySettings(QObject *parent)
         SettingsIO::readBool(m_settings, QStringLiteral("closeToTray"), false);
 }
 
-QByteArray TraySettings::settingsCategory() const {
-    return QT_TRANSLATE_NOOP("SettingsCategory", "System");
-}
-
-QByteArray TraySettings::settingsSubcategory() const {
-    return QT_TRANSLATE_NOOP("SettingsCategory", "Tray");
-}
-
 QList<SettingsFieldMeta> TraySettings::settingsFields() const {
     return {
-        {.propertyName = "enabled", .label = tr("Enabled")},
-        {.propertyName = "closeToTray", .label = tr("Close to tray")},
+        {.propertyName = "enabled",
+         .label = tr("Enabled"),
+         .category = SettingsCategory::System,
+         .subcategory = SettingsSubcategory::Tray},
+        {.propertyName = "closeToTray",
+         .label = tr("Close to tray"),
+         .category = SettingsCategory::System,
+         .subcategory = SettingsSubcategory::Tray},
     };
 }
 

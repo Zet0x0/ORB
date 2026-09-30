@@ -1,7 +1,7 @@
 #pragma once
 
 #include "../common/singleton.h"
-#include "interfacesettings.h"
+#include "appearancesettings.h"
 #include "loggingsettings.h"
 #include "playersettings.h"
 #include "sourcessettings.h"
@@ -17,7 +17,7 @@ class Settings : public QObject, public Singleton<Settings> {
     Q_PROPERTY(SourcesSettings *sources READ sources CONSTANT FINAL)
     Q_PROPERTY(PlayerSettings *player READ player CONSTANT FINAL)
     Q_PROPERTY(TraySettings *tray READ tray CONSTANT FINAL)
-    Q_PROPERTY(InterfaceSettings *interface READ interface CONSTANT FINAL)
+    Q_PROPERTY(AppearanceSettings *appearance READ appearance CONSTANT FINAL)
     Q_PROPERTY(LoggingSettings *logging READ logging CONSTANT FINAL)
 
     friend class Singleton<Settings>;
@@ -27,7 +27,7 @@ private:
     SourcesSettings *m_sources;
     PlayerSettings *m_player;
     TraySettings *m_tray;
-    InterfaceSettings *m_interface;
+    AppearanceSettings *m_appearance;
     LoggingSettings *m_logging;
 
     explicit Settings(QObject *parent = nullptr);
@@ -37,6 +37,6 @@ public:
     SourcesSettings *sources() const;
     PlayerSettings *player() const;
     TraySettings *tray() const;
-    InterfaceSettings *interface() const;
+    AppearanceSettings *appearance() const;
     LoggingSettings *logging() const;
 };

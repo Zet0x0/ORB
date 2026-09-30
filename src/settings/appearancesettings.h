@@ -2,9 +2,8 @@
 
 #include "settingsgroup.h"
 #include <QQmlEngine>
-#include <QSettings>
 
-class InterfaceSettings : public SettingsGroup {
+class AppearanceSettings : public SettingsGroup {
     Q_OBJECT
     QML_ELEMENT
 
@@ -12,15 +11,11 @@ class InterfaceSettings : public SettingsGroup {
                    NOTIFY slidingLabelsChanged FINAL)
 
 private:
-    QSettings *m_settings;
-
     bool m_slidingLabels;
 
 public:
-    explicit InterfaceSettings(QObject *parent = nullptr);
+    explicit AppearanceSettings(QObject *parent = nullptr);
 
-    QByteArray settingsCategory() const override;
-    QByteArray settingsSubcategory() const override;
     QList<SettingsFieldMeta> settingsFields() const override;
 
     bool slidingLabels() const;

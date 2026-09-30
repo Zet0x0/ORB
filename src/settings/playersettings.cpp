@@ -1,5 +1,5 @@
 #include "playersettings.h"
-#include "settingsfactory.h"
+#include "settingscategories.h"
 #include "settingsio.h"
 
 namespace {
@@ -11,9 +11,7 @@ constexpr int MaxRetriesMax = 99;
 }
 
 PlayerSettings::PlayerSettings(QObject *parent)
-    : SettingsGroup(parent), m_settings(SettingsFactory::create(this)) {
-    m_settings->beginGroup(QStringLiteral("player"));
-
+    : SettingsGroup(parent, QStringLiteral("player")) {
     m_lastStation = Station::fromMap(
         m_settings->value(QStringLiteral("lastStation")).toMap());
 
@@ -27,19 +25,16 @@ PlayerSettings::PlayerSettings(QObject *parent)
                                        5, MaxRetriesMin, MaxRetriesMax);
 }
 
-QByteArray PlayerSettings::settingsCategory() const {
-    return QT_TRANSLATE_NOOP("SettingsCategory", "Playback");
-}
-
-QByteArray PlayerSettings::settingsSubcategory() const {
-    return QT_TRANSLATE_NOOP("SettingsCategory", "General");
-}
-
 QList<SettingsFieldMeta> PlayerSettings::settingsFields() const {
     return {
-        {.propertyName = "retryOnError", .label = tr("Retry on error")},
+        {.propertyName = "retryOnError",
+         .label = tr("Retry on error"),
+         .category = SettingsCategory::Playback,
+         .subcategory = SettingsSubcategory::General},
         {.propertyName = "maxRetries",
          .label = tr("Retry attempts"),
+         .category = SettingsCategory::Playback,
+         .subcategory = SettingsSubcategory::General,
          .min = MaxRetriesMin,
          .max = MaxRetriesMax},
     };

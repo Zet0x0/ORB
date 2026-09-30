@@ -2,7 +2,6 @@
 
 #include "settingsgroup.h"
 #include <QQmlEngine>
-#include <QSettings>
 
 class TraySettings : public SettingsGroup {
     Q_OBJECT
@@ -15,8 +14,6 @@ class TraySettings : public SettingsGroup {
                    closeToTrayChanged FINAL)
 
 private:
-    QSettings *m_settings;
-
     bool m_enabled;
 
     bool m_closeToTray;
@@ -24,8 +21,6 @@ private:
 public:
     explicit TraySettings(QObject *parent = nullptr);
 
-    QByteArray settingsCategory() const override;
-    QByteArray settingsSubcategory() const override;
     QList<SettingsFieldMeta> settingsFields() const override;
 
     bool enabled() const;
