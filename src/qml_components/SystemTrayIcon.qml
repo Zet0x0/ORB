@@ -5,8 +5,21 @@ import Qt.labs.platform
 import QtQuick
 
 SystemTrayIcon {
+    id: root
+
     required property MainWindow applicationWindow
     required property SystemTrayMenu trayMenu
+    // HACK: QTBUG-33481 workaround
+    // held in a property because this thing has no default property for children
+    readonly property Connections windowConnections: Connections {
+        function onActiveChanged(): void {
+            if (root.applicationWindow.active && root.trayMenu !== null) {
+                root.trayMenu.dismiss();
+            }
+        }
+
+        target: root.applicationWindow
+    }
 
     icon.source: "qrc:/icons/ORB.svg"
     tooltip: {
@@ -26,13 +39,6 @@ SystemTrayIcon {
         if (!available) {
             console.warn(LogCategories.tray, "System tray is not available");
         }
-
-        // HACK: QTBUG-33481 workaround
-        applicationWindow.activeChanged.connect(() => {
-            if (applicationWindow.active && trayMenu !== null) {
-                trayMenu.dismiss();
-            }
-        });
     }
     onActivated: reason => {
         switch (reason) {
