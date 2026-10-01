@@ -2,6 +2,7 @@
 #include <QCoreApplication>
 #include <QDir>
 #include <QFileInfo>
+#include <QLoggingCategory>
 #include <QScopeGuard>
 #include <QStandardPaths>
 #include <QThread>
@@ -125,13 +126,13 @@ void Logger::openLogFile() {
         QStringLiteral("===== ORB %0 =====")
             .arg(QCoreApplication::applicationVersion());
 
-    m_logStream << headerMessage << '\n';
+    m_logStream << headerMessage << u'\n';
     m_logStream << QStringLiteral("Logging for PID %0 since %1")
                        .arg(QString::number(QCoreApplication::applicationPid()),
                             currentDateTime.toString(Qt::ISODate))
-                << '\n';
-    m_logStream << QStringLiteral("=").repeated(headerMessage.size()) << '\n';
-    m_logStream << '\n';
+                << u'\n';
+    m_logStream << QStringLiteral("=").repeated(headerMessage.size()) << u'\n';
+    m_logStream << u'\n';
     m_logStream.flush();
 }
 
@@ -142,7 +143,7 @@ void Logger::writeToFile(const QString &line) {
         return;
     }
 
-    m_logStream << line << '\n';
+    m_logStream << line << u'\n';
     m_logStream.flush();
 }
 
@@ -306,4 +307,9 @@ void Logger::setMaxFiles(int maxFiles) {
     for (int i = 0; i < existing.size() - (maxFiles - 1); ++i) {
         QFile::remove(directory.filePath(existing.at(i)));
     }
+}
+
+void Logger::setFilterRules(const QString &rules) {
+    // setFilterRules() only splits on newlines
+    QLoggingCategory::setFilterRules(QString(rules).replace(u';', u'\n'));
 }

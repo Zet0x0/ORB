@@ -11,14 +11,14 @@ QString Utilities::normalizeUserInputUrl(const QString &userInput) {
 }
 
 QString Utilities::escapeControlCharacters(QString string) {
-    return string.replace('\a', "\\a")
-        .replace('\b', "\\b")
-        .replace('\t', "\\t")
-        .replace('\n', "\\n")
-        .replace('\v', "\\v")
-        .replace('\f', "\\f")
-        .replace('\r', "\\r")
-        .replace('\x1b', "\\e");
+    return string.replace(u'\a', "\\a")
+        .replace(u'\b', "\\b")
+        .replace(u'\t', "\\t")
+        .replace(u'\n', "\\n")
+        .replace(u'\v', "\\v")
+        .replace(u'\f', "\\f")
+        .replace(u'\r', "\\r")
+        .replace(u'\x1b', "\\e");
 }
 
 qint64 Utilities::currentTimestamp() {

@@ -84,7 +84,7 @@ QString LogFilterModel::formattedText() const {
         lines << index(row, 0).data(Logger::LineTextRole).toString();
     }
 
-    return lines.join(QLatin1Char('\n'));
+    return lines.join(u'\n');
 }
 
 bool LogFilterModel::filterAcceptsRow(int sourceRow,

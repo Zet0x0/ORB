@@ -17,7 +17,7 @@ QString label(const QByteArray &propertyName) {
         }
 
         if (ch.isUpper()) {
-            result += QLatin1Char(' ');
+            result += u' ';
             result += ch.toLower();
 
             continue;

@@ -127,9 +127,9 @@ QString Player::formatTime(double time) const {
     const int hours = totalNumberOfSeconds / 60 / 60;
 
     return QStringLiteral("%0:%1:%2")
-        .arg(hours, 2, 10, QLatin1Char('0'))
-        .arg(minutes, 2, 10, QLatin1Char('0'))
-        .arg(seconds, 2, 10, QLatin1Char('0'));
+        .arg(hours, 2, 10, u'0')
+        .arg(minutes, 2, 10, u'0')
+        .arg(seconds, 2, 10, u'0');
 }
 
 void Player::setElapsed(const QString &newElapsed) {

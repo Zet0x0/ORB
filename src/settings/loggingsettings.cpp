@@ -15,6 +15,9 @@ LoggingSettings::LoggingSettings(QObject *parent)
                                        2000, MaxEntriesMin, MaxEntriesMax);
     m_maxFiles = SettingsIO::readInt(m_settings, QStringLiteral("maxFiles"), 30,
                                      MaxFilesMin, MaxFilesMax);
+
+    m_filterRules = SettingsIO::readString(
+        m_settings, QStringLiteral("filterRules"), QString());
 }
 
 QList<SettingsFieldMeta> LoggingSettings::settingsFields() const {
@@ -35,6 +38,13 @@ QList<SettingsFieldMeta> LoggingSettings::settingsFields() const {
          .subcategory = SettingsSubcategory::Logging,
          .min = MaxFilesMin,
          .max = MaxFilesMax},
+        {.propertyName = "filterRules",
+         .label = tr("Category rules"),
+         .description = tr("Configures which log categories and message types "
+                           "should be enabled through a set of rules separated "
+                           "by semicolons, e.g. qt.qpa.*=true;orb.*=false"),
+         .category = SettingsCategory::Advanced,
+         .subcategory = SettingsSubcategory::Logging},
     };
 }
 
@@ -70,4 +80,19 @@ void LoggingSettings::setMaxFiles(int newMaxFiles) {
     SettingsIO::write(m_settings, QStringLiteral("maxFiles"), m_maxFiles);
 
     emit maxFilesChanged();
+}
+
+QString LoggingSettings::filterRules() const {
+    return m_filterRules;
+}
+
+void LoggingSettings::setFilterRules(const QString &newFilterRules) {
+    if (m_filterRules == newFilterRules) {
+        return;
+    }
+
+    m_filterRules = newFilterRules;
+    SettingsIO::write(m_settings, QStringLiteral("filterRules"), m_filterRules);
+
+    emit filterRulesChanged();
 }

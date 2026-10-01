@@ -91,6 +91,9 @@ public:
     void setMaxEntries(int newMaxEntries);
     void setMaxFiles(int maxFiles);
 
+    // uses QLoggingCategory::setFilterRules
+    static void setFilterRules(const QString &rules);
+
 signals:
     void countChanged();
 };

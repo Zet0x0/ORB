@@ -182,7 +182,7 @@ Dialog {
                                     TextField {
                                         text: propertyDelegate.value
 
-                                        onEditingFinished: propertyModel.setValue(propertyDelegate.index, text)
+                                        onTextEdited: propertyModel.setValue(propertyDelegate.index, text)
                                     }
                                 }
 

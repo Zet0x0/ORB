@@ -73,6 +73,7 @@ int main(int argc, char *argv[]) {
 
         logger->setMaxEntries(loggingSettings->maxEntries());
         logger->setMaxFiles(loggingSettings->maxFiles());
+        Logger::setFilterRules(loggingSettings->filterRules());
 
         QObject::connect(loggingSettings, &LoggingSettings::maxEntriesChanged,
                          logger, [loggingSettings, logger]() {
@@ -82,6 +83,11 @@ int main(int argc, char *argv[]) {
         QObject::connect(loggingSettings, &LoggingSettings::maxFilesChanged,
                          logger, [loggingSettings, logger]() {
                              logger->setMaxFiles(loggingSettings->maxFiles());
+                         });
+        QObject::connect(loggingSettings, &LoggingSettings::filterRulesChanged,
+                         logger, [loggingSettings]() {
+                             Logger::setFilterRules(
+                                 loggingSettings->filterRules());
                          });
     }
 
