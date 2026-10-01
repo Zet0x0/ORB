@@ -34,7 +34,7 @@ Dialog {
     y: Math.round((parent.height - height) / 2)
 
     onOpened: {
-        Qt.callLater(logTable.forceLayout);
+        Qt.callLater(logTable.fitColumns);
         Qt.callLater(logTable.scrollToTail);
     }
 
@@ -52,11 +52,15 @@ Dialog {
 
             const stickToTail = logTable.atYEnd && logTable.tailIsNewest;
 
-            Qt.callLater(logTable.forceLayout);
+            Qt.callLater(logTable.fitColumns);
 
             if (stickToTail) {
                 Qt.callLater(logTable.scrollToTail);
             }
+        }
+
+        function onSortChanged() {
+            Qt.callLater(logTable.fitColumns);
         }
 
         target: filterModel
@@ -195,7 +199,7 @@ Dialog {
                         implicitHeight: 26
                         implicitWidth: headerText.implicitWidth
 
-                        onImplicitWidthChanged: Qt.callLater(logTable.forceLayout)
+                        onImplicitWidthChanged: Qt.callLater(logTable.fitColumns)
 
                         Label {
                             id: headerText
@@ -263,8 +267,29 @@ Dialog {
 
                         readonly property bool tailIsNewest: filterModel.sortedColumn === -1 || (filterModel.sortedColumn === Logger.TimeColumn && filterModel.sortedOrder === Qt.AscendingOrder)
 
-                        function fittedColumnWidth(column: int): real {
-                            return Math.ceil(Math.max(implicitColumnWidth(column), logHeader.implicitColumnWidth(column)));
+                        // Explicit widths rather than a columnWidthProvider
+                        function fitColumns(): void {
+                            forceLayout();
+
+                            let othersWidth = 0;
+
+                            for (let column = 0; column < columns; ++column) {
+                                if (column === Logger.MessageColumn) {
+                                    continue;
+                                }
+
+                                let fittedWidth = Math.ceil(Math.max(implicitColumnWidth(column), logHeader.implicitColumnWidth(column)));
+
+                                // long categories elide instead of squeezing the message column
+                                if (column === Logger.CategoryColumn) {
+                                    fittedWidth = Math.min(fittedWidth, Math.max(Math.ceil(logHeader.implicitColumnWidth(column)), Math.round(width * 0.2)));
+                                }
+
+                                setColumnWidth(column, fittedWidth);
+                                othersWidth += Math.max(0, fittedWidth);
+                            }
+
+                            setColumnWidth(Logger.MessageColumn, Math.max(logHeader.implicitColumnWidth(Logger.MessageColumn), width - othersWidth));
                         }
 
                         function scrollToTail(): void {
@@ -279,21 +304,6 @@ Dialog {
                         animate: false
                         boundsBehavior: Flickable.StopAtBounds
                         clip: true
-                        columnWidthProvider: function (column: int): real {
-                            if (column !== Logger.MessageColumn) {
-                                return logTable.fittedColumnWidth(column);
-                            }
-
-                            let othersWidth = 0;
-
-                            for (let i = 0; i < logTable.columns; ++i) {
-                                if (i !== column) {
-                                    othersWidth += Math.max(0, logTable.fittedColumnWidth(i));
-                                }
-                            }
-
-                            return Math.max(logHeader.implicitColumnWidth(column), logTable.width - othersWidth);
-                        }
                         model: filterModel
                         pointerNavigationEnabled: false
 
@@ -303,7 +313,6 @@ Dialog {
                             required property int column
                             required property string display
                             required property int level
-                            readonly property bool multiLine: column === Logger.MessageColumn
                             required property int row
 
                             ToolTip.text: display
@@ -316,15 +325,14 @@ Dialog {
                                 id: cellLabel
 
                                 color: cell.column === Logger.LevelColumn ? root.levelColor(cell.level) : (cell.column === Logger.TimeColumn ? AppColors.semantic.neutral : palette.text)
-                                elide: cell.multiLine ? Text.ElideNone : Text.ElideRight
+                                elide: cell.column === Logger.CategoryColumn ? Text.ElideRight : Text.ElideNone
                                 font.bold: cell.column === Logger.LevelColumn
-                                maximumLineCount: cell.multiLine ? undefined : 1
                                 padding: 5
                                 text: cell.display
                                 textFormat: Text.PlainText
                                 verticalAlignment: Text.AlignTop
                                 width: cell.width
-                                wrapMode: cell.multiLine ? Text.Wrap : Text.NoWrap
+                                wrapMode: cell.column === Logger.MessageColumn ? Text.Wrap : Text.NoWrap
                             }
 
                             HoverHandler {
@@ -342,7 +350,7 @@ Dialog {
                             }
                         }
 
-                        onWidthChanged: Qt.callLater(forceLayout)
+                        onWidthChanged: Qt.callLater(fitColumns)
 
                         Menu {
                             id: rowMenu
