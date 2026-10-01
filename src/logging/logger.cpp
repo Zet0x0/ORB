@@ -1,4 +1,5 @@
 #include "logger.h"
+#include "../common/logcategories.h"
 #include <QCoreApplication>
 #include <QDir>
 #include <QFileInfo>
@@ -114,8 +115,8 @@ void Logger::openLogFile() {
     m_logFile.setFileName(path);
 
     if (!m_logFile.open(QIODevice::WriteOnly | QIODevice::Text)) {
-        qWarning() << "Logger: cannot open log file" << path
-                   << m_logFile.errorString();
+        qCWarning(lcLogging)
+            << "Cannot open log file" << path << m_logFile.errorString();
 
         return;
     }
@@ -134,6 +135,8 @@ void Logger::openLogFile() {
     m_logStream << QStringLiteral("=").repeated(headerMessage.size()) << u'\n';
     m_logStream << u'\n';
     m_logStream.flush();
+
+    qCDebug(lcLogging) << "Writing to" << path;
 }
 
 void Logger::writeToFile(const QString &line) {
@@ -305,11 +308,34 @@ void Logger::setMaxFiles(int maxFiles) {
     existing.removeOne(QFileInfo(m_logFile.fileName()).fileName());
 
     for (int i = 0; i < existing.size() - (maxFiles - 1); ++i) {
-        QFile::remove(directory.filePath(existing.at(i)));
+        QFile file(directory.filePath(existing.at(i)));
+
+        if (!file.remove()) {
+            qCWarning(lcLogging) << "Cannot remove old log file"
+                                 << file.fileName() << file.errorString();
+
+            continue;
+        }
+
+        qCDebug(lcLogging) << "Removed old log file" << file.fileName();
     }
 }
 
 void Logger::setFilterRules(const QString &rules) {
     // setFilterRules() only splits on newlines
     QLoggingCategory::setFilterRules(QString(rules).replace(u';', u'\n'));
+
+    if (rules.isEmpty()) {
+        return;
+    }
+
+    qCInfo(lcLogging) << "Applied category rules" << rules;
+
+    for (const char *variable : {"QT_LOGGING_CONF", "QT_LOGGING_RULES"}) {
+        if (qEnvironmentVariableIsSet(variable)) {
+            qCWarning(lcLogging)
+                << variable
+                << "is set and takes precedence over applied category rules";
+        }
+    }
 }

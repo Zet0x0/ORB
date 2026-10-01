@@ -1,4 +1,5 @@
 #include "sourcecontroller.h"
+#include "../common/logcategories.h"
 
 SourceController::SourceController(QObject *parent)
     : QObject(parent), m_stationModel(new StationModel(this)) {}
@@ -10,7 +11,8 @@ void SourceController::undoSourceConnections(Source *source) const {
 void SourceController::setupSourceConnections(Source *source) const {
     connect(source, &Source::stationsDispatched, this,
             &SourceController::onSourceStationsDispatched);
-    connect(source, &Source::errorOccurred, this, &SourceController::setError);
+    connect(source, &Source::errorOccurred, this,
+            &SourceController::onSourceErrorOccurred);
 
     connect(source, &Source::searchStarted, this,
             &SourceController::onSearchStarted);
@@ -21,6 +23,10 @@ void SourceController::setupSourceConnections(Source *source) const {
 void SourceController::cancelSearch() {
     if (!m_source) {
         return;
+    }
+
+    if (m_searchState == SearchState::Searching) {
+        qCDebug(lcSources) << "Cancelling search in" << m_currentSourceKey;
     }
 
     m_source->cancelSearch();
@@ -54,6 +60,9 @@ SourceController::setCanShowDefaultStations(bool newCanShowDefaultStations) {
 
 void
 SourceController::onSourceStationsDispatched(const QList<Station> &stations) {
+    qCInfo(lcSources) << m_currentSourceKey << "returned" << stations.size()
+                      << "stations";
+
     m_stationModel->setStations(stations);
 
     setSearchState(SearchState::Idle);
@@ -65,6 +74,13 @@ void SourceController::onSearchStarted() {
 
 void SourceController::onSearchCancelled() {
     setSearchState(SearchState::Idle);
+}
+
+void SourceController::onSourceErrorOccurred(const ErrorInfo &error) {
+    qCInfo(lcSources).nospace() << m_currentSourceKey << " reported "
+                                << error.title << ": " << error.message;
+
+    setError(error);
 }
 
 void SourceController::setError(const ErrorInfo &error) {
@@ -89,8 +105,13 @@ bool SourceController::registerSource(const QString &key,
                                       const QString &displayName,
                                       Source *source) {
     if (sourceExists(key)) {
+        qCWarning(lcSources) << "Not registering" << displayName << "as" << key
+                             << "is already taken";
+
         return false;
     }
+
+    qCDebug(lcSources) << "Registered" << key << displayName;
 
     source->setParent(this);
 
@@ -148,6 +169,10 @@ void SourceController::setSource(const QString &newSourceName) {
     Source *newSource = m_sources.value(resolvedKey, nullptr);
 
     if (!newSource) {
+        qCWarning(lcSources)
+            << "Unknown source" << newSourceName << "- falling back to"
+            << SourceControllerConstants::NullSourceKey;
+
         resolvedKey = SourceControllerConstants::NullSourceKey.toString();
         newSource = m_sources.value(resolvedKey, nullptr);
     }
@@ -155,6 +180,8 @@ void SourceController::setSource(const QString &newSourceName) {
     if (!newSource || m_source == newSource) {
         return;
     }
+
+    qCDebug(lcSources) << "Switching source to" << resolvedKey;
 
     if (m_source) {
         cancelSearch();
@@ -179,6 +206,8 @@ void SourceController::search(const QString &query) {
         return;
     }
 
+    qCInfo(lcSources) << "Searching" << m_currentSourceKey << "for" << query;
+
     m_source->search(query);
 }
 
@@ -188,6 +217,8 @@ void SourceController::showDefaultStations() {
     if (!m_source || !canShowDefaultStations()) {
         return;
     }
+
+    qCDebug(lcSources) << "Loading default stations of" << m_currentSourceKey;
 
     m_source->loadDefaultStations();
 }

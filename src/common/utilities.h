@@ -3,6 +3,7 @@
 #include "singleton.h"
 #include <QPoint>
 #include <QRect>
+#include <QUrl>
 
 class Utilities : public QObject, public Singleton<Utilities> {
     Q_OBJECT
@@ -19,6 +20,8 @@ public:
 
     Q_INVOKABLE static void copyToClipboard(const QString &text);
     Q_INVOKABLE static QString pasteFromClipboard();
+
+    Q_INVOKABLE static bool openUrlExternally(const QUrl &url);
 
     Q_INVOKABLE static QPoint getGlobalCursorPos();
     Q_INVOKABLE static QRect getScreenAvailableGeometry(const QPoint &point);

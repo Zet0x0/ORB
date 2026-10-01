@@ -1,7 +1,9 @@
 #include "utilities.h"
+#include "logcategories.h"
 #include <QClipboard>
 #include <QCursor>
 #include <QDateTime>
+#include <QDesktopServices>
 #include <QGuiApplication>
 #include <QScreen>
 #include <QUrl>
@@ -31,6 +33,18 @@ void Utilities::copyToClipboard(const QString &text) {
 
 QString Utilities::pasteFromClipboard() {
     return QGuiApplication::clipboard()->text();
+}
+
+bool Utilities::openUrlExternally(const QUrl &url) {
+    qCDebug(lcUi) << "Opening" << url.toDisplayString() << "externally";
+
+    if (!QDesktopServices::openUrl(url)) {
+        qCWarning(lcUi) << "Cannot open" << url.toDisplayString();
+
+        return false;
+    }
+
+    return true;
 }
 
 QPoint Utilities::getGlobalCursorPos() {

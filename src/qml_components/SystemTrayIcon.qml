@@ -22,8 +22,12 @@ SystemTrayIcon {
     }
     visible: available && trayMenu !== null && Settings.tray.enabled
 
-    // HACK: QTBUG-33481 workaround
     Component.onCompleted: {
+        if (!available) {
+            console.warn(LogCategories.tray, "System tray is not available");
+        }
+
+        // HACK: QTBUG-33481 workaround
         applicationWindow.activeChanged.connect(() => {
             if (applicationWindow.active && trayMenu !== null) {
                 trayMenu.dismiss();

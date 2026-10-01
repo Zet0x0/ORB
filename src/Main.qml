@@ -32,10 +32,14 @@ MainWindow {
         const savedX = Settings.window.x;
         const savedY = Settings.window.y;
 
-        if (Utilities.isPointOnScreen(Qt.point(savedX, savedY))) {
-            x = savedX;
-            y = savedY;
+        if (!Utilities.isPointOnScreen(Qt.point(savedX, savedY))) {
+            console.info(LogCategories.window, `Saved position ${savedX},${savedY} is off-screen, not restoring it`);
+
+            return;
         }
+
+        x = savedX;
+        y = savedY;
     }
 
     height: Settings.window.height
@@ -204,7 +208,7 @@ MainWindow {
     }
     Component.onDestruction: persistSession()
     onClosing: close => {
-        if (Settings.tray.enabled && Settings.tray.closeToTray) {
+        if (Settings.tray.closeToTray && systemTrayIcon.visible) {
             close.accepted = false;
             hide();
 
@@ -331,7 +335,7 @@ MainWindow {
                 enabled: !SourceController.currentSourceIsNull && SourceController.currentSourceUrl.length > 0
                 icon.name: "external-link"
 
-                onClicked: Qt.openUrlExternally(SourceController.currentSourceUrl)
+                onClicked: Utilities.openUrlExternally(SourceController.currentSourceUrl)
             }
 
             ComboBox {
@@ -344,7 +348,13 @@ MainWindow {
                 valueRole: "key"
 
                 Component.onCompleted: {
-                    currentIndex = Math.max(0, indexOfValue(Settings.sources.lastSearchSource));
+                    const lastIndex = indexOfValue(Settings.sources.lastSearchSource);
+
+                    if (lastIndex === -1) {
+                        console.warn(LogCategories.window, `Last used source "${Settings.sources.lastSearchSource}" doesn't exist (anymore?)`);
+                    }
+
+                    currentIndex = Math.max(0, lastIndex);
                 }
                 onCurrentValueChanged: {
                     SourceController.setSource(currentValue);

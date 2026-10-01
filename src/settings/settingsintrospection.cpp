@@ -1,4 +1,5 @@
 #include "settingsintrospection.h"
+#include "../common/logcategories.h"
 #include "settings.h"
 #include "settingscategories.h"
 #include <QCoreApplication>
@@ -76,8 +77,8 @@ QList<ResolvedField> resolvedFields(const SettingsGroup *group) {
             metaObject->indexOfProperty(field.propertyName.constData());
 
         if (propertyIndex == -1) {
-            qWarning() << "SettingsIntrospection:" << metaObject->className()
-                       << "has no property" << field.propertyName;
+            qCWarning(lcSettings) << metaObject->className()
+                                  << "has no property" << field.propertyName;
 
             continue;
         }
@@ -85,16 +86,16 @@ QList<ResolvedField> resolvedFields(const SettingsGroup *group) {
         const QMetaProperty property = metaObject->property(propertyIndex);
 
         if (!property.isWritable() || !property.hasNotifySignal()) {
-            qWarning() << "SettingsIntrospection:" << metaObject->className()
-                       << "property" << field.propertyName
-                       << "needs to be writable and have a NOTIFY";
+            qCWarning(lcSettings)
+                << metaObject->className() << "property" << field.propertyName
+                << "needs to be writable and have a NOTIFY";
 
             continue;
         }
 
         if (field.category.isEmpty()) {
-            qWarning() << "SettingsIntrospection:" << metaObject->className()
-                       << "property" << field.propertyName << "has no category";
+            qCWarning(lcSettings) << metaObject->className() << "property"
+                                  << field.propertyName << "has no category";
 
             continue;
         }
@@ -104,10 +105,10 @@ QList<ResolvedField> resolvedFields(const SettingsGroup *group) {
                          [&field](const char *id) {
                              return field.category == id;
                          })) {
-            qWarning() << "SettingsIntrospection:" << metaObject->className()
-                       << "property" << field.propertyName << "has category"
-                       << field.category
-                       << "not listed in SettingsCategory::Order";
+            qCWarning(lcSettings)
+                << metaObject->className() << "property" << field.propertyName
+                << "has category" << field.category
+                << "not listed in SettingsCategory::Order";
 
             continue;
         }

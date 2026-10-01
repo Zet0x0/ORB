@@ -1,4 +1,5 @@
 #include "radiorecord.h"
+#include "../../common/logcategories.h"
 #include <QHttpMultiPart>
 #include <QJsonArray>
 #include <QJsonDocument>
@@ -22,6 +23,9 @@ void RadioRecord::processStationIntoList(const QJsonObject &rawStation,
     const QString title = rawStation.value(QStringLiteral("title")).toString();
 
     if (title.isEmpty()) {
+        qCDebug(lcSources) << "Skipping station without a title"
+                           << rawStation.value(QStringLiteral("id"));
+
         return;
     }
 
@@ -29,9 +33,13 @@ void RadioRecord::processStationIntoList(const QJsonObject &rawStation,
                     rawStation.value(QStringLiteral("stream_hls")).toString(),
                     rawStation.value(QStringLiteral("icon_gray")).toString()};
 
-    if (station.isValid()) {
-        *stations << station;
+    if (!station.isValid()) {
+        qCDebug(lcSources) << "Skipping" << title << "without a stream URL";
+
+        return;
     }
+
+    *stations << station;
 }
 
 void RadioRecord::handleSearch(const QString &query) {
@@ -50,23 +58,46 @@ void RadioRecord::handleSearch(const QString &query) {
     multiPart->append(keywordsPart);
     multiPart->append(filtersPart);
 
+    const QNetworkRequest request =
+        m_api.createRequest(RadioRecordConstants::SearchPath);
+
+    qCDebug(lcSources) << "POST" << request.url().toDisplayString()
+                       << "keywords:" << query;
+
     m_runningReply = m_restAccessManager->post(
-        m_api.createRequest(RadioRecordConstants::SearchPath), multiPart, this,
-        &RadioRecord::onSearchRequestFinished);
+        request, multiPart, this, &RadioRecord::onSearchRequestFinished);
 
     multiPart->setParent(m_runningReply);
 }
 
 void RadioRecord::handleLoadDefaultStations() {
+    const QNetworkRequest request =
+        m_api.createRequest(RadioRecordConstants::DefaultStationsPath);
+
+    qCDebug(lcSources) << "GET" << request.url().toDisplayString();
+
     m_runningReply = m_restAccessManager->get(
-        m_api.createRequest(RadioRecordConstants::DefaultStationsPath), this,
-        &RadioRecord::onDefaultStationsRequestFinished);
+        request, this, &RadioRecord::onDefaultStationsRequestFinished);
 }
 
 bool RadioRecord::finishReply(QRestReply &reply, QJsonDocument *json) {
     m_runningReply = nullptr;
 
+    const QString url = reply.networkReply()->url().toDisplayString();
+
+    // aborted by cancelSearch(), which isn't an error
+    if (reply.error() == QNetworkReply::OperationCanceledError) {
+        qCDebug(lcSources) << "Request to" << url << "was cancelled";
+
+        return false;
+    }
+
     if (!reply.isSuccess()) {
+        qCWarning(lcSources).nospace()
+            << "Request to " << url << " failed (" << reply.error()
+            << ", HTTP status " << reply.httpStatus()
+            << "): " << reply.errorString();
+
         raiseError(tr("Search error"), reply.networkReply()->errorString());
 
         return false;
@@ -82,6 +113,9 @@ void RadioRecord::handleStationsEndpointResult(const QJsonDocument &json) {
     for (const QJsonValue &rawStation : rawStations) {
         processStationIntoList(rawStation.toObject(), &stations);
     }
+
+    qCDebug(lcSources) << "Parsed" << stations.size() << "of"
+                       << rawStations.size() << "default stations";
 
     if (stations.isEmpty()) {
         raiseError(tr("Search error"), tr("No default stations found"));
@@ -101,6 +135,9 @@ void RadioRecord::handleSearchEndpointResult(const QJsonDocument &json) {
     for (const QJsonValue &rawStation : rawStations) {
         processStationIntoList(rawStation.toObject(), &stations);
     }
+
+    qCDebug(lcSources) << "Parsed" << stations.size() << "of"
+                       << rawStations.size() << "found stations";
 
     emit stationsDispatched(stations);
 }

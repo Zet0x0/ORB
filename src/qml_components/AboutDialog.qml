@@ -1,3 +1,4 @@
+import ORB.Common
 import ORB.Style
 import QtQuick
 import QtQuick.Layouts
@@ -54,7 +55,7 @@ Dialog {
                 icon.name: "brand-github"
                 text: qsTr("View on GitHub")
 
-                onClicked: Qt.openUrlExternally("https://github.com/Zet0x0/ORB")
+                onClicked: Utilities.openUrlExternally("https://github.com/Zet0x0/ORB")
             }
         }
     }

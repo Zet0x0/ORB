@@ -1,5 +1,8 @@
 add_library(qml_components STATIC)
 
+set_source_files_properties(LogCategories.qml PROPERTIES QT_QML_SINGLETON_TYPE
+                                                         TRUE)
+
 qt_add_qml_module(
     qml_components
     URI
@@ -36,6 +39,7 @@ qt_add_qml_module(
     ErrorBanner.qml
     PlaybackStatusIndicator.qml
     TickedSlider.qml
+    LogCategories.qml
     NO_PLUGIN)
 
 target_link_libraries(qml_components PRIVATE common logging player settings

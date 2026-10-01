@@ -160,7 +160,7 @@ Dialog {
                 ToolTip.text: qsTr("Open logs folder")
                 icon.name: "folder-open"
 
-                onClicked: Qt.openUrlExternally(Logger.directoryUrl)
+                onClicked: Utilities.openUrlExternally(Logger.directoryUrl)
             }
         }
 

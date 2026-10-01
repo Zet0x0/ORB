@@ -1,4 +1,5 @@
 #include "settingspropertymodel.h"
+#include "../common/logcategories.h"
 #include "settingsgroup.h"
 #include "settingsintrospection.h"
 
@@ -232,7 +233,21 @@ void SettingsPropertyModel::applyChanges() {
     }
 
     for (const PendingChange &change : std::as_const(m_pendingChanges)) {
-        change.property.write(change.target, change.value);
+        const char *groupName = change.target->metaObject()->className();
+        const QVariant previous = change.property.read(change.target);
+
+        if (!change.property.write(change.target, change.value)) {
+            qCWarning(lcSettings).nospace()
+                << "Failed to set " << groupName << "."
+                << change.property.name() << " to " << change.value;
+
+            continue;
+        }
+
+        qCInfo(lcSettings).nospace()
+            << "Changed " << groupName << "." << change.property.name()
+            << " from " << previous.toString() << " to "
+            << change.property.read(change.target).toString();
     }
 
     clearPendingChanges();

@@ -41,6 +41,8 @@ public:
 private:
     enum class AsyncReplyId {
         None,
+        ReadingVersion,
+        LoadingFile,
         Stopping,
         StoppingForStationChange,
         ResolvingNowPlaying,
@@ -55,6 +57,7 @@ private:
 
     MpvController *m_mpvController = nullptr;
     QThread *m_workerThread = nullptr;
+    mpv_handle *m_logClient = nullptr;
     bool m_shutDown = false;
 
     std::optional<QString> m_pendingNowPlaying;
@@ -83,6 +86,9 @@ private:
 
     void setupConnections() const;
     void setupObservations() const;
+    void setupLogClient();
+
+    void destroyLogClient();
 
     void shutdown();
 
@@ -117,6 +123,8 @@ private:
     void stopRetryCountdown();
 
 private slots:
+    void readLogMessages();
+
     void onPropertyChanged(const QString &property, const QVariant &value);
 
     void onAsyncReply(const QVariant &data, mpv_event event);

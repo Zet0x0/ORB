@@ -1,3 +1,4 @@
+#include "common/logcategories.h"
 #include "logging/logger.h"
 #include "settings/settings.h"
 #include "sources/providers/favoritessource.h"
@@ -11,6 +12,7 @@
 #include <QQmlComponent>
 #include <QQuickStyle>
 #include <QQuickWindow>
+#include <QStandardPaths>
 #include <cctype>
 
 namespace {
@@ -67,6 +69,16 @@ int main(int argc, char *argv[]) {
     QGuiApplication app(argc, argv);
     QQmlApplicationEngine engine;
 
+    qCInfo(lcApp).noquote()
+        << QStringLiteral("ORB %0 on %1, Qt %2 (%3 platform)")
+               .arg(QCoreApplication::applicationVersion(),
+                    QSysInfo::prettyProductName(),
+                    QString::fromLatin1(qVersion()),
+                    QGuiApplication::platformName());
+    qCInfo(lcApp) << "Data directory:"
+                  << QStandardPaths::writableLocation(
+                         QStandardPaths::AppDataLocation);
+
     {
         LoggingSettings *loggingSettings = Settings::instance()->logging();
         Logger *logger = Logger::instance();
@@ -93,7 +105,10 @@ int main(int argc, char *argv[]) {
 
     QObject::connect(
         &engine, &QQmlApplicationEngine::objectCreationFailed, &app,
-        []() {
+        [](const QUrl &url) {
+            qCCritical(lcApp)
+                << "Failed to create" << url.toDisplayString() << "- exiting";
+
             QCoreApplication::exit(-1);
         },
         Qt::QueuedConnection);
@@ -107,10 +122,13 @@ int main(int argc, char *argv[]) {
 
             if (paletteObject) {
                 app.setPalette(paletteFromQmlPalette(paletteObject.get()));
+            } else {
+                qCWarning(lcApp) << "Failed to create ORB.Style/AppPalette:"
+                                 << paletteComponent.errors();
             }
         } else {
-            qWarning() << "Failed to load ORB.Style/AppPalette:"
-                       << paletteComponent.errors();
+            qCWarning(lcApp) << "Failed to load ORB.Style/AppPalette:"
+                             << paletteComponent.errors();
         }
     }
 
@@ -131,5 +149,9 @@ int main(int argc, char *argv[]) {
 
     engine.loadFromModule(QStringLiteral("ORB"), QStringLiteral("Main"));
 
-    return app.exec();
+    const int exitCode = app.exec();
+
+    qCInfo(lcApp) << "Exiting with code" << exitCode;
+
+    return exitCode;
 }

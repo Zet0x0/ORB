@@ -1,4 +1,5 @@
 #include "player.h"
+#include "../common/logcategories.h"
 #include "../common/utilities.h"
 #include "../settings/settings.h"
 #include "mpvproperties.h"
@@ -7,6 +8,64 @@
 namespace {
 constexpr int RetryMaxDelaySeconds = 30;
 constexpr int StabilityThresholdMs = 15000;
+
+// make or return a saved QLoggingCategory out of a mpv's module
+// e.g. ffmpeg/demuxer -> orb.player.mpv.ffmpeg.demuxer
+const QLoggingCategory &mpvCategory(const char *module) {
+    static QHash<QByteArray, const QLoggingCategory *> categories;
+
+    const QLoggingCategory *&category = categories[QByteArray(module)];
+
+    if (!category) {
+        const QByteArray name =
+            "orb.player.mpv." + QByteArray(module).replace("/", ".");
+
+        // debug messages are hidden by default because they're mpv's verbose
+        // output, which gives out a line for every downloaded stream segment;
+        // to show them put a rule like orb.player.mpv.*.debug=true
+        category = new QLoggingCategory(qstrdup(name.constData()), QtInfoMsg);
+    }
+
+    return *category;
+}
+
+QString mpvMessageText(const mpv_event_log_message &message) {
+    QString text = QString::fromUtf8(message.text);
+
+    // ends in a newline, sometimes with spaces before it
+    while (!text.isEmpty() && text.back().isSpace()) {
+        text.chop(1);
+    }
+
+    return text;
+}
+
+void logMpvMessage(const mpv_event_log_message &message) {
+    const QLoggingCategory &category = mpvCategory(message.prefix);
+
+    switch (message.log_level) {
+    case MPV_LOG_LEVEL_FATAL:
+    case MPV_LOG_LEVEL_ERROR:
+        qCCritical(category).noquote() << mpvMessageText(message);
+
+        break;
+
+    case MPV_LOG_LEVEL_WARN:
+        qCWarning(category).noquote() << mpvMessageText(message);
+
+        break;
+
+    case MPV_LOG_LEVEL_INFO:
+        qCInfo(category).noquote() << mpvMessageText(message);
+
+        break;
+
+    default:
+        qCDebug(category).noquote() << mpvMessageText(message);
+
+        break;
+    }
+}
 }
 
 Player::Player(QObject *parent)
@@ -23,6 +82,8 @@ Player::Player(QObject *parent)
     QMetaObject::invokeMethod(m_mpvController, &MpvController::init,
                               Qt::BlockingQueuedConnection);
 
+    qCDebug(lcPlayer) << "mpv initialized on worker thread";
+
     m_retryTimer->setInterval(1000);
     connect(m_retryTimer, &QTimer::timeout, this, &Player::onRetryTick);
 
@@ -33,22 +94,11 @@ Player::Player(QObject *parent)
 
     setupConnections();
     setupObservations();
+    setupLogClient();
+
+    getPropertyAsync(MpvProperties::Version, AsyncReplyId::ReadingVersion);
 
     connect(qApp, &QCoreApplication::aboutToQuit, this, &Player::shutdown);
-}
-
-void Player::shutdown() {
-    if (m_shutDown) {
-        return;
-    }
-
-    m_shutDown = true;
-
-    m_retryTimer->stop();
-    m_stabilityTimer->stop();
-
-    m_workerThread->quit();
-    m_workerThread->wait();
 }
 
 void Player::setupConnections() const {
@@ -69,6 +119,60 @@ void Player::setupConnections() const {
 void Player::setupObservations() const {
     observePropertyAsync(MpvProperties::NowPlaying, MPV_FORMAT_STRING);
     observePropertyAsync(MpvProperties::Elapsed, MPV_FORMAT_DOUBLE);
+}
+
+void Player::setupLogClient() {
+    m_logClient =
+        mpv_create_weak_client(m_mpvController->mpv(), "orb_log_reader");
+
+    if (!m_logClient) {
+        qCWarning(lcPlayer) << "Failed to create mpv log client";
+
+        return;
+    }
+
+    mpv_set_wakeup_callback(
+        m_logClient,
+        [](void *player) {
+            QMetaObject::invokeMethod(static_cast<Player *>(player),
+                                      &Player::readLogMessages,
+                                      Qt::QueuedConnection);
+        },
+        this);
+
+    mpv_request_log_messages(m_logClient, "v");
+}
+
+void Player::destroyLogClient() {
+    if (!m_logClient) {
+        return;
+    }
+
+    mpv_set_wakeup_callback(m_logClient, nullptr, nullptr);
+    mpv_destroy(m_logClient);
+
+    m_logClient = nullptr;
+}
+
+void Player::shutdown() {
+    if (m_shutDown) {
+        return;
+    }
+
+    m_shutDown = true;
+
+    qCDebug(lcPlayer) << "Shutting down mpv";
+
+    m_retryTimer->stop();
+    m_stabilityTimer->stop();
+
+    // mpv_terminate_destroy waits until every other client
+    // is destroyed, so our little one has to go first
+    readLogMessages();
+    destroyLogClient();
+
+    m_workerThread->quit();
+    m_workerThread->wait();
 }
 
 void Player::observePropertyAsync(const QString &property, mpv_format format,
@@ -106,6 +210,10 @@ void Player::setNowPlaying(QString newNowPlaying) {
 
     m_nowPlaying = newNowPlaying;
 
+    if (!m_nowPlaying.isEmpty()) {
+        qCInfo(lcPlayer) << "Now playing" << m_nowPlaying;
+    }
+
     emit nowPlayingChanged();
 }
 
@@ -113,6 +221,8 @@ void Player::setState(const State &newState) {
     if (m_state == newState) {
         return;
     }
+
+    qCDebug(lcPlayer) << "State changed from" << m_state << "to" << newState;
 
     m_state = newState;
 
@@ -157,6 +267,8 @@ void Player::setError(const ErrorInfo &error) {
 }
 
 void Player::raiseError(const QString &title, const QString &message) {
+    qCWarning(lcPlayer).noquote().nospace() << title << ": " << message;
+
     setError(ErrorInfo(title, message));
 }
 
@@ -211,6 +323,30 @@ void Player::stopRetryCountdown() {
     setRetrySecondsRemaining(0);
 }
 
+void Player::readLogMessages() {
+    while (m_logClient) {
+        const mpv_event *event = mpv_wait_event(m_logClient, 0);
+
+        switch (event->event_id) {
+        case MPV_EVENT_NONE:
+            return;
+
+        case MPV_EVENT_SHUTDOWN:
+            destroyLogClient();
+
+            return;
+
+        case MPV_EVENT_LOG_MESSAGE:
+            logMpvMessage(*static_cast<mpv_event_log_message *>(event->data));
+
+            break;
+
+        default:
+            break;
+        }
+    }
+}
+
 void Player::onPropertyChanged(const QString &property, const QVariant &value) {
     if (property == MpvProperties::NowPlaying) {
         const bool alreadyResolving = m_pendingNowPlaying.has_value();
@@ -231,8 +367,34 @@ void Player::onAsyncReply(const QVariant &data, mpv_event event) {
     const bool succeeded = error > -1;
 
     switch (id) {
-    case AsyncReplyId::None:
+    case AsyncReplyId::None: {
+        if (!succeeded) {
+            qCWarning(lcPlayer)
+                << "mpv request failed:" << MpvController::getError(error);
+        }
+
         break;
+    }
+
+    case AsyncReplyId::ReadingVersion: {
+        if (succeeded) {
+            qCInfo(lcPlayer).noquote() << "Using" << data.toString();
+        } else {
+            qCWarning(lcPlayer) << "Failed to read" << MpvProperties::Version
+                                << MpvController::getError(error);
+        }
+
+        break;
+    }
+
+    case AsyncReplyId::LoadingFile: {
+        if (!succeeded) {
+            qCWarning(lcPlayer)
+                << "loadfile failed:" << MpvController::getError(error);
+        }
+
+        break;
+    }
 
     case AsyncReplyId::Stopping: {
         if (succeeded) {
@@ -317,8 +479,15 @@ void Player::onEndFile(QString reason) {
     if (isPlaybackError && shouldRetry()) {
         setRetryAttempt(m_retryAttempt + 1);
 
+        const int delay = retryDelaySeconds();
+
+        qCWarning(lcPlayer).noquote().nospace()
+            << "Playback ended (" << reason << "), retry " << m_retryAttempt
+            << " of " << Settings::instance()->player()->maxRetries() << " in "
+            << delay << "s";
+
         setState(State::Retrying);
-        startRetryCountdown(retryDelaySeconds());
+        startRetryCountdown(delay);
 
         return;
     }
@@ -343,6 +512,8 @@ void Player::onFileStarted() {
 }
 
 void Player::onFileLoaded() {
+    qCInfo(lcPlayer) << "Playing" << m_station.name();
+
     setState(State::Playing);
 
     m_stabilityTimer->start();
@@ -361,6 +532,8 @@ void Player::onRetryTick() {
         m_retryTimer->stop();
         setRetrySecondsRemaining(0);
 
+        qCInfo(lcPlayer) << "Retrying, attempt" << m_retryAttempt;
+
         play();
 
         return;
@@ -370,6 +543,10 @@ void Player::onRetryTick() {
 }
 
 void Player::onPlaybackStable() {
+    if (m_retryAttempt > 0) {
+        qCDebug(lcPlayer) << "Playback stable, resetting retry attempts";
+    }
+
     setRetryAttempt(0);
 }
 
@@ -426,6 +603,8 @@ void Player::setStation(const Station &newStation, bool playImmediately) {
             PendingStationChange{newStation, playImmediately};
 
         if (!alreadyStopping) {
+            qCDebug(lcPlayer) << "Stopping before switching station";
+
             sendStop(AsyncReplyId::StoppingForStationChange);
         }
 
@@ -434,6 +613,9 @@ void Player::setStation(const Station &newStation, bool playImmediately) {
 
     if (m_station != newStation) {
         m_station = newStation;
+
+        qCInfo(lcPlayer) << "Current station is now" << m_station.name()
+                         << m_station.streamUrl();
 
         emit stationChanged();
     }
@@ -444,10 +626,15 @@ void Player::setStation(const Station &newStation, bool playImmediately) {
 }
 
 void Player::play() const {
-    commandAsync({QStringLiteral("loadfile"), m_station.streamUrl()});
+    qCInfo(lcPlayer) << "Loading" << m_station.streamUrl();
+
+    commandAsync({QStringLiteral("loadfile"), m_station.streamUrl()},
+                 AsyncReplyId::LoadingFile);
 }
 
 void Player::stop() {
+    qCInfo(lcPlayer) << "Stopping";
+
     cancelRetry();
 
     sendStop(AsyncReplyId::Stopping);
@@ -490,6 +677,8 @@ void Player::retryNow() {
     if (m_state != State::Retrying) {
         return;
     }
+
+    qCInfo(lcPlayer) << "Retrying now, attempt" << m_retryAttempt;
 
     stopRetryCountdown();
     play();
