@@ -280,7 +280,7 @@ Dialog {
 
                                 let fittedWidth = Math.ceil(Math.max(implicitColumnWidth(column), logHeader.implicitColumnWidth(column)));
 
-                                // long categories elide instead of squeezing the message column
+                                // long categories wrap or elide instead of squeezing the message column
                                 if (column === Logger.CategoryColumn) {
                                     fittedWidth = Math.min(fittedWidth, Math.max(Math.ceil(logHeader.implicitColumnWidth(column)), Math.round(width * 0.2)));
                                 }
@@ -318,21 +318,23 @@ Dialog {
                             ToolTip.text: display
                             ToolTip.visible: cellLabel.truncated && cellHover.hovered
                             color: row % 2 === 0 ? palette.base : palette.alternateBase
-                            implicitHeight: cellLabel.implicitHeight
+                            // the category will only wrap onto lines the other columns already give the row
+                            implicitHeight: cell.column === Logger.CategoryColumn ? 0 : cellLabel.implicitHeight
                             implicitWidth: cellLabel.implicitWidth
 
                             Label {
                                 id: cellLabel
 
+                                anchors.fill: parent
                                 color: cell.column === Logger.LevelColumn ? root.levelColor(cell.level) : (cell.column === Logger.TimeColumn ? AppColors.semantic.neutral : palette.text)
                                 elide: cell.column === Logger.CategoryColumn ? Text.ElideRight : Text.ElideNone
                                 font.bold: cell.column === Logger.LevelColumn
                                 padding: 5
-                                text: cell.display
+                                // zero-width spaces make a wrapped category name break *after* its dots
+                                text: cell.column === Logger.CategoryColumn ? cell.display.replace(/\./g, ".\u200b") : cell.display
                                 textFormat: Text.PlainText
                                 verticalAlignment: Text.AlignTop
-                                width: cell.width
-                                wrapMode: cell.column === Logger.MessageColumn ? Text.Wrap : Text.NoWrap
+                                wrapMode: cell.column === Logger.MessageColumn || cell.column === Logger.CategoryColumn ? Text.Wrap : Text.NoWrap
                             }
 
                             HoverHandler {
