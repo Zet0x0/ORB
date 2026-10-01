@@ -18,6 +18,7 @@ private:
         QObject *target;
         QMetaProperty property;
         QString label;
+        QString description;
         QByteArray subcategoryId;
         QString subcategory;
 
@@ -47,6 +48,7 @@ public:
     enum PropertyRoles {
         NameRole = Qt::UserRole,
         LabelRole,
+        DescriptionRole,
         TypeRole,
         ValueRole,
         SubcategoryRole,

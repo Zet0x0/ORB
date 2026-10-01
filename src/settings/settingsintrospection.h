@@ -7,6 +7,7 @@ namespace SettingsIntrospection {
 struct ResolvedField {
     QMetaProperty property;
     QString label;
+    QString description;
     QByteArray categoryId;
     QByteArray subcategoryId;
     // Translated for display

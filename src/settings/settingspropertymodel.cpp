@@ -24,6 +24,7 @@ void SettingsPropertyModel::rebuildEntries() {
             m_entries.append({.target = group,
                               .property = field.property,
                               .label = field.label,
+                              .description = field.description,
                               .subcategoryId = field.subcategoryId,
                               .subcategory = field.subcategory,
                               .min = field.min,
@@ -133,6 +134,9 @@ QVariant SettingsPropertyModel::data(const QModelIndex &index, int role) const {
     case LabelRole:
         return entry.label;
 
+    case DescriptionRole:
+        return entry.description;
+
     case TypeRole:
         return propertyType(entry.property);
 
@@ -202,6 +206,7 @@ QHash<int, QByteArray> SettingsPropertyModel::roleNames() const {
     static const QHash<int, QByteArray> roles{
         {NameRole, QByteArrayLiteral("name")},
         {LabelRole, QByteArrayLiteral("label")},
+        {DescriptionRole, QByteArrayLiteral("description")},
         {TypeRole, QByteArrayLiteral("type")},
         {ValueRole, QByteArrayLiteral("value")},
         {SubcategoryRole, QByteArrayLiteral("subcategory")},

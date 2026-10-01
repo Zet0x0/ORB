@@ -28,6 +28,9 @@ QList<SettingsFieldMeta> LoggingSettings::settingsFields() const {
          .step = 100},
         {.propertyName = "maxFiles",
          .label = tr("Log files to keep"),
+         .description = tr("How many log files to keep in the logs folder. "
+                           "Older ones get cleaned up every time ORB starts, "
+                           "and right away when you lower this"),
          .category = SettingsCategory::Advanced,
          .subcategory = SettingsSubcategory::Logging,
          .min = MaxFilesMin,

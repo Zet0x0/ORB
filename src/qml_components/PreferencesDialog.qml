@@ -139,6 +139,7 @@ Dialog {
                             delegate: ColumnLayout {
                                 id: propertyDelegate
 
+                                required property string description
                                 required property int index
                                 required property string label
                                 required property int max
@@ -192,9 +193,14 @@ Dialog {
                                     visible: propertyDelegate.subcategoryStart
                                 }
 
+                                // int: label, description, slider
+                                // bool: checkbox, description
+                                // string: label with textfield, description
                                 GridLayout {
+                                    id: fieldGrid
+
                                     Layout.fillWidth: true
-                                    columns: propertyDelegate.type === "int" ? 1 : 2
+                                    columns: propertyDelegate.type === "string" ? 2 : 1
 
                                     Label {
                                         Layout.fillWidth: true
@@ -204,8 +210,27 @@ Dialog {
                                         wrapMode: Text.Wrap
                                     }
 
+                                    Label {
+                                        readonly property CheckBox checkBox: fieldLoader.item as CheckBox
+
+                                        Layout.columnSpan: fieldGrid.columns
+                                        Layout.fillWidth: true
+                                        Layout.leftMargin: checkBox ? checkBox.leftPadding + checkBox.indicator.width + checkBox.spacing : 0
+                                        Layout.row: 1
+                                        Layout.topMargin: checkBox ? -checkBox.bottomPadding : 0
+                                        color: palette.disabled.windowText
+                                        text: propertyDelegate.description
+                                        textFormat: Text.PlainText
+                                        visible: text.length > 0
+                                        wrapMode: Text.Wrap
+                                    }
+
                                     Loader {
+                                        id: fieldLoader
+
+                                        Layout.column: propertyDelegate.type === "string" ? 1 : 0
                                         Layout.fillWidth: propertyDelegate.type !== "bool"
+                                        Layout.row: propertyDelegate.type === "int" ? 2 : 0
                                         sourceComponent: {
                                             switch (propertyDelegate.type) {
                                             case "bool":

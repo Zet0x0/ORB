@@ -12,6 +12,8 @@ QList<SettingsFieldMeta> AppearanceSettings::settingsFields() const {
     return {
         {.propertyName = "slidingLabels",
          .label = tr("Slide long labels"),
+         .description = tr("Make some long labels, like the station name at "
+                           "the top, scroll by instead of getting cut off"),
          .category = SettingsCategory::Appearance,
          .subcategory = SettingsSubcategory::General},
     };

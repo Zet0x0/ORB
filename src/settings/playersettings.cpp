@@ -29,10 +29,14 @@ QList<SettingsFieldMeta> PlayerSettings::settingsFields() const {
     return {
         {.propertyName = "retryOnError",
          .label = tr("Retry on error"),
+         .description = tr("If a station drops or fails to load, try again, "
+                           "waiting a bit longer each time"),
          .category = SettingsCategory::Playback,
          .subcategory = SettingsSubcategory::General},
         {.propertyName = "maxRetries",
          .label = tr("Retry attempts"),
+         .description =
+             tr("How many times to retry station playback before giving up"),
          .category = SettingsCategory::Playback,
          .subcategory = SettingsSubcategory::General,
          .min = MaxRetriesMin,

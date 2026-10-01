@@ -116,6 +116,7 @@ QList<ResolvedField> resolvedFields(const SettingsGroup *group) {
                        .label = field.label.isEmpty()
                                   ? label(field.propertyName)
                                   : field.label,
+                       .description = field.description,
                        .categoryId = field.category,
                        .subcategoryId = field.subcategory,
                        .subcategory = categoryName(field.subcategory),

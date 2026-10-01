@@ -15,10 +15,14 @@ QList<SettingsFieldMeta> TraySettings::settingsFields() const {
     return {
         {.propertyName = "enabled",
          .label = tr("Enabled"),
+         .description = tr("Show ORB's icon in the system tray"),
          .category = SettingsCategory::System,
          .subcategory = SettingsSubcategory::Tray},
         {.propertyName = "closeToTray",
          .label = tr("Close to tray"),
+         .description =
+             tr("Closing the window keeps ORB running in the tray instead of "
+                "quitting. Only works if the tray icon is on"),
          .category = SettingsCategory::System,
          .subcategory = SettingsSubcategory::Tray},
     };

@@ -6,6 +6,8 @@ struct SettingsFieldMeta {
     QByteArray propertyName;
 
     QString label;
+    // Optional, shown below the field in preferences dialog
+    QString description;
     // IDs from settingscategories.h
     QByteArray category;
     QByteArray subcategory;
