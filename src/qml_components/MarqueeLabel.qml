@@ -17,7 +17,7 @@ Label {
     property real scrollSpacing: 64 // gap between the repeated copies, in pixels
 
     property real scrollSpeed: 64 // pixels per second
-    property bool sliding: Settings.interface.slidingLabels
+    property bool sliding: Settings.appearance.slidingLabels
     property color textColor: palette.windowText
 
     function restartScroll(): void {

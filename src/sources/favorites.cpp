@@ -1,4 +1,5 @@
 #include "favorites.h"
+#include "../common/logcategories.h"
 #include <QDir>
 #include <QFile>
 #include <QFileInfo>
@@ -31,12 +32,14 @@ void Favorites::load() {
     QFile file(m_filePath);
 
     if (!file.exists()) {
+        qCDebug(lcFavorites) << "No favorites file at" << m_filePath;
+
         return;
     }
 
     if (!file.open(QIODevice::ReadOnly)) {
-        qWarning() << "Favorites: cannot read" << m_filePath
-                   << file.errorString();
+        qCWarning(lcFavorites)
+            << "Cannot read" << m_filePath << file.errorString();
 
         return;
     }
@@ -46,8 +49,15 @@ void Favorites::load() {
         QJsonDocument::fromJson(file.readAll(), &error);
 
     if (error.error != QJsonParseError::NoError) {
-        qWarning() << "Favorites: ignoring unparseable" << m_filePath
-                   << error.errorString();
+        qCWarning(lcFavorites)
+            << "Ignoring unparseable" << m_filePath << error.errorString();
+
+        return;
+    }
+
+    if (!document.isArray()) {
+        qCWarning(lcFavorites)
+            << "Ignoring" << m_filePath << "as it doesn't hold a JSON array";
 
         return;
     }
@@ -62,6 +72,16 @@ void Favorites::load() {
             m_stations.append(station);
         }
     }
+
+    if (const qsizetype skipped = array.size() - m_stations.size();
+        skipped > 0) {
+        qCWarning(lcFavorites)
+            << "Skipped" << skipped << "invalid or duplicate entries in"
+            << m_filePath;
+    }
+
+    qCInfo(lcFavorites) << "Loaded" << m_stations.size() << "favorites from"
+                        << m_filePath;
 }
 
 void Favorites::persist() const {
@@ -76,8 +96,8 @@ void Favorites::persist() const {
     QSaveFile file(m_filePath);
 
     if (!file.open(QIODevice::WriteOnly)) {
-        qWarning() << "Favorites: cannot write" << m_filePath
-                   << file.errorString();
+        qCWarning(lcFavorites)
+            << "Cannot write" << m_filePath << file.errorString();
 
         return;
     }
@@ -85,9 +105,14 @@ void Favorites::persist() const {
     file.write(QJsonDocument(array).toJson(QJsonDocument::Indented));
 
     if (!file.commit()) {
-        qWarning() << "Favorites: failed to commit" << m_filePath
-                   << file.errorString();
+        qCWarning(lcFavorites)
+            << "Failed to commit" << m_filePath << file.errorString();
+
+        return;
     }
+
+    qCDebug(lcFavorites) << "Saved" << m_stations.size() << "favorites to"
+                         << m_filePath;
 }
 
 int Favorites::count() const {
@@ -109,6 +134,8 @@ void Favorites::add(const Station &station) {
 
     m_stations.append(station);
 
+    qCInfo(lcFavorites) << "Added" << station.name() << station.streamUrl();
+
     persist();
 
     emit changed();
@@ -120,6 +147,9 @@ void Favorites::remove(const Station &station) {
     if (index == -1) {
         return;
     }
+
+    qCInfo(lcFavorites) << "Removed" << m_stations.at(index).name()
+                        << m_stations.at(index).streamUrl();
 
     m_stations.removeAt(index);
 

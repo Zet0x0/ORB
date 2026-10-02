@@ -1,11 +1,9 @@
 #include "traysettings.h"
-#include "settingsfactory.h"
+#include "settingscategories.h"
 #include "settingsio.h"
 
 TraySettings::TraySettings(QObject *parent)
-    : SettingsGroup(parent), m_settings(SettingsFactory::create(this)) {
-    m_settings->beginGroup(QStringLiteral("tray"));
-
+    : SettingsGroup(parent, QStringLiteral("tray")) {
     m_enabled =
         SettingsIO::readBool(m_settings, QStringLiteral("enabled"), true);
 
@@ -13,18 +11,20 @@ TraySettings::TraySettings(QObject *parent)
         SettingsIO::readBool(m_settings, QStringLiteral("closeToTray"), false);
 }
 
-QString TraySettings::settingsCategory() const {
-    return tr("System");
-}
-
-QString TraySettings::settingsSubcategory() const {
-    return tr("Tray");
-}
-
 QList<SettingsFieldMeta> TraySettings::settingsFields() const {
     return {
-        {"enabled", tr("Enabled")},
-        {"closeToTray", tr("Close window to tray")},
+        {.propertyName = "enabled",
+         .label = tr("Enabled"),
+         .description = tr("Show ORB's icon in the system tray"),
+         .category = SettingsCategory::System,
+         .subcategory = SettingsSubcategory::Tray},
+        {.propertyName = "closeToTray",
+         .label = tr("Close to tray"),
+         .description =
+             tr("Closing the window keeps ORB running in the tray instead of "
+                "quitting. Only works if the tray icon is on"),
+         .category = SettingsCategory::System,
+         .subcategory = SettingsSubcategory::Tray},
     };
 }
 

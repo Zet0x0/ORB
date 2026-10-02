@@ -2,7 +2,6 @@
 
 #include "settingsgroup.h"
 #include <QQmlEngine>
-#include <QSettings>
 
 class WindowSettings : public SettingsGroup {
     Q_OBJECT
@@ -19,8 +18,6 @@ class WindowSettings : public SettingsGroup {
         int height READ height WRITE setHeight NOTIFY heightChanged FINAL)
 
 private:
-    QSettings *m_settings;
-
     int m_x;
     int m_y;
     bool m_hasPosition = false;

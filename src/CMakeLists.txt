@@ -28,6 +28,7 @@ qt_add_executable(ORB ${SOURCES})
 qt_add_qml_module(ORB URI ORB QML_FILES Main.qml)
 
 add_subdirectory(common)
+add_subdirectory(logging)
 add_subdirectory(settings)
 add_subdirectory(sources)
 add_subdirectory(player)
@@ -39,6 +40,8 @@ target_link_libraries(
     PRIVATE Qt6::Quick
             Qt6::QuickControls2
             Qt6::LabsPlatform
+            common
+            logging
             settings
             sources
             player

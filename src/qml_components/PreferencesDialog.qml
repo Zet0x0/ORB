@@ -46,7 +46,7 @@ Dialog {
     SettingsPropertyModel {
         id: propertyModel
 
-        groups: categoryList.currentItem ? (categoryList.currentItem as CategoryDelegate).groups : []
+        categoryId: categoryList.currentItem ? (categoryList.currentItem as CategoryDelegate).categoryId : ""
     }
 
     RowLayout {
@@ -139,12 +139,14 @@ Dialog {
                             delegate: ColumnLayout {
                                 id: propertyDelegate
 
+                                required property string description
                                 required property int index
                                 required property string label
                                 required property int max
                                 required property int min
-                                readonly property bool showSubcategoryHeader: subcategory !== "" && (index === 0 || propertyModel.data(propertyModel.index(index - 1, 0), SettingsPropertyModel.SubcategoryRole) !== subcategory)
+                                required property int step
                                 required property string subcategory
+                                required property bool subcategoryStart
                                 required property string type
                                 required property var value
 
@@ -164,14 +166,13 @@ Dialog {
                                 Component {
                                     id: intComponent
 
-                                    SpinBox {
-                                        editable: true
+                                    TickedSlider {
                                         from: propertyDelegate.min
-                                        live: true
+                                        stepSize: propertyDelegate.step
                                         to: propertyDelegate.max
                                         value: propertyDelegate.value
 
-                                        onValueChanged: propertyModel.setValue(propertyDelegate.index, value)
+                                        onMoved: propertyModel.setValue(propertyDelegate.index, Math.round(value))
                                     }
                                 }
 
@@ -181,34 +182,52 @@ Dialog {
                                     TextField {
                                         text: propertyDelegate.value
 
-                                        onEditingFinished: propertyModel.setValue(propertyDelegate.index, text)
+                                        onTextEdited: propertyModel.setValue(propertyDelegate.index, text)
                                     }
                                 }
 
                                 Label {
-                                    Layout.topMargin: propertyDelegate.index === 0 ? 0 : 8
-                                    font.bold: true
-                                    text: propertyDelegate.subcategory
-                                    textFormat: Text.PlainText
-                                    visible: propertyDelegate.showSubcategoryHeader
+                                    Layout.topMargin: propertyDelegate.index === 0 ? 0 : 4
+                                    text: qsTr("### %0").arg(propertyDelegate.subcategory)
+                                    textFormat: Text.MarkdownText
+                                    visible: propertyDelegate.subcategoryStart
                                 }
 
-                                RowLayout {
+                                // int, string: label, description, slider/textfield
+                                // bool: checkbox, description
+                                GridLayout {
+                                    id: fieldGrid
+
                                     Layout.fillWidth: true
+                                    columns: 1
 
                                     Label {
+                                        Layout.fillWidth: true
                                         text: propertyDelegate.label
                                         textFormat: Text.PlainText
                                         visible: propertyDelegate.type !== "bool"
+                                        wrapMode: Text.Wrap
                                     }
 
-                                    Item {
+                                    Label {
+                                        readonly property CheckBox checkBox: fieldLoader.item as CheckBox
+
                                         Layout.fillWidth: true
-                                        visible: propertyDelegate.type !== "bool"
+                                        Layout.leftMargin: checkBox ? checkBox.leftPadding + checkBox.indicator.width + checkBox.spacing : 0
+                                        Layout.row: 1
+                                        Layout.topMargin: (checkBox ? -checkBox.bottomPadding : 0) - fieldGrid.rowSpacing
+                                        color: palette.disabled.windowText
+                                        text: propertyDelegate.description
+                                        textFormat: Text.PlainText
+                                        visible: text.length > 0
+                                        wrapMode: Text.Wrap
                                     }
 
                                     Loader {
-                                        Layout.fillWidth: propertyDelegate.type === "string"
+                                        id: fieldLoader
+
+                                        Layout.fillWidth: propertyDelegate.type !== "bool"
+                                        Layout.row: propertyDelegate.type === "bool" ? 0 : 2
                                         sourceComponent: {
                                             switch (propertyDelegate.type) {
                                             case "bool":
@@ -238,7 +257,7 @@ Dialog {
     }
 
     component CategoryDelegate: ItemDelegate {
-        required property var groups
+        required property string categoryId
         required property int index
         required property string name
 

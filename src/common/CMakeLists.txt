@@ -13,7 +13,9 @@ qt_add_qml_module(
     urlvalidator.h
     urlvalidator.cpp
     errorinfo.h
-    errorinfo.cpp)
+    errorinfo.cpp
+    logcategories.h
+    logcategories.cpp)
 
 target_link_libraries(
     common

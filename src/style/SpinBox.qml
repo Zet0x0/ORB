@@ -6,10 +6,13 @@ T.SpinBox {
     id: root
 
     implicitHeight: Math.max(implicitBackgroundHeight + topInset + bottomInset, implicitContentHeight + topPadding + bottomPadding, up.implicitIndicatorHeight + down.implicitIndicatorHeight)
-    implicitWidth: Math.max(implicitBackgroundWidth + leftInset + rightInset, contentItem.implicitWidth + leftPadding + rightPadding)
+    // not using leftPadding + rightPadding here, since at least rightPadding depends on width
+    implicitWidth: Math.max(implicitBackgroundWidth + leftInset + rightInset, contentItem.implicitWidth + 2 * padding + (up.indicator ? up.indicator.width : 0))
     leftPadding: padding + (mirrored ? (up.indicator ? up.indicator.width : 0) : 0)
     padding: 4
-    rightPadding: padding + (!mirrored ? (up.indicator ? up.indicator.width : 0) : 0)
+    // HACK: trying to keep textInput's width even to prevent text
+    // from going out of selection rectangle's bounds horizontally
+    rightPadding: padding + (!mirrored ? (up.indicator ? up.indicator.width : 0) : 0) + Math.max(0, width - 2 * padding - (up.indicator ? up.indicator.width : 0) - textInput.contentWidth) % 2
 
     background: Rectangle {
         id: background
@@ -34,49 +37,41 @@ T.SpinBox {
             y: background.focused ? 1 : 0
         }
     }
-    // HACK: trying to keep textInput's width even to prevent text
-    // from going out of selection rectangle's bounds horizontally
-    contentItem: Item {
-        implicitHeight: textInput.implicitHeight
-        implicitWidth: textInput.implicitWidth
+    // can't ever be anything other than TextInput
+    contentItem: TextInput {
+        id: textInput
 
-        TextInput {
-            id: textInput
+        clip: width < implicitWidth
+        color: root.palette.text
+        font: root.font
+        horizontalAlignment: Qt.AlignHCenter
+        inputMethodHints: root.inputMethodHints
+        readOnly: !root.editable
+        selectedTextColor: root.palette.highlightedText
+        selectionColor: root.palette.highlight
+        text: root.displayText
+        validator: root.validator
+        verticalAlignment: Qt.AlignVCenter
 
-            clip: width < implicitWidth
-            color: root.palette.text
-            font: root.font
-            height: parent.height
-            horizontalAlignment: Qt.AlignHCenter
-            inputMethodHints: root.inputMethodHints
-            readOnly: !root.editable
-            selectedTextColor: root.palette.highlightedText
-            selectionColor: root.palette.highlight
-            text: root.displayText
-            validator: root.validator
-            verticalAlignment: Qt.AlignVCenter
-            width: parent.width - parent.width % 2
+        Shortcut {
+            enabled: textInput.activeFocus
+            sequences: ["Menu", "Shift+F10"]
 
-            Shortcut {
-                enabled: textInput.activeFocus
-                sequences: ["Menu", "Shift+F10"]
+            onActivated: contextMenu.popup(textInput.leftPadding, textInput.cursorRectangle.y + textInput.cursorRectangle.height)
+        }
 
-                onActivated: contextMenu.popup(textInput.leftPadding, textInput.cursorRectangle.y + textInput.cursorRectangle.height)
-            }
+        MouseArea {
+            acceptedButtons: Qt.RightButton
+            anchors.fill: parent
+            cursorShape: root.editable ? Qt.IBeamCursor : Qt.ArrowCursor
 
-            MouseArea {
-                acceptedButtons: Qt.RightButton
-                anchors.fill: parent
-                cursorShape: root.editable ? Qt.IBeamCursor : Qt.ArrowCursor
+            onClicked: contextMenu.popup()
+        }
 
-                onClicked: contextMenu.popup()
-            }
+        TextEditingContextMenu {
+            id: contextMenu
 
-            TextEditingContextMenu {
-                id: contextMenu
-
-                editor: textInput
-            }
+            editor: textInput
         }
     }
     down.indicator: PaddedRectangle {

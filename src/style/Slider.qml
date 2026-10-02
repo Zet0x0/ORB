@@ -14,14 +14,15 @@ T.Slider {
         implicitWidth: root.horizontal ? 160 : 3
         radius: 2
         width: root.horizontal ? root.availableWidth : implicitWidth
-        x: root.horizontal ? 0 : Math.round((root.availableWidth - width) / 2)
-        y: root.horizontal ? Math.round((root.availableHeight - height) / 2) : 0
+        x: root.leftPadding + (root.horizontal ? 0 : Math.round((root.availableWidth - width) / 2))
+        y: root.topPadding + (root.horizontal ? Math.round((root.availableHeight - height) / 2) : 0)
 
         Rectangle {
             color: root.palette.accent
             height: root.horizontal ? 3 : Math.round(root.position * parent.height)
             radius: 2
             width: root.horizontal ? Math.round(root.position * parent.width) : 3
+            x: root.horizontal && root.mirrored ? parent.width - width : 0
             y: root.horizontal ? 0 : Math.round(root.visualPosition * parent.height)
         }
     }

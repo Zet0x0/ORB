@@ -1,4 +1,8 @@
 #include "settingsintrospection.h"
+#include "../common/logcategories.h"
+#include "settings.h"
+#include "settingscategories.h"
+#include <QCoreApplication>
 
 namespace SettingsIntrospection {
 QString label(const QByteArray &propertyName) {
@@ -14,13 +18,45 @@ QString label(const QByteArray &propertyName) {
         }
 
         if (ch.isUpper()) {
-            result += QLatin1Char(' ');
+            result += u' ';
             result += ch.toLower();
 
             continue;
         }
 
         result += ch;
+    }
+
+    return result;
+}
+
+QString categoryName(const QByteArray &id) {
+    if (id.isEmpty()) {
+        return QString();
+    }
+
+    return QCoreApplication::translate("SettingsCategory", id.constData());
+}
+
+QList<SettingsGroup *> groups() {
+    QList<SettingsGroup *> result;
+
+    Settings *root = Settings::instance();
+    const QMetaObject *metaObject = root->metaObject();
+
+    for (int i = QObject::staticMetaObject.propertyCount();
+         i < metaObject->propertyCount(); ++i) {
+        const QMetaProperty property = metaObject->property(i);
+
+        if (!property.metaType().flags().testFlag(
+                QMetaType::PointerToQObject)) {
+            continue;
+        }
+
+        if (SettingsGroup *group = qobject_cast<SettingsGroup *>(
+                property.read(root).value<QObject *>())) {
+            result.append(group);
+        }
     }
 
     return result;
@@ -41,21 +77,53 @@ QList<ResolvedField> resolvedFields(const SettingsGroup *group) {
             metaObject->indexOfProperty(field.propertyName.constData());
 
         if (propertyIndex == -1) {
+            qCWarning(lcSettings) << metaObject->className()
+                                  << "has no property" << field.propertyName;
+
             continue;
         }
 
         const QMetaProperty property = metaObject->property(propertyIndex);
 
         if (!property.isWritable() || !property.hasNotifySignal()) {
+            qCWarning(lcSettings)
+                << metaObject->className() << "property" << field.propertyName
+                << "needs to be writable and have a NOTIFY";
+
             continue;
         }
 
-        result.append(
-            {property,
-             field.label.isEmpty() ? label(field.propertyName) : field.label,
-             field.subcategory.isEmpty() ? group->settingsSubcategory()
-                                         : field.subcategory,
-             field.min, field.max});
+        if (field.category.isEmpty()) {
+            qCWarning(lcSettings) << metaObject->className() << "property"
+                                  << field.propertyName << "has no category";
+
+            continue;
+        }
+
+        if (std::none_of(std::cbegin(SettingsCategory::Order),
+                         std::cend(SettingsCategory::Order),
+                         [&field](const char *id) {
+                             return field.category == id;
+                         })) {
+            qCWarning(lcSettings)
+                << metaObject->className() << "property" << field.propertyName
+                << "has category" << field.category
+                << "not listed in SettingsCategory::Order";
+
+            continue;
+        }
+
+        result.append({.property = property,
+                       .label = field.label.isEmpty()
+                                  ? label(field.propertyName)
+                                  : field.label,
+                       .description = field.description,
+                       .categoryId = field.category,
+                       .subcategoryId = field.subcategory,
+                       .subcategory = categoryName(field.subcategory),
+                       .min = field.min,
+                       .max = field.max,
+                       .step = field.step});
     }
 
     return result;

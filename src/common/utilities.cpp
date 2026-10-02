@@ -1,7 +1,9 @@
 #include "utilities.h"
+#include "logcategories.h"
 #include <QClipboard>
 #include <QCursor>
 #include <QDateTime>
+#include <QDesktopServices>
 #include <QGuiApplication>
 #include <QScreen>
 #include <QUrl>
@@ -11,14 +13,14 @@ QString Utilities::normalizeUserInputUrl(const QString &userInput) {
 }
 
 QString Utilities::escapeControlCharacters(QString string) {
-    return string.replace('\a', "\\a")
-        .replace('\b', "\\b")
-        .replace('\t', "\\t")
-        .replace('\n', "\\n")
-        .replace('\v', "\\v")
-        .replace('\f', "\\f")
-        .replace('\r', "\\r")
-        .replace('\x1b', "\\e");
+    return string.replace(u'\a', "\\a")
+        .replace(u'\b', "\\b")
+        .replace(u'\t', "\\t")
+        .replace(u'\n', "\\n")
+        .replace(u'\v', "\\v")
+        .replace(u'\f', "\\f")
+        .replace(u'\r', "\\r")
+        .replace(u'\x1b', "\\e");
 }
 
 qint64 Utilities::currentTimestamp() {
@@ -31,6 +33,18 @@ void Utilities::copyToClipboard(const QString &text) {
 
 QString Utilities::pasteFromClipboard() {
     return QGuiApplication::clipboard()->text();
+}
+
+bool Utilities::openUrlExternally(const QUrl &url) {
+    qCDebug(lcUi) << "Opening" << url.toDisplayString() << "externally";
+
+    if (!QDesktopServices::openUrl(url)) {
+        qCWarning(lcUi) << "Cannot open" << url.toDisplayString();
+
+        return false;
+    }
+
+    return true;
 }
 
 QPoint Utilities::getGlobalCursorPos() {

@@ -1,4 +1,5 @@
 #include "source.h"
+#include "../common/logcategories.h"
 #include "../common/utilities.h"
 #include <QJsonDocument>
 #include <QJsonParseError>
@@ -12,6 +13,11 @@ bool Source::parseJson(QRestReply &reply, QJsonDocument *json) {
     const std::optional jsonDocument = reply.readJson(&jsonError);
 
     if (jsonError.error != QJsonParseError::NoError) {
+        qCWarning(lcSources)
+            << "Received invalid JSON from"
+            << reply.networkReply()->url().toDisplayString()
+            << jsonError.errorString() << "at offset" << jsonError.offset;
+
         raiseError(tr("Parse error"),
                    tr("%0 (offset %1)")
                        .arg(jsonError.errorString(),
@@ -21,6 +27,9 @@ bool Source::parseJson(QRestReply &reply, QJsonDocument *json) {
     }
 
     if (!jsonDocument) {
+        qCWarning(lcSources) << "Read JSON from unfinished reply"
+                             << reply.networkReply()->url().toDisplayString();
+
         raiseError(tr("Parse error"),
                    tr("The server returned an empty or non-JSON response"));
 
@@ -67,6 +76,9 @@ void Source::loadDefaultStations() {
     const QList<Station> cached = getCachedDefaultStations();
 
     if (!cached.isEmpty()) {
+        qCDebug(lcSources) << "Using" << cached.size()
+                           << "cached default stations";
+
         emit stationsDispatched(cached);
 
         return;

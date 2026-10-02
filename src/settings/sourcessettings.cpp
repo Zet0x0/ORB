@@ -1,11 +1,8 @@
 #include "sourcessettings.h"
-#include "settingsfactory.h"
 #include "settingsio.h"
 
 SourcesSettings::SourcesSettings(QObject *parent)
-    : SettingsGroup(parent), m_settings(SettingsFactory::create(this)) {
-    m_settings->beginGroup(QStringLiteral("sources"));
-
+    : SettingsGroup(parent, QStringLiteral("sources")) {
     m_lastSearchSource = SettingsIO::readString(
         m_settings, QStringLiteral("lastSearchSource"), QStringLiteral("none"));
 }

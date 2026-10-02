@@ -9,8 +9,8 @@ class SettingsCategoryModel : public QAbstractListModel {
 
 private:
     struct Category {
+        QByteArray id;
         QString name;
-        QList<QObject *> groups;
     };
 
     QList<Category> m_categories;
@@ -18,7 +18,7 @@ private:
     void rebuildCategories();
 
 public:
-    enum CategoryRoles { NameRole = Qt::UserRole, GroupsRole };
+    enum CategoryRoles { NameRole = Qt::UserRole, IdRole };
     Q_ENUM(CategoryRoles)
 
     explicit SettingsCategoryModel(QObject *parent = nullptr);

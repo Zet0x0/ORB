@@ -1,35 +1,46 @@
 #include "playersettings.h"
-#include "settingsfactory.h"
+#include "settingscategories.h"
 #include "settingsio.h"
 
-PlayerSettings::PlayerSettings(QObject *parent)
-    : SettingsGroup(parent), m_settings(SettingsFactory::create(this)) {
-    m_settings->beginGroup(QStringLiteral("player"));
+namespace {
+constexpr int VolumeMin = 0;
+constexpr int VolumeMax = 100;
 
+constexpr int MaxRetriesMin = 1;
+constexpr int MaxRetriesMax = 99;
+}
+
+PlayerSettings::PlayerSettings(QObject *parent)
+    : SettingsGroup(parent, QStringLiteral("player")) {
     m_lastStation = Station::fromMap(
         m_settings->value(QStringLiteral("lastStation")).toMap());
 
-    m_volume = SettingsIO::readInt(m_settings, QStringLiteral("volume"), 100);
+    m_volume = SettingsIO::readInt(m_settings, QStringLiteral("volume"), 100,
+                                   VolumeMin, VolumeMax);
     m_muted = SettingsIO::readBool(m_settings, QStringLiteral("muted"), false);
 
     m_retryOnError =
         SettingsIO::readBool(m_settings, QStringLiteral("retryOnError"), true);
-    m_maxRetries =
-        SettingsIO::readInt(m_settings, QStringLiteral("maxRetries"), 5);
-}
-
-QString PlayerSettings::settingsCategory() const {
-    return tr("Player");
-}
-
-QString PlayerSettings::settingsSubcategory() const {
-    return tr("Playback");
+    m_maxRetries = SettingsIO::readInt(m_settings, QStringLiteral("maxRetries"),
+                                       5, MaxRetriesMin, MaxRetriesMax);
 }
 
 QList<SettingsFieldMeta> PlayerSettings::settingsFields() const {
     return {
-        {"retryOnError", tr("Retry on error")},
-        {"maxRetries", tr("Max retry attempts"), QString(), 1, 99},
+        {.propertyName = "retryOnError",
+         .label = tr("Retry on error"),
+         .description = tr("If a station drops or fails to load, try again, "
+                           "waiting a bit longer each time"),
+         .category = SettingsCategory::Playback,
+         .subcategory = SettingsSubcategory::General},
+        {.propertyName = "maxRetries",
+         .label = tr("Retry attempts"),
+         .description =
+             tr("How many times to retry station playback before giving up"),
+         .category = SettingsCategory::Playback,
+         .subcategory = SettingsSubcategory::General,
+         .min = MaxRetriesMin,
+         .max = MaxRetriesMax},
     };
 }
 
@@ -54,6 +65,8 @@ int PlayerSettings::volume() const {
 }
 
 void PlayerSettings::setVolume(int newVolume) {
+    newVolume = qBound(VolumeMin, newVolume, VolumeMax);
+
     if (m_volume == newVolume) {
         return;
     }
@@ -100,7 +113,7 @@ int PlayerSettings::maxRetries() const {
 }
 
 void PlayerSettings::setMaxRetries(int newMaxRetries) {
-    newMaxRetries = qMax(1, newMaxRetries);
+    newMaxRetries = qBound(MaxRetriesMin, newMaxRetries, MaxRetriesMax);
 
     if (m_maxRetries == newMaxRetries) {
         return;

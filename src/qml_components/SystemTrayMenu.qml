@@ -70,7 +70,7 @@ Window {
         MenuSeparator {}
 
         Action {
-            text: qsTr("Quit %0").arg(Qt.application.name)
+            text: qsTr("Quit ORB")
 
             onTriggered: Qt.quit()
         }

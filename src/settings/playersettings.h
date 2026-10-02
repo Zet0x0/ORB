@@ -3,7 +3,6 @@
 #include "../sources/station.h"
 #include "settingsgroup.h"
 #include <QQmlEngine>
-#include <QSettings>
 
 class PlayerSettings : public SettingsGroup {
     Q_OBJECT
@@ -22,8 +21,6 @@ class PlayerSettings : public SettingsGroup {
                    maxRetriesChanged FINAL)
 
 private:
-    QSettings *m_settings;
-
     Station m_lastStation;
 
     int m_volume;
@@ -35,8 +32,6 @@ private:
 public:
     explicit PlayerSettings(QObject *parent = nullptr);
 
-    QString settingsCategory() const override;
-    QString settingsSubcategory() const override;
     QList<SettingsFieldMeta> settingsFields() const override;
 
     Station lastStation() const;

@@ -1,3 +1,6 @@
+#include "common/logcategories.h"
+#include "logging/logger.h"
+#include "settings/settings.h"
 #include "sources/providers/favoritessource.h"
 #include "sources/providers/nullsource.h"
 #include "sources/providers/radiorecord.h"
@@ -9,7 +12,7 @@
 #include <QQmlComponent>
 #include <QQuickStyle>
 #include <QQuickWindow>
-#include <QSettings>
+#include <QStandardPaths>
 #include <cctype>
 
 namespace {
@@ -53,22 +56,59 @@ QPalette paletteFromQmlPalette(QObject *qmlPalette) {
 int main(int argc, char *argv[]) {
     QCoreApplication::setApplicationName(QStringLiteral("ORB"));
     QCoreApplication::setApplicationVersion(QStringLiteral("0.1.0"));
+    QCoreApplication::setOrganizationDomain(QStringLiteral("com.zet0x0.orb"));
 
-    QSettings::setDefaultFormat(QSettings::IniFormat);
+    Logger::install();
 
     QGuiApplication::setQuitOnLastWindowClosed(false);
 
     QQuickStyle::setStyle(QStringLiteral("ORB.Style"));
     QQuickWindow::setGraphicsApi(QSGRendererInterface::OpenGL);
-
     QIcon::setThemeName("ORB");
 
     QGuiApplication app(argc, argv);
     QQmlApplicationEngine engine;
 
+    qCInfo(lcApp).noquote()
+        << QStringLiteral("ORB %0 on %1, Qt %2 (%3 platform)")
+               .arg(QCoreApplication::applicationVersion(),
+                    QSysInfo::prettyProductName(),
+                    QString::fromLatin1(qVersion()),
+                    QGuiApplication::platformName());
+    qCInfo(lcApp) << "Data directory:"
+                  << QStandardPaths::writableLocation(
+                         QStandardPaths::AppDataLocation);
+
+    {
+        LoggingSettings *loggingSettings = Settings::instance()->logging();
+        Logger *logger = Logger::instance();
+
+        logger->setMaxEntries(loggingSettings->maxEntries());
+        logger->setMaxFiles(loggingSettings->maxFiles());
+        Logger::setFilterRules(loggingSettings->filterRules());
+
+        QObject::connect(loggingSettings, &LoggingSettings::maxEntriesChanged,
+                         logger, [loggingSettings, logger]() {
+                             logger->setMaxEntries(
+                                 loggingSettings->maxEntries());
+                         });
+        QObject::connect(loggingSettings, &LoggingSettings::maxFilesChanged,
+                         logger, [loggingSettings, logger]() {
+                             logger->setMaxFiles(loggingSettings->maxFiles());
+                         });
+        QObject::connect(loggingSettings, &LoggingSettings::filterRulesChanged,
+                         logger, [loggingSettings]() {
+                             Logger::setFilterRules(
+                                 loggingSettings->filterRules());
+                         });
+    }
+
     QObject::connect(
         &engine, &QQmlApplicationEngine::objectCreationFailed, &app,
-        []() {
+        [](const QUrl &url) {
+            qCCritical(lcApp)
+                << "Failed to create" << url.toDisplayString() << "- exiting";
+
             QCoreApplication::exit(-1);
         },
         Qt::QueuedConnection);
@@ -82,10 +122,13 @@ int main(int argc, char *argv[]) {
 
             if (paletteObject) {
                 app.setPalette(paletteFromQmlPalette(paletteObject.get()));
+            } else {
+                qCWarning(lcApp) << "Failed to create ORB.Style/AppPalette:"
+                                 << paletteComponent.errors();
             }
         } else {
-            qWarning() << "Failed to load ORB.Style/AppPalette:"
-                       << paletteComponent.errors();
+            qCWarning(lcApp) << "Failed to load ORB.Style/AppPalette:"
+                             << paletteComponent.errors();
         }
     }
 
@@ -106,5 +149,9 @@ int main(int argc, char *argv[]) {
 
     engine.loadFromModule(QStringLiteral("ORB"), QStringLiteral("Main"));
 
-    return app.exec();
+    const int exitCode = app.exec();
+
+    qCInfo(lcApp) << "Exiting with code" << exitCode;
+
+    return exitCode;
 }

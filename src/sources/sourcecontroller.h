@@ -62,6 +62,7 @@ private slots:
     void onSourceStationsDispatched(const QList<Station> &stations);
     void onSearchStarted();
     void onSearchCancelled();
+    void onSourceErrorOccurred(const ErrorInfo &error);
 
     void setError(const ErrorInfo &error);
 

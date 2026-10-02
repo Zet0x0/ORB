@@ -15,6 +15,7 @@ qt_add_qml_module(
     settingsfactory.cpp
     settingsio.h
     settingsio.cpp
+    settingscategories.h
     settingsfieldmeta.h
     settingsgroup.h
     settingsgroup.cpp
@@ -32,7 +33,9 @@ qt_add_qml_module(
     playersettings.cpp
     traysettings.h
     traysettings.cpp
-    interfacesettings.h
-    interfacesettings.cpp)
+    appearancesettings.h
+    appearancesettings.cpp
+    loggingsettings.h
+    loggingsettings.cpp)
 
 target_link_libraries(settings PRIVATE sources common)

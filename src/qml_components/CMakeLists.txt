@@ -1,5 +1,8 @@
 add_library(qml_components STATIC)
 
+set_source_files_properties(LogCategories.qml PROPERTIES QT_QML_SINGLETON_TYPE
+                                                         TRUE)
+
 qt_add_qml_module(
     qml_components
     URI
@@ -8,6 +11,7 @@ qt_add_qml_module(
     "${CMAKE_BINARY_DIR}/ORB/QmlComponents"
     DEPENDENCIES
     ORB.Common
+    ORB.Logging
     ORB.Player
     ORB.Settings
     ORB.Sources
@@ -20,7 +24,7 @@ qt_add_qml_module(
     FavoriteButton.qml
     VolumeControl.qml
     ElapsedLabel.qml
-    StationSearchField.qml
+    SearchTextField.qml
     StationNameLabel.qml
     NowPlayingLabel.qml
     MarqueeLabel.qml
@@ -31,9 +35,12 @@ qt_add_qml_module(
     SystemTrayIcon.qml
     SystemTrayMenu.qml
     PreferencesDialog.qml
+    LogDialog.qml
     ErrorBanner.qml
     PlaybackStatusIndicator.qml
+    TickedSlider.qml
+    LogCategories.qml
     NO_PLUGIN)
 
-target_link_libraries(qml_components PRIVATE common player settings sources
-                                             style)
+target_link_libraries(qml_components PRIVATE common logging player settings
+                                             sources style)

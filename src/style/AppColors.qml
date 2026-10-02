@@ -54,14 +54,16 @@ QtObject {
     readonly property SemanticColors semantic: SemanticColors {
         danger: "#f00"
         info: "#007fda"
+        neutral: "#707070"
         success: "#00903c"
         warning: "#ae6e00"
     }
 
     component SemanticColors: QtObject {
-        property color danger
-        property color info
-        property color success
-        property color warning
+        final property color danger
+        final property color info
+        final property color neutral
+        final property color success
+        final property color warning
     }
 }
