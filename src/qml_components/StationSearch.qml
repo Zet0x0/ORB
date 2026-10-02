@@ -17,6 +17,7 @@ StackLayout {
         horizontalAlignment: Qt.AlignHCenter
         text: {
             if (SourceController.currentSourceIsNull) {
+                //: Keep "(#sourceSelector)" unchanged, it's the link target
                 return qsTr("# Nothing to show\nStart by [selecting a source](#sourceSelector)");
             }
 

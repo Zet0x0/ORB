@@ -8,7 +8,7 @@ FocusScope {
     id: root
 
     required property int index
-    readonly property bool isCurrentStation: Player.station === station
+    readonly property bool isCurrentStation: Player.station.streamUrl === station.streamUrl
     property bool keyPressed: false
     readonly property bool navFocused: mainArea.activeFocus && mainArea.focusReason !== Qt.MouseFocusReason
     required property station station

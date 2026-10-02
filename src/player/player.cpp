@@ -502,8 +502,8 @@ void Player::onEndFile(QString reason) {
     if (isPlaybackError) {
         raiseError(tr("Playback error"),
                    m_retryAttempt > 0
-                       ? tr("Unable to play the station after %0 retries")
-                             .arg(m_retryAttempt)
+                       ? tr("Unable to play the station after %n retries",
+                            nullptr, m_retryAttempt)
                        : tr("An error occurred trying to play the station"));
     }
 

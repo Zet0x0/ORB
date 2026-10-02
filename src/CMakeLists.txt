@@ -14,7 +14,8 @@ set(BUILD_SHARED_LIBS ON)
 include("cmake/DownloadLibmpv.cmake")
 include("cmake/DownloadTablerIcons.cmake")
 
-find_package(Qt6 REQUIRED COMPONENTS Quick QuickControls2 LabsPlatform)
+find_package(Qt6 REQUIRED COMPONENTS Quick QuickControls2 LabsPlatform
+                                     LinguistTools)
 
 qt_standard_project_setup(REQUIRES 6.11)
 
@@ -56,6 +57,11 @@ target_link_libraries(
 set_target_properties(
     ORB PROPERTIES WIN32_EXECUTABLE TRUE RUNTIME_OUTPUT_DIRECTORY
                                          "${CMAKE_CURRENT_BINARY_DIR}/bin")
+
+set_property(DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/../external/mpvqt"
+             PROPERTY QT_EXCLUDE_FROM_TRANSLATION ON)
+qt_add_translations(ORB TS_OUTPUT_DIRECTORY translations LUPDATE_OPTIONS
+                    -locations relative)
 
 set(CMAKE_INSTALL_BINDIR ".")
 include(GNUInstallDirs)

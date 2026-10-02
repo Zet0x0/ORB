@@ -1,5 +1,6 @@
 #pragma once
 
+#include <QCoreApplication>
 #include <QQmlEngine>
 #include <QString>
 #include <QVariantMap>
@@ -7,6 +8,7 @@
 struct Station {
     Q_GADGET
     QML_NAMED_ELEMENT(station)
+    Q_DECLARE_TR_FUNCTIONS(Station)
 
     Q_PROPERTY(bool valid READ isValid FINAL)
 

@@ -1,6 +1,5 @@
 #include "station.h"
 #include "../common/utilities.h"
-#include <QObject>
 
 void Station::setValid(bool newValid) {
     m_valid = newValid;
@@ -25,7 +24,7 @@ void Station::setName(QString newName) {
     newName = newName.trimmed();
 
     if (newName.isEmpty()) {
-        newName = QObject::tr("Unnamed Station");
+        newName = tr("Unnamed Station");
     }
 
     m_name = Utilities::escapeControlCharacters(newName);

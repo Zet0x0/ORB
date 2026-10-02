@@ -76,7 +76,7 @@ Dialog {
                 down: pressed || levelMenu.visible
                 icon.name: "filter"
                 rightPadding: padding + spacing + levelChevron.width
-                text: filterModel.hiddenLevelCount > 0 ? qsTr("Levels (%0 hidden)").arg(filterModel.hiddenLevelCount) : qsTr("Levels")
+                text: filterModel.hiddenLevelCount > 0 ? qsTr("Levels (%n hidden)", "", filterModel.hiddenLevelCount) : qsTr("Levels")
 
                 onClicked: levelMenu.popup(levelButton, 0, levelButton.height)
 

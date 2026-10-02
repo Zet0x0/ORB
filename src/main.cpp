@@ -11,6 +11,7 @@
 #include <QColor>
 #include <QGuiApplication>
 #include <QIcon>
+#include <QLocale>
 #include <QMetaEnum>
 #include <QPalette>
 #include <QQmlApplicationEngine>
@@ -21,6 +22,7 @@
 #include <QStandardPaths>
 #include <QString>
 #include <QSysInfo>
+#include <QTranslator>
 #include <QUrl>
 #include <QVariant>
 #include <cctype>
@@ -90,6 +92,30 @@ int main(int argc, char *argv[]) {
                   << QStandardPaths::writableLocation(
                          QStandardPaths::AppDataLocation);
 
+    QTranslator pluralsTranslator;
+    QTranslator translator;
+
+    if (pluralsTranslator.load(QStringLiteral(":/i18n/ORB_en"))) {
+        QCoreApplication::installTranslator(&pluralsTranslator);
+    } else {
+        qCWarning(lcApp) << "Failed to load :/i18n/ORB_en, English plural "
+                            "forms will be wrong";
+    }
+
+    const bool hasTranslation =
+        translator.load(QLocale(), QStringLiteral("ORB"), QStringLiteral("_"),
+                        QStringLiteral(":/i18n")) &&
+        translator.filePath() != pluralsTranslator.filePath();
+
+    if (hasTranslation) {
+        QCoreApplication::installTranslator(&translator);
+    }
+
+    qCInfo(lcApp)
+        << "Using translation"
+        << (hasTranslation ? translator : pluralsTranslator).filePath() << "for"
+        << QLocale().uiLanguages();
+
     {
         LoggingSettings *loggingSettings = Settings::instance()->logging();
         Logger *logger = Logger::instance();
@@ -149,12 +175,14 @@ int main(int argc, char *argv[]) {
 
         sourceController->registerSource(
             SourceControllerConstants::NullSourceKey.toString(),
-            QObject::tr("Not selected"), new NullSource);
-        sourceController->registerSource(QStringLiteral("favorites"),
-                                         QObject::tr("Favorites"),
-                                         new FavoritesSource);
+            QCoreApplication::translate("main", "Not selected"),
+            new NullSource);
+        sourceController->registerSource(
+            QStringLiteral("favorites"),
+            QCoreApplication::translate("main", "Favorites"),
+            new FavoritesSource);
         sourceController->registerSource(QStringLiteral("radio-record"),
-                                         QObject::tr("Radio Record"),
+                                         QStringLiteral("Radio Record"),
                                          new RadioRecord);
     }
 
