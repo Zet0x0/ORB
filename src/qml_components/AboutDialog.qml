@@ -7,11 +7,23 @@ import QtQuick.Layouts
 Dialog {
     id: root
 
+    readonly property string mpvVersion: Player.mpvVersion() || qsTr("(unable to get version)")
+
     modal: true
-    standardButtons: Dialog.Ok
+    standardButtons: Dialog.Close
     title: qsTr("About ORB")
     x: Math.round((parent.width - width) / 2)
     y: Math.round((parent.height - height) / 2)
+
+    footer: DialogButtonBox {
+        Button {
+            DialogButtonBox.buttonRole: DialogButtonBox.ActionRole
+            text: qsTr("Copy to Clipboard")
+
+            //: Text with versions copied to the clipboard. %0, %1, %2 and %3 are the versions of ORB, Qt, mpv, and MpvQt
+            onClicked: Utilities.copyToClipboard(qsTr("ORB %0\nQt %1\nmpv %2\nMpvQt %3").arg(Qt.application.version).arg(Utilities.qtVersion()).arg(root.mpvVersion).arg(Player.mpvQtVersion()))
+        }
+    }
 
     FontMetrics {
         id: bodyFontMetrics
@@ -51,7 +63,7 @@ Dialog {
                 // not a regular Markdown list because by default Qt gets us a wideass
                 // indent of probably around 40px, that is ugly, and we can't even change it
                 //: Markdown with links. %0, %1 and %2 are the versions of Qt, mpv, and MpvQt
-                text: qsTr("Powered by:\n\n\u2022 [Qt](https://www.qt.io) %0\n\n\u2022 [mpv](https://mpv.io) %1\n\n\u2022 [MpvQt](https://invent.kde.org/libraries/mpvqt) %2").arg(Utilities.qtVersion()).arg(Player.mpvVersion() || qsTr("(unable to get version)")).arg(Player.mpvQtVersion())
+                text: qsTr("Powered by:\n\n\u2022 [Qt](https://www.qt.io) %0\n\n\u2022 [mpv](https://mpv.io) %1\n\n\u2022 [MpvQt](https://invent.kde.org/libraries/mpvqt) %2").arg(Utilities.qtVersion()).arg(root.mpvVersion).arg(Player.mpvQtVersion())
                 textFormat: Text.MarkdownText
 
                 onLinkActivated: link => Utilities.openUrlExternally(link)
