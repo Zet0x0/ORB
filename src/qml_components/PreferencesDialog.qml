@@ -217,7 +217,7 @@ Dialog {
                                         Layout.fillWidth: true
                                         Layout.leftMargin: checkBox ? checkBox.leftPadding + checkBox.indicator.width + checkBox.spacing : 0
                                         Layout.row: 1
-                                        Layout.topMargin: checkBox ? -checkBox.bottomPadding : 0
+                                        Layout.topMargin: (checkBox ? -checkBox.bottomPadding : 0) - fieldGrid.rowSpacing
                                         color: palette.disabled.windowText
                                         text: propertyDelegate.description
                                         textFormat: Text.PlainText
