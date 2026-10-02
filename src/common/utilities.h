@@ -30,4 +30,6 @@ public:
     Q_INVOKABLE static QRect getScreenAvailableGeometry(const QPoint &point);
 
     Q_INVOKABLE static bool isPointOnScreen(const QPoint &point);
+
+    Q_INVOKABLE static QString qtVersion();
 };

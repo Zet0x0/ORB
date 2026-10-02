@@ -7,6 +7,7 @@
 #include <QGuiApplication>
 #include <QScreen>
 #include <QUrl>
+#include <QtVersion>
 
 QString Utilities::normalizeUserInputUrl(const QString &userInput) {
     return QUrl::fromUserInput(userInput).toString();
@@ -67,4 +68,8 @@ QRect Utilities::getScreenAvailableGeometry(const QPoint &point) {
 
 bool Utilities::isPointOnScreen(const QPoint &point) {
     return QGuiApplication::screenAt(point) != nullptr;
+}
+
+QString Utilities::qtVersion() {
+    return QString::fromLatin1(qVersion());
 }

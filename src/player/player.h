@@ -47,7 +47,6 @@ public:
 private:
     enum class AsyncReplyId {
         None,
-        ReadingVersion,
         LoadingFile,
         Stopping,
         StoppingForStationChange,
@@ -88,11 +87,14 @@ private:
     int m_retryAttempt = 0;
     int m_retrySecondsRemaining = 0;
 
+    QString m_mpvVersion;
+
     explicit Player(QObject *parent = nullptr);
 
     void setupConnections() const;
     void setupObservations() const;
     void setupLogClient();
+    void readMpvVersion();
 
     void destroyLogClient();
 
@@ -158,6 +160,9 @@ public:
 
     int retryAttempt() const;
     int retrySecondsRemaining() const;
+
+    Q_INVOKABLE QString mpvVersion() const;
+    Q_INVOKABLE static QString mpvQtVersion();
 
 public slots:
     void setStation(const Station &newStation, bool playImmediately = false);

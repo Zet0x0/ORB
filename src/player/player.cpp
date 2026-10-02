@@ -7,14 +7,19 @@
 #include <QByteArray>
 #include <QCoreApplication>
 #include <QHash>
+#include <QLatin1StringView>
 #include <QLoggingCategory>
 #include <QMetaObject>
 #include <cstdint>
+#include <mpvqt_version.h>
 #include <utility>
 
 namespace {
 constexpr int RetryMaxDelaySeconds = 30;
 constexpr int StabilityThresholdMs = 15000;
+
+// raw mpv version reads something like "mpv v0.41.0-1017-g02a595ddc"
+constexpr QLatin1StringView MpvVersionPrefix("mpv ");
 
 // make or return a saved QLoggingCategory out of a mpv's module
 // e.g. ffmpeg/demuxer -> orb.player.mpv.ffmpeg.demuxer
@@ -102,8 +107,7 @@ Player::Player(QObject *parent)
     setupConnections();
     setupObservations();
     setupLogClient();
-
-    getPropertyAsync(MpvProperties::Version, AsyncReplyId::ReadingVersion);
+    readMpvVersion();
 
     connect(qApp, &QCoreApplication::aboutToQuit, this, &Player::shutdown);
 }
@@ -148,6 +152,30 @@ void Player::setupLogClient() {
         this);
 
     mpv_request_log_messages(m_logClient, "v");
+}
+
+// synchronous, so the About dialog can get the version
+void Player::readMpvVersion() {
+    char *version = nullptr;
+    const int error =
+        mpv_get_property(m_mpvController->mpv(), MpvProperties::Version.data(),
+                         MPV_FORMAT_STRING, &version);
+
+    if (error < 0) {
+        qCWarning(lcPlayer) << "Failed to read" << MpvProperties::Version
+                            << MpvController::getError(error);
+
+        return;
+    }
+
+    m_mpvVersion = QString::fromUtf8(version);
+    mpv_free(version);
+
+    if (m_mpvVersion.startsWith(MpvVersionPrefix)) {
+        m_mpvVersion.remove(0, MpvVersionPrefix.size());
+    }
+
+    qCInfo(lcPlayer).noquote() << "Using mpv" << m_mpvVersion;
 }
 
 void Player::destroyLogClient() {
@@ -383,17 +411,6 @@ void Player::onAsyncReply(const QVariant &data, mpv_event event) {
         break;
     }
 
-    case AsyncReplyId::ReadingVersion: {
-        if (succeeded) {
-            qCInfo(lcPlayer).noquote() << "Using" << data.toString();
-        } else {
-            qCWarning(lcPlayer) << "Failed to read" << MpvProperties::Version
-                                << MpvController::getError(error);
-        }
-
-        break;
-    }
-
     case AsyncReplyId::LoadingFile: {
         if (!succeeded) {
             qCWarning(lcPlayer)
@@ -595,6 +612,14 @@ int Player::retryAttempt() const {
 
 int Player::retrySecondsRemaining() const {
     return m_retrySecondsRemaining;
+}
+
+QString Player::mpvVersion() const {
+    return m_mpvVersion;
+}
+
+QString Player::mpvQtVersion() {
+    return QStringLiteral(MPVQT_VERSION_STRING);
 }
 
 void Player::setStation(const Station &newStation, bool playImmediately) {

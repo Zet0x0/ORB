@@ -1,4 +1,5 @@
 import ORB.Common
+import ORB.Player
 import ORB.Style
 import QtQuick
 import QtQuick.Layouts
@@ -42,6 +43,23 @@ Dialog {
                 text: qsTr("**O**nline **R**adio **B**rowser & Player (ORB) is an open-source project for browsing through and playing online radio stations from the internet.")
                 textFormat: Text.MarkdownText
                 wrapMode: Label.Wrap
+            }
+
+            Label {
+                id: librariesLabel
+
+                // not a regular Markdown list because by default Qt gets us a wideass
+                // indent of probably around 40px, that is ugly, and we can't even change it
+                //: Markdown with links. %0, %1 and %2 are the versions of Qt, mpv, and MpvQt
+                text: qsTr("Powered by:\n\n\u2022 [Qt](https://www.qt.io) %0\n\n\u2022 [mpv](https://mpv.io) %1\n\n\u2022 [MpvQt](https://invent.kde.org/libraries/mpvqt) %2").arg(Utilities.qtVersion()).arg(Player.mpvVersion() || qsTr("(unable to get version)")).arg(Player.mpvQtVersion())
+                textFormat: Text.MarkdownText
+
+                onLinkActivated: link => Utilities.openUrlExternally(link)
+
+                HoverHandler {
+                    cursorShape: Qt.PointingHandCursor
+                    enabled: librariesLabel.hoveredLink
+                }
             }
 
             Label {
