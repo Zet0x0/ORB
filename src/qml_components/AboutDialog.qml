@@ -22,8 +22,8 @@ Dialog {
     RowLayout {
         Image {
             Layout.alignment: Qt.AlignTop
-            Layout.fillHeight: true
             Layout.margins: 8
+            Layout.preferredHeight: bodyFontMetrics.height * 6
             Layout.preferredWidth: height
             fillMode: Image.PreserveAspectFit
             source: "qrc:/icons/ORB.svg"
