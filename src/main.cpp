@@ -1,5 +1,6 @@
 #include "common/logcategories.h"
 #include "logging/logger.h"
+#include "orbversion.h"
 #include "settings/settings.h"
 #include "sources/providers/favoritessource.h"
 #include "sources/providers/nullsource.h"
@@ -55,8 +56,8 @@ QPalette paletteFromQmlPalette(QObject *qmlPalette) {
 
 int main(int argc, char *argv[]) {
     QCoreApplication::setApplicationName(QStringLiteral("ORB"));
-    QCoreApplication::setApplicationVersion(QStringLiteral("0.1.0"));
-    QCoreApplication::setOrganizationDomain(QStringLiteral("com.zet0x0.orb"));
+    QCoreApplication::setApplicationVersion(QStringLiteral(ORB_VERSION_STRING));
+    QCoreApplication::setOrganizationDomain(QStringLiteral("zet0x0.com"));
 
     Logger::install();
 
@@ -64,7 +65,7 @@ int main(int argc, char *argv[]) {
 
     QQuickStyle::setStyle(QStringLiteral("ORB.Style"));
     QQuickWindow::setGraphicsApi(QSGRendererInterface::OpenGL);
-    QIcon::setThemeName("ORB");
+    QIcon::setThemeName(QStringLiteral("ORB"));
 
     QGuiApplication app(argc, argv);
     QQmlApplicationEngine engine;

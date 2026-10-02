@@ -78,7 +78,7 @@ T.SpinBox {
         bottomLeftRadius: root.mirrored ? 2 : 0
         bottomRightRadius: root.mirrored ? 0 : 2
         clip: true
-        color: palette.button.darker(root.down.pressed ? 1.2 : (root.down.hovered ? 0.8 : 1.0))
+        color: root.palette.button.darker(root.down.pressed ? 1.2 : (root.down.hovered ? 0.8 : 1.0))
         height: Math.round(root.height / 2) - 1
         implicitHeight: 10
         implicitWidth: 15
@@ -86,7 +86,7 @@ T.SpinBox {
         y: root.height - height - 1
 
         IconImage {
-            color: palette.buttonText
+            color: root.palette.buttonText
             fillMode: Image.Pad
             height: parent.height
             name: "chevron-down"
@@ -95,7 +95,7 @@ T.SpinBox {
     }
     up.indicator: PaddedRectangle {
         clip: true
-        color: palette.button.darker(root.up.pressed ? 1.2 : (root.up.hovered ? 0.8 : 1.0))
+        color: root.palette.button.darker(root.up.pressed ? 1.2 : (root.up.hovered ? 0.8 : 1.0))
         height: Math.round(root.height / 2) - 1
         implicitHeight: 10
         implicitWidth: 15
@@ -105,7 +105,7 @@ T.SpinBox {
         y: 1
 
         IconImage {
-            color: palette.buttonText
+            color: root.palette.buttonText
             fillMode: Image.Pad
             height: parent.height
             name: "chevron-up"

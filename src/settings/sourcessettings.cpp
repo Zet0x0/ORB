@@ -1,10 +1,12 @@
 #include "sourcessettings.h"
+#include "../sources/sourcecontroller.h"
 #include "settingsio.h"
 
 SourcesSettings::SourcesSettings(QObject *parent)
     : SettingsGroup(parent, QStringLiteral("sources")) {
     m_lastSearchSource = SettingsIO::readString(
-        m_settings, QStringLiteral("lastSearchSource"), QStringLiteral("none"));
+        m_settings, QStringLiteral("lastSearchSource"),
+        SourceControllerConstants::NullSourceKey.toString());
 }
 
 QString SourcesSettings::lastSearchSource() const {

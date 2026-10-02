@@ -6,8 +6,6 @@ qt_add_qml_module(
     ORB.Logging
     OUTPUT_DIRECTORY
     "${CMAKE_BINARY_DIR}/ORB/Logging"
-    DEPENDENCIES
-    ORB.Common
     SOURCES
     logger.h
     logger.cpp

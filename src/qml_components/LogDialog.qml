@@ -45,7 +45,7 @@ Dialog {
     }
 
     Connections {
-        function onCountChanged() {
+        function onCountChanged(): void {
             if (!root.visible) {
                 return;
             }
@@ -59,7 +59,7 @@ Dialog {
             }
         }
 
-        function onSortChanged() {
+        function onSortChanged(): void {
             Qt.callLater(logTable.fitColumns);
         }
 

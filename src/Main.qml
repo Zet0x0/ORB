@@ -10,7 +10,7 @@ import QtQuick.Layouts
 MainWindow {
     id: root
 
-    function persistSession() {
+    function persistSession(): void {
         Settings.window.x = x;
         Settings.window.y = y;
 
@@ -24,7 +24,7 @@ MainWindow {
         Settings.sources.lastSearchSource = sourceSelector.currentValue;
     }
 
-    function restoreWindowPosition() {
+    function restoreWindowPosition(): void {
         if (!Settings.window.hasPosition) {
             return;
         }
@@ -231,15 +231,15 @@ MainWindow {
     }
 
     Connections {
-        function onMutedChanged() {
+        function onMutedChanged(): void {
             persistTimer.restart();
         }
 
-        function onStationChanged() {
+        function onStationChanged(): void {
             persistTimer.restart();
         }
 
-        function onVolumeChanged() {
+        function onVolumeChanged(): void {
             persistTimer.restart();
         }
 

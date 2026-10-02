@@ -1,5 +1,7 @@
 #pragma code_page(65001)
 
+#include "orbversion.h"
+
 #if defined(__MINGW64__) || defined(__MINGW32__)
     // MinGW-w64, MinGW
     #if defined(__has_include) && __has_include(<winres.h>)
@@ -18,8 +20,8 @@ IDI_ICON1 ICON ".\\style\\icons\\ORB.ico"
 
 LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 VS_VERSION_INFO VERSIONINFO
-    FILEVERSION 0,1,0,0
-    PRODUCTVERSION 0,1,0,0
+    FILEVERSION ORB_VERSION_MAJOR,ORB_VERSION_MINOR,ORB_VERSION_PATCH,0
+    PRODUCTVERSION ORB_VERSION_MAJOR,ORB_VERSION_MINOR,ORB_VERSION_PATCH,0
     FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
     FILEFLAGS 0x1L
@@ -36,12 +38,12 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "zet0x0.com"
             VALUE "FileDescription", "Online Radio Browser & Player"
-            VALUE "FileVersion", "0.1.0.0"
+            VALUE "FileVersion", ORB_VERSION_STRING
             VALUE "InternalName", "ORB"
-            VALUE "LegalCopyright", "Copyright 2026 The Creator of ORB"
+            VALUE "LegalCopyright", "Copyright " ORB_COPYRIGHT_YEAR " The Creator of ORB"
             VALUE "OriginalFilename", "ORB.exe"
             VALUE "ProductName", "ORB"
-            VALUE "ProductVersion", "0.1.0.0"
+            VALUE "ProductVersion", ORB_VERSION_STRING
         END
     END
     BLOCK "VarFileInfo"

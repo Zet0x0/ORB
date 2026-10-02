@@ -25,6 +25,11 @@ set(SOURCES ORB.rc main.cpp)
 qt_add_big_resources(SOURCES style/icons/icons.qrc)
 qt_add_executable(ORB ${SOURCES})
 
+# for main.cpp and ORB.rc
+string(TIMESTAMP ORB_COPYRIGHT_YEAR "%Y")
+configure_file(orbversion.h.in orbversion.h @ONLY)
+target_include_directories(ORB PRIVATE "${CMAKE_CURRENT_BINARY_DIR}")
+
 qt_add_qml_module(ORB URI ORB QML_FILES Main.qml)
 
 add_subdirectory(common)
@@ -75,3 +80,4 @@ qt_generate_deploy_app_script(
 
 install(SCRIPT "cmake/DeploySettings.cmake")
 install(SCRIPT "${deploy_script}")
+install(SCRIPT "cmake/DeployCleanup.cmake")

@@ -3,13 +3,11 @@
 StationModel::StationModel(QObject *parent) : QAbstractListModel(parent) {}
 
 int StationModel::rowCount(const QModelIndex &parent) const {
-    Q_UNUSED(parent)
-
-    return m_stations.size();
+    return parent.isValid() ? 0 : m_stations.size();
 }
 
 QVariant StationModel::data(const QModelIndex &index, int role) const {
-    if (!index.isValid()) {
+    if (!index.isValid() || index.row() >= m_stations.size()) {
         return QVariant();
     }
 

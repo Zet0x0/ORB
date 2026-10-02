@@ -5,8 +5,8 @@
 #include <QRestAccessManager>
 #include <QRestReply>
 
-namespace SourceConstraints {
-const int DefaultStationsCacheExpiry = 60 * 10; // 10 minutes
+namespace SourceConstants {
+constexpr int DefaultStationsCacheExpiry = 60 * 10; // 10 minutes
 }
 
 class Source : public QObject {

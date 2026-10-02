@@ -1,7 +1,7 @@
 import ORB.Style
 
 ApplicationWindow {
-    function activate() {
+    function activate(): void {
         showNormal();
         requestActivate();
     }

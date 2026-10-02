@@ -11,7 +11,7 @@ Frame {
 
     signal dismissed
 
-    function updateAutoDismiss() {
+    function updateAutoDismiss(): void {
         if (error.title.length === 0 && error.message.length === 0) {
             autoDismissTimer.stop();
         } else if (hovered) {

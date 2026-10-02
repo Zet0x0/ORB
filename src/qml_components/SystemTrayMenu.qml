@@ -8,7 +8,7 @@ Window {
 
     property var lastPosition: null
 
-    function dismiss() {
+    function dismiss(): void {
         if (menu.opened) {
             menu.close();
         }
@@ -22,7 +22,7 @@ Window {
         menu.popup();
     }
 
-    function reposition() {
+    function reposition(): void {
         if (lastPosition === null) {
             return;
         }
