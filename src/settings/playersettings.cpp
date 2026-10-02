@@ -1,6 +1,7 @@
 #include "playersettings.h"
 #include "settingscategories.h"
 #include "settingsio.h"
+#include <QString>
 
 namespace {
 constexpr int VolumeMin = 0;

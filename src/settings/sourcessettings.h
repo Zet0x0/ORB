@@ -2,6 +2,7 @@
 
 #include "settingsgroup.h"
 #include <QQmlEngine>
+#include <QString>
 
 class SourcesSettings : public SettingsGroup {
     Q_OBJECT

@@ -3,8 +3,16 @@
 #include "../common/errorinfo.h"
 #include "../common/singleton.h"
 #include "source.h"
+#include "station.h"
 #include "stationmodel.h"
+#include <QHash>
+#include <QLatin1StringView>
+#include <QList>
+#include <QObject>
 #include <QQmlEngine>
+#include <QString>
+#include <QStringList>
+#include <QVariantList>
 
 namespace SourceControllerConstants {
 constexpr QLatin1StringView NullSourceKey("none");

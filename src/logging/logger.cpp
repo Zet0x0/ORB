@@ -3,11 +3,15 @@
 #include <QCoreApplication>
 #include <QDir>
 #include <QFileInfo>
+#include <QJSEngine>
 #include <QLoggingCategory>
+#include <QMetaObject>
 #include <QScopeGuard>
 #include <QStandardPaths>
+#include <QStringList>
 #include <QThread>
 #include <QVariant>
+#include <utility>
 
 Logger::Logger(QObject *parent) : QAbstractTableModel(parent) {}
 

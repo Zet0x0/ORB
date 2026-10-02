@@ -1,7 +1,17 @@
 #pragma once
 
 #include "../source.h"
+#include "../station.h"
+#include <QJsonArray>
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QLatin1StringView>
+#include <QList>
+#include <QNetworkReply>
 #include <QNetworkRequestFactory>
+#include <QPointer>
+#include <QRestReply>
+#include <QString>
 
 namespace RadioRecordConstants {
 constexpr QLatin1StringView WebsiteUrl("https://www.radiorecord.ru/");

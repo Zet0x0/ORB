@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../source.h"
+#include <QString>
 
 class NullSource : public Source {
     Q_OBJECT

@@ -1,8 +1,13 @@
 #pragma once
 
 #include <QAbstractListModel>
+#include <QByteArray>
+#include <QHash>
+#include <QList>
 #include <QMetaProperty>
 #include <QQmlEngine>
+#include <QString>
+#include <QVariant>
 
 class SettingsPropertyModel : public QAbstractListModel {
     Q_OBJECT

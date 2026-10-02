@@ -2,6 +2,9 @@
 #include "../common/logcategories.h"
 #include "settingsgroup.h"
 #include "settingsintrospection.h"
+#include <QMetaType>
+#include <algorithm>
+#include <utility>
 
 void SettingsPropertyModel::rebuildEntries() {
     m_entries.clear();

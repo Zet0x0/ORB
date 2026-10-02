@@ -1,5 +1,6 @@
 #include "windowsettings.h"
 #include "settingsio.h"
+#include <QString>
 
 WindowSettings::WindowSettings(QObject *parent)
     : SettingsGroup(parent, QStringLiteral("window")) {

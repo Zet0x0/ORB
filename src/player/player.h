@@ -4,9 +4,15 @@
 #include "../common/singleton.h"
 #include "../sources/station.h"
 #include <MpvController>
+#include <QObject>
 #include <QQmlEngine>
+#include <QString>
+#include <QStringList>
 #include <QThread>
 #include <QTimer>
+#include <QVariant>
+#include <mpv/client.h>
+#include <optional>
 
 class Player : public QObject, public Singleton<Player> {
     Q_OBJECT

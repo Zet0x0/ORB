@@ -1,6 +1,7 @@
 #include "traysettings.h"
 #include "settingscategories.h"
 #include "settingsio.h"
+#include <QString>
 
 TraySettings::TraySettings(QObject *parent)
     : SettingsGroup(parent, QStringLiteral("tray")) {

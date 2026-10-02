@@ -1,6 +1,7 @@
 #include "settingsfactory.h"
 #include <QDir>
 #include <QStandardPaths>
+#include <QString>
 
 namespace SettingsFactory {
 QSettings *create(QObject *parent) {

@@ -2,8 +2,13 @@
 
 #include "../common/errorinfo.h"
 #include "station.h"
+#include <QJsonDocument>
+#include <QList>
+#include <QNetworkAccessManager>
+#include <QObject>
 #include <QRestAccessManager>
 #include <QRestReply>
+#include <QString>
 
 namespace SourceConstants {
 constexpr int DefaultStationsCacheExpiry = 60 * 10; // 10 minutes

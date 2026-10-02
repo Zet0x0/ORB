@@ -1,5 +1,6 @@
 #include "sourcecontroller.h"
 #include "../common/logcategories.h"
+#include <QVariantMap>
 
 SourceController::SourceController(QObject *parent)
     : QObject(parent), m_stationModel(new StationModel(this)) {}

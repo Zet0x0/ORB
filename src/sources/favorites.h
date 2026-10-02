@@ -2,7 +2,10 @@
 
 #include "../common/singleton.h"
 #include "station.h"
+#include <QList>
+#include <QObject>
 #include <QQmlEngine>
+#include <QString>
 
 class Favorites : public QObject, public Singleton<Favorites> {
     Q_OBJECT

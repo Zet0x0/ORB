@@ -7,6 +7,8 @@
 #include "sourcessettings.h"
 #include "traysettings.h"
 #include "windowsettings.h"
+#include <QObject>
+#include <QQmlEngine>
 
 class Settings : public QObject, public Singleton<Settings> {
     Q_OBJECT

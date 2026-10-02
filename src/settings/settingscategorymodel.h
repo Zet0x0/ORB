@@ -1,7 +1,12 @@
 #pragma once
 
 #include <QAbstractListModel>
+#include <QByteArray>
+#include <QHash>
+#include <QList>
 #include <QQmlEngine>
+#include <QString>
+#include <QVariant>
 
 class SettingsCategoryModel : public QAbstractListModel {
     Q_OBJECT

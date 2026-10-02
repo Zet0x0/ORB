@@ -1,20 +1,30 @@
 #include "common/logcategories.h"
 #include "logging/logger.h"
 #include "orbversion.h"
+#include "settings/loggingsettings.h"
 #include "settings/settings.h"
 #include "sources/providers/favoritessource.h"
 #include "sources/providers/nullsource.h"
 #include "sources/providers/radiorecord.h"
 #include "sources/sourcecontroller.h"
+#include <QByteArray>
+#include <QColor>
 #include <QGuiApplication>
 #include <QIcon>
+#include <QMetaEnum>
 #include <QPalette>
 #include <QQmlApplicationEngine>
 #include <QQmlComponent>
 #include <QQuickStyle>
 #include <QQuickWindow>
+#include <QSGRendererInterface>
 #include <QStandardPaths>
+#include <QString>
+#include <QSysInfo>
+#include <QUrl>
+#include <QVariant>
 #include <cctype>
+#include <memory>
 
 namespace {
 void applyColorGroup(QPalette &palette, QPalette::ColorGroup group,

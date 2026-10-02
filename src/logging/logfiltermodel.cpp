@@ -2,6 +2,7 @@
 #include "logger.h"
 #include <QDateTime>
 #include <QStringList>
+#include <bit>
 
 bool LogFilterModel::showsLevel(int level) const {
     return (m_levelMask & (1 << level)) != 0;

@@ -1,6 +1,9 @@
 #pragma once
 
 #include "../source.h"
+#include "../station.h"
+#include <QList>
+#include <QString>
 
 class FavoritesSource : public Source {
     Q_OBJECT

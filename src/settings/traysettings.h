@@ -1,6 +1,8 @@
 #pragma once
 
+#include "settingsfieldmeta.h"
 #include "settingsgroup.h"
+#include <QList>
 #include <QQmlEngine>
 
 class TraySettings : public SettingsGroup {

@@ -2,7 +2,11 @@
 
 #include "station.h"
 #include <QAbstractListModel>
+#include <QByteArray>
+#include <QHash>
+#include <QList>
 #include <QQmlEngine>
+#include <QVariant>
 
 class StationModel : public QAbstractListModel {
     Q_OBJECT

@@ -1,6 +1,6 @@
 #pragma once
 
-#include <QString>
+#include <QLatin1StringView>
 
 namespace MpvProperties {
 constexpr QLatin1StringView NowPlaying("media-title");

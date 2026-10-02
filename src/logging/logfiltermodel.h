@@ -2,6 +2,7 @@
 
 #include <QQmlEngine>
 #include <QSortFilterProxyModel>
+#include <QString>
 
 class LogFilterModel : public QSortFilterProxyModel {
     Q_OBJECT

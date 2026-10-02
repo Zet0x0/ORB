@@ -1,6 +1,7 @@
 #include "appearancesettings.h"
 #include "settingscategories.h"
 #include "settingsio.h"
+#include <QString>
 
 AppearanceSettings::AppearanceSettings(QObject *parent)
     : SettingsGroup(parent, QStringLiteral("appearance")) {

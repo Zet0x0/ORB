@@ -1,4 +1,5 @@
 #include "errorinfo.h"
+#include <QObject>
 
 ErrorInfo::ErrorInfo(QString newTitle, QString newMessage) {
     newTitle = newTitle.trimmed();

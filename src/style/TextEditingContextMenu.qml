@@ -1,4 +1,5 @@
 import QtQuick
+import QtQuick.Templates as T
 
 Menu {
     id: root
@@ -14,7 +15,7 @@ Menu {
     }
     onOpened: editor.cursorVisible = true
 
-    Action {
+    T.Action {
         enabled: root.editor.canUndo
         icon.name: "arrow-back-up"
         text: qsTr("Undo")
@@ -22,7 +23,7 @@ Menu {
         onTriggered: root.editor.undo()
     }
 
-    Action {
+    T.Action {
         enabled: root.editor.canRedo
         icon.name: "arrow-forward-up"
         text: qsTr("Redo")
@@ -32,7 +33,7 @@ Menu {
 
     MenuSeparator {}
 
-    Action {
+    T.Action {
         enabled: !root.editor.readOnly && root.editor.selectionEnd > root.editor.selectionStart
         icon.name: "cut"
         text: qsTr("Cut")
@@ -40,7 +41,7 @@ Menu {
         onTriggered: root.editor.cut()
     }
 
-    Action {
+    T.Action {
         enabled: root.editor.selectionEnd > root.editor.selectionStart
         icon.name: "copy"
         text: qsTr("Copy")
@@ -48,7 +49,7 @@ Menu {
         onTriggered: root.editor.copy()
     }
 
-    Action {
+    T.Action {
         enabled: !root.editor.readOnly
         icon.name: "clipboard"
         text: qsTr("Paste")
@@ -56,7 +57,7 @@ Menu {
         onTriggered: root.editor.paste()
     }
 
-    Action {
+    T.Action {
         enabled: !root.editor.readOnly && root.editor.selectionEnd > root.editor.selectionStart
         icon.name: "trash"
         text: qsTr("Delete")
@@ -66,7 +67,7 @@ Menu {
 
     MenuSeparator {}
 
-    Action {
+    T.Action {
         icon.name: "select-all"
         text: qsTr("Select All")
 

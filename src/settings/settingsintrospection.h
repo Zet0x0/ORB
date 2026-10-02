@@ -1,7 +1,10 @@
 #pragma once
 
 #include "settingsgroup.h"
+#include <QByteArray>
+#include <QList>
 #include <QMetaProperty>
+#include <QString>
 
 namespace SettingsIntrospection {
 struct ResolvedField {

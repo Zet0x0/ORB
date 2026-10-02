@@ -1,6 +1,7 @@
 #pragma once
 
 #include <QQmlEngine>
+#include <QString>
 
 struct ErrorInfo {
     Q_GADGET

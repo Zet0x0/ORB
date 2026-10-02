@@ -2,6 +2,8 @@
 #include "settingscategories.h"
 #include "settingsgroup.h"
 #include "settingsintrospection.h"
+#include <QSet>
+#include <utility>
 
 void SettingsCategoryModel::rebuildCategories() {
     m_categories.clear();

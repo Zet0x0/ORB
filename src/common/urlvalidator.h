@@ -1,6 +1,7 @@
 #pragma once
 
 #include <QQmlEngine>
+#include <QString>
 #include <QValidator>
 
 class UrlValidator : public QValidator {

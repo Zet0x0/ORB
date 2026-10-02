@@ -1,7 +1,9 @@
 #pragma once
 
 #include "../sources/station.h"
+#include "settingsfieldmeta.h"
 #include "settingsgroup.h"
+#include <QList>
 #include <QQmlEngine>
 
 class PlayerSettings : public SettingsGroup {

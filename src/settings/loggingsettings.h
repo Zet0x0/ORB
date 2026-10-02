@@ -1,7 +1,10 @@
 #pragma once
 
+#include "settingsfieldmeta.h"
 #include "settingsgroup.h"
+#include <QList>
 #include <QQmlEngine>
+#include <QString>
 
 class LoggingSettings : public SettingsGroup {
     Q_OBJECT

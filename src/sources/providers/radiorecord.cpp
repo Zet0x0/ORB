@@ -1,9 +1,12 @@
 #include "radiorecord.h"
 #include "../../common/logcategories.h"
+#include <QByteArray>
 #include <QHttpMultiPart>
 #include <QJsonArray>
 #include <QJsonDocument>
 #include <QJsonObject>
+#include <QJsonValue>
+#include <QNetworkRequest>
 
 QJsonArray
 RadioRecord::extractStationsFromJson(const QJsonDocument &json) const {

@@ -1,6 +1,8 @@
 #pragma once
 
 #include <QSettings>
+#include <QString>
+#include <QVariant>
 
 namespace SettingsIO {
 void write(QSettings *settings, const QString &key, const QVariant &value);

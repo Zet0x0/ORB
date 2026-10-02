@@ -2,13 +2,18 @@
 
 #include "../common/singleton.h"
 #include <QAbstractTableModel>
+#include <QByteArray>
 #include <QDateTime>
 #include <QFile>
+#include <QHash>
 #include <QList>
 #include <QMutex>
+#include <QQmlEngine>
+#include <QString>
 #include <QTextStream>
 #include <QThread>
 #include <QUrl>
+#include <QVariant>
 
 class Logger : public QAbstractTableModel, public Singleton<Logger> {
     Q_OBJECT

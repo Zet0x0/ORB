@@ -1,6 +1,8 @@
 #pragma once
 
 #include <QQmlEngine>
+#include <QString>
+#include <QVariantMap>
 
 struct Station {
     Q_GADGET

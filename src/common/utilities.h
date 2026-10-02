@@ -1,8 +1,11 @@
 #pragma once
 
 #include "singleton.h"
+#include <QObject>
 #include <QPoint>
+#include <QQmlEngine>
 #include <QRect>
+#include <QString>
 #include <QUrl>
 
 class Utilities : public QObject, public Singleton<Utilities> {

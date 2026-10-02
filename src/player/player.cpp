@@ -1,9 +1,16 @@
 #include "player.h"
 #include "../common/logcategories.h"
 #include "../common/utilities.h"
+#include "../settings/playersettings.h"
 #include "../settings/settings.h"
 #include "mpvproperties.h"
+#include <QByteArray>
 #include <QCoreApplication>
+#include <QHash>
+#include <QLoggingCategory>
+#include <QMetaObject>
+#include <cstdint>
+#include <utility>
 
 namespace {
 constexpr int RetryMaxDelaySeconds = 30;

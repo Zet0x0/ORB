@@ -3,6 +3,7 @@
 #include "../common/utilities.h"
 #include <QJsonDocument>
 #include <QJsonParseError>
+#include <optional>
 
 void Source::raiseError(const QString &title, const QString &message) {
     emit errorOccurred(ErrorInfo(title, message));

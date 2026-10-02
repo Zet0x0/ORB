@@ -2,7 +2,15 @@
 #include "../common/logcategories.h"
 #include "settings.h"
 #include "settingscategories.h"
+#include "settingsfieldmeta.h"
+#include <QChar>
 #include <QCoreApplication>
+#include <QMetaObject>
+#include <QMetaType>
+#include <QObject>
+#include <algorithm>
+#include <iterator>
+#include <utility>
 
 namespace SettingsIntrospection {
 QString label(const QByteArray &propertyName) {

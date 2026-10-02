@@ -1,8 +1,10 @@
 #pragma once
 
 #include "settingsfieldmeta.h"
+#include <QList>
 #include <QObject>
 #include <QSettings>
+#include <QString>
 
 class SettingsGroup : public QObject {
     Q_OBJECT

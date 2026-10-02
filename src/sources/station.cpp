@@ -1,5 +1,6 @@
 #include "station.h"
 #include "../common/utilities.h"
+#include <QObject>
 
 void Station::setValid(bool newValid) {
     m_valid = newValid;
