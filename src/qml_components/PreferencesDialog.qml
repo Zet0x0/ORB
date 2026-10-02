@@ -193,14 +193,13 @@ Dialog {
                                     visible: propertyDelegate.subcategoryStart
                                 }
 
-                                // int: label, description, slider
+                                // int, string: label, description, slider/textfield
                                 // bool: checkbox, description
-                                // string: label with textfield, description
                                 GridLayout {
                                     id: fieldGrid
 
                                     Layout.fillWidth: true
-                                    columns: propertyDelegate.type === "string" ? 2 : 1
+                                    columns: 1
 
                                     Label {
                                         Layout.fillWidth: true
@@ -213,7 +212,6 @@ Dialog {
                                     Label {
                                         readonly property CheckBox checkBox: fieldLoader.item as CheckBox
 
-                                        Layout.columnSpan: fieldGrid.columns
                                         Layout.fillWidth: true
                                         Layout.leftMargin: checkBox ? checkBox.leftPadding + checkBox.indicator.width + checkBox.spacing : 0
                                         Layout.row: 1
@@ -228,9 +226,8 @@ Dialog {
                                     Loader {
                                         id: fieldLoader
 
-                                        Layout.column: propertyDelegate.type === "string" ? 1 : 0
                                         Layout.fillWidth: propertyDelegate.type !== "bool"
-                                        Layout.row: propertyDelegate.type === "int" ? 2 : 0
+                                        Layout.row: propertyDelegate.type === "bool" ? 0 : 2
                                         sourceComponent: {
                                             switch (propertyDelegate.type) {
                                             case "bool":
