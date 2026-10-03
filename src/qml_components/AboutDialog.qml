@@ -20,8 +20,8 @@ Dialog {
             DialogButtonBox.buttonRole: DialogButtonBox.ActionRole
             text: qsTr("Copy to Clipboard")
 
-            //: Text with versions copied to the clipboard. %0, %1, %2 and %3 are the versions of ORB, Qt, mpv, and MpvQt
-            onClicked: Utilities.copyToClipboard(qsTr("ORB %0\nQt %1\nmpv %2\nMpvQt %3").arg(Qt.application.version).arg(Utilities.qtVersion()).arg(root.mpvVersion).arg(Player.mpvQtVersion()))
+            //: Text with versions copied to the clipboard. %0, %1 and %2 are the versions of ORB, Qt and mpv
+            onClicked: Utilities.copyToClipboard(qsTr("ORB %0\nQt %1\nmpv %2").arg(Qt.application.version).arg(Utilities.qtVersion()).arg(root.mpvVersion))
         }
     }
 
@@ -62,8 +62,8 @@ Dialog {
 
                 // not a regular Markdown list because by default Qt gets us a wideass
                 // indent of probably around 40px, that is ugly, and we can't even change it
-                //: Markdown with links. %0, %1 and %2 are the versions of Qt, mpv, and MpvQt
-                text: qsTr("Powered by:\n\n\u2022 [Qt](https://www.qt.io) %0\n\n\u2022 [mpv](https://mpv.io) %1\n\n\u2022 [MpvQt](https://invent.kde.org/libraries/mpvqt) %2").arg(Utilities.qtVersion()).arg(root.mpvVersion).arg(Player.mpvQtVersion())
+                //: Markdown with links. %0 and %1 are the versions of Qt and mpv
+                text: qsTr("Powered by:\n\n\u2022 [Qt](https://www.qt.io) %0\n\n\u2022 [mpv](https://mpv.io) %1").arg(Utilities.qtVersion()).arg(root.mpvVersion)
                 textFormat: Text.MarkdownText
 
                 onLinkActivated: link => Utilities.openUrlExternally(link)

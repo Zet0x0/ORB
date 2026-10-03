@@ -3,99 +3,17 @@
 #include "../common/utilities.h"
 #include "../settings/playersettings.h"
 #include "../settings/settings.h"
-#include "mpvproperties.h"
-#include <QByteArray>
 #include <QCoreApplication>
-#include <QHash>
-#include <QLatin1StringView>
-#include <QLoggingCategory>
-#include <QMetaObject>
-#include <cstdint>
-#include <mpvqt_version.h>
 #include <utility>
 
 namespace {
 constexpr int RetryMaxDelaySeconds = 30;
 constexpr int StabilityThresholdMs = 15000;
-
-// raw mpv version reads something like "mpv v0.41.0-1017-g02a595ddc"
-constexpr QLatin1StringView MpvVersionPrefix("mpv ");
-
-// make or return a saved QLoggingCategory out of a mpv's module
-// e.g. ffmpeg/demuxer -> orb.player.mpv.ffmpeg.demuxer
-const QLoggingCategory &mpvCategory(const char *module) {
-    static QHash<QByteArray, const QLoggingCategory *> categories;
-
-    const QLoggingCategory *&category = categories[QByteArray(module)];
-
-    if (!category) {
-        const QByteArray name =
-            "orb.player.mpv." + QByteArray(module).replace("/", ".");
-
-        // debug messages are hidden by default because they're mpv's verbose
-        // output, which gives out a line for every downloaded stream segment;
-        // to show them put a rule like orb.player.mpv.*.debug=true
-        category = new QLoggingCategory(qstrdup(name.constData()), QtInfoMsg);
-    }
-
-    return *category;
-}
-
-QString mpvMessageText(const mpv_event_log_message &message) {
-    QString text = QString::fromUtf8(message.text);
-
-    // ends in a newline, sometimes with spaces before it
-    while (!text.isEmpty() && text.back().isSpace()) {
-        text.chop(1);
-    }
-
-    return text;
-}
-
-void logMpvMessage(const mpv_event_log_message &message) {
-    const QLoggingCategory &category = mpvCategory(message.prefix);
-
-    switch (message.log_level) {
-    case MPV_LOG_LEVEL_FATAL:
-    case MPV_LOG_LEVEL_ERROR:
-        qCCritical(category).noquote() << mpvMessageText(message);
-
-        break;
-
-    case MPV_LOG_LEVEL_WARN:
-        qCWarning(category).noquote() << mpvMessageText(message);
-
-        break;
-
-    case MPV_LOG_LEVEL_INFO:
-        qCInfo(category).noquote() << mpvMessageText(message);
-
-        break;
-
-    default:
-        qCDebug(category).noquote() << mpvMessageText(message);
-
-        break;
-    }
-}
 }
 
 Player::Player(QObject *parent)
-    : QObject(parent), m_mpvController(new MpvController),
-      m_workerThread(new QThread(this)), m_retryTimer(new QTimer(this)),
+    : QObject(parent), m_mpv(new Mpv(this)), m_retryTimer(new QTimer(this)),
       m_stabilityTimer(new QTimer(this)) {
-    connect(m_workerThread, &QThread::finished, m_mpvController,
-            &QObject::deleteLater, Qt::QueuedConnection);
-
-    m_mpvController->moveToThread(m_workerThread);
-
-    m_workerThread->start();
-
-    QMetaObject::invokeMethod(m_mpvController, &MpvController::init,
-                              Qt::BlockingQueuedConnection);
-
-    qCDebug(lcPlayer) << "mpv initialized on worker thread";
-
     m_retryTimer->setInterval(1000);
     connect(m_retryTimer, &QTimer::timeout, this, &Player::onRetryTick);
 
@@ -104,136 +22,25 @@ Player::Player(QObject *parent)
     connect(m_stabilityTimer, &QTimer::timeout, this,
             &Player::onPlaybackStable);
 
-    setupConnections();
-    setupObservations();
-    setupLogClient();
-    readMpvVersion();
+    connect(m_mpv, &Mpv::fileStarted, this, &Player::onFileStarted);
+    connect(m_mpv, &Mpv::fileLoaded, this, &Player::onFileLoaded);
+    connect(m_mpv, &Mpv::fileEnded, this, &Player::onFileEnded);
+
+    connect(m_mpv, &Mpv::titleChanged, this, [this](const QString &title) {
+        setNowPlaying(Utilities::escapeControlCharacters(title));
+    });
+    connect(m_mpv, &Mpv::timePosChanged, this, [this](double seconds) {
+        setElapsed(formatTime(seconds));
+    });
 
     connect(qApp, &QCoreApplication::aboutToQuit, this, &Player::shutdown);
 }
 
-void Player::setupConnections() const {
-    connect(m_mpvController, &MpvController::propertyChanged, this,
-            &Player::onPropertyChanged, Qt::QueuedConnection);
-
-    connect(m_mpvController, &MpvController::asyncReply, this,
-            &Player::onAsyncReply, Qt::QueuedConnection);
-
-    connect(m_mpvController, &MpvController::endFile, this, &Player::onEndFile,
-            Qt::QueuedConnection);
-    connect(m_mpvController, &MpvController::fileStarted, this,
-            &Player::onFileStarted, Qt::QueuedConnection);
-    connect(m_mpvController, &MpvController::fileLoaded, this,
-            &Player::onFileLoaded, Qt::QueuedConnection);
-}
-
-void Player::setupObservations() const {
-    observePropertyAsync(MpvProperties::NowPlaying, MPV_FORMAT_STRING);
-    observePropertyAsync(MpvProperties::Elapsed, MPV_FORMAT_DOUBLE);
-}
-
-void Player::setupLogClient() {
-    m_logClient =
-        mpv_create_weak_client(m_mpvController->mpv(), "orb_log_reader");
-
-    if (!m_logClient) {
-        qCWarning(lcPlayer) << "Failed to create mpv log client";
-
-        return;
-    }
-
-    mpv_set_wakeup_callback(
-        m_logClient,
-        [](void *player) {
-            QMetaObject::invokeMethod(static_cast<Player *>(player),
-                                      &Player::readLogMessages,
-                                      Qt::QueuedConnection);
-        },
-        this);
-
-    mpv_request_log_messages(m_logClient, "v");
-}
-
-// synchronous, so the About dialog can get the version
-void Player::readMpvVersion() {
-    char *version = nullptr;
-    const int error =
-        mpv_get_property(m_mpvController->mpv(), MpvProperties::Version.data(),
-                         MPV_FORMAT_STRING, &version);
-
-    if (error < 0) {
-        qCWarning(lcPlayer) << "Failed to read" << MpvProperties::Version
-                            << MpvController::getError(error);
-
-        return;
-    }
-
-    m_mpvVersion = QString::fromUtf8(version);
-    mpv_free(version);
-
-    if (m_mpvVersion.startsWith(MpvVersionPrefix)) {
-        m_mpvVersion.remove(0, MpvVersionPrefix.size());
-    }
-
-    qCInfo(lcPlayer).noquote() << "Using mpv" << m_mpvVersion;
-}
-
-void Player::destroyLogClient() {
-    if (!m_logClient) {
-        return;
-    }
-
-    mpv_set_wakeup_callback(m_logClient, nullptr, nullptr);
-    mpv_destroy(m_logClient);
-
-    m_logClient = nullptr;
-}
-
 void Player::shutdown() {
-    if (m_shutDown) {
-        return;
-    }
-
-    m_shutDown = true;
-
-    qCDebug(lcPlayer) << "Shutting down mpv";
+    m_mpv->shutdown();
 
     m_retryTimer->stop();
     m_stabilityTimer->stop();
-
-    // mpv_terminate_destroy waits until every other client
-    // is destroyed, so our little one has to go first
-    readLogMessages();
-    destroyLogClient();
-
-    m_workerThread->quit();
-    m_workerThread->wait();
-}
-
-void Player::observePropertyAsync(const QString &property, mpv_format format,
-                                  AsyncReplyId id) const {
-    QMetaObject::invokeMethod(m_mpvController, &MpvController::observeProperty,
-                              Qt::QueuedConnection, property, format,
-                              static_cast<uint64_t>(id));
-}
-
-void Player::getPropertyAsync(const QString &property, AsyncReplyId id) const {
-    QMetaObject::invokeMethod(m_mpvController, &MpvController::getPropertyAsync,
-                              Qt::QueuedConnection, property,
-                              static_cast<int>(id));
-}
-
-void Player::commandAsync(const QStringList &params, AsyncReplyId id) const {
-    QMetaObject::invokeMethod(m_mpvController, &MpvController::commandAsync,
-                              Qt::QueuedConnection, params,
-                              static_cast<int>(id));
-}
-
-void Player::setPropertyAsync(const QString &property, const QVariant &value,
-                              AsyncReplyId id) const {
-    QMetaObject::invokeMethod(m_mpvController, &MpvController::setPropertyAsync,
-                              Qt::QueuedConnection, property, value,
-                              static_cast<int>(id));
 }
 
 void Player::setNowPlaying(QString newNowPlaying) {
@@ -285,10 +92,6 @@ void Player::setElapsed(const QString &newElapsed) {
     m_elapsed = newElapsed;
 
     emit elapsedChanged();
-}
-
-void Player::sendStop(AsyncReplyId id) const {
-    commandAsync({QStringLiteral("stop")}, id);
 }
 
 void Player::setError(const ErrorInfo &error) {
@@ -358,149 +161,28 @@ void Player::stopRetryCountdown() {
     setRetrySecondsRemaining(0);
 }
 
-void Player::readLogMessages() {
-    while (m_logClient) {
-        const mpv_event *event = mpv_wait_event(m_logClient, 0);
+void Player::onStoppedForStationChange(const QString &error) {
+    const std::optional<PendingStationChange> pending =
+        std::exchange(m_pendingStationChange, std::nullopt);
 
-        switch (event->event_id) {
-        case MPV_EVENT_NONE:
-            return;
+    if (!error.isEmpty()) {
+        raiseError(tr("Playback error"),
+                   tr("Failed to stop playback (%0)").arg(error));
 
-        case MPV_EVENT_SHUTDOWN:
-            destroyLogClient();
+        return;
+    }
 
-            return;
+    setState(State::Stopped);
 
-        case MPV_EVENT_LOG_MESSAGE:
-            logMpvMessage(*static_cast<mpv_event_log_message *>(event->data));
-
-            break;
-
-        default:
-            break;
-        }
+    if (pending) {
+        setStation(pending->station, pending->shouldPlay);
     }
 }
 
-void Player::onPropertyChanged(const QString &property, const QVariant &value) {
-    if (property == MpvProperties::NowPlaying) {
-        const bool alreadyResolving = m_pendingNowPlaying.has_value();
-        m_pendingNowPlaying = value.toString();
-
-        if (!alreadyResolving) {
-            getPropertyAsync(MpvProperties::Filename,
-                             AsyncReplyId::ResolvingNowPlaying);
-        }
-    } else if (property == MpvProperties::Elapsed) {
-        setElapsed(formatTime(value.toDouble()));
-    }
-}
-
-void Player::onAsyncReply(const QVariant &data, mpv_event event) {
-    const AsyncReplyId id = static_cast<AsyncReplyId>(event.reply_userdata);
-    const int error = event.error;
-    const bool succeeded = error > -1;
-
-    switch (id) {
-    case AsyncReplyId::None: {
-        if (!succeeded) {
-            qCWarning(lcPlayer)
-                << "mpv request failed:" << MpvController::getError(error);
-        }
-
-        break;
-    }
-
-    case AsyncReplyId::LoadingFile: {
-        if (!succeeded) {
-            qCWarning(lcPlayer)
-                << "loadfile failed:" << MpvController::getError(error);
-        }
-
-        break;
-    }
-
-    case AsyncReplyId::Stopping: {
-        if (succeeded) {
-            setState(State::Stopped);
-        } else {
-            raiseError(tr("Playback error"),
-                       tr("Failed to stop playback (%0)")
-                           .arg(MpvController::getError(error)));
-        }
-
-        break;
-    }
-
-    case AsyncReplyId::StoppingForStationChange: {
-        const std::optional<PendingStationChange> pending =
-            std::exchange(m_pendingStationChange, std::nullopt);
-
-        if (succeeded) {
-            setState(State::Stopped);
-
-            if (pending) {
-                setStation(pending->station, pending->shouldPlay);
-            }
-        } else {
-            raiseError(tr("Playback error"),
-                       tr("Failed to stop playback (%0)")
-                           .arg(MpvController::getError(error)));
-        }
-
-        break;
-    }
-
-    case AsyncReplyId::ResolvingNowPlaying: {
-        const QString pendingNowPlaying =
-            std::exchange(m_pendingNowPlaying, std::nullopt)
-                .value_or(QString());
-
-        setNowPlaying(
-            data.toString() == pendingNowPlaying
-                ? QString()
-                : Utilities::escapeControlCharacters(pendingNowPlaying));
-
-        break;
-    }
-
-    case AsyncReplyId::SettingVolume: {
-        if (!succeeded) {
-            raiseError(tr("Audio error"),
-                       tr("Failed to change the volume (%0)")
-                           .arg(MpvController::getError(error)));
-
-            m_volume = m_previousVolume;
-
-            emit volumeChanged();
-        }
-
-        break;
-    }
-
-    case AsyncReplyId::SettingMuted: {
-        if (!succeeded) {
-            raiseError(tr("Audio error"),
-                       tr("Failed to mute the audio (%0)")
-                           .arg(MpvController::getError(error)));
-
-            m_muted = m_previousMuted;
-
-            emit mutedChanged();
-        }
-
-        break;
-    }
-    }
-}
-
-void Player::onEndFile(QString reason) {
+void Player::onFileEnded(bool failed, const QString &reason) {
     m_stabilityTimer->stop();
 
-    const bool isPlaybackError =
-        reason == QStringLiteral("error") || reason == QStringLiteral("eof");
-
-    if (isPlaybackError && shouldRetry()) {
+    if (failed && shouldRetry()) {
         setRetryAttempt(m_retryAttempt + 1);
 
         const int delay = retryDelaySeconds();
@@ -516,12 +198,19 @@ void Player::onEndFile(QString reason) {
         return;
     }
 
-    if (isPlaybackError) {
-        raiseError(tr("Playback error"),
-                   m_retryAttempt > 0
-                       ? tr("Unable to play the station after %n retries",
-                            nullptr, m_retryAttempt)
-                       : tr("An error occurred trying to play the station"));
+    if (failed) {
+        QString message;
+
+        if (m_retryAttempt > 0) {
+            message = tr("Unable to play the station after %n retries (%0)",
+                         nullptr, m_retryAttempt)
+                          .arg(reason);
+        } else {
+            message = tr("An error occurred trying to play the station (%0)")
+                          .arg(reason);
+        }
+
+        raiseError(tr("Playback error"), message);
     }
 
     setRetryAttempt(0);
@@ -615,11 +304,7 @@ int Player::retrySecondsRemaining() const {
 }
 
 QString Player::mpvVersion() const {
-    return m_mpvVersion;
-}
-
-QString Player::mpvQtVersion() {
-    return QStringLiteral(MPVQT_VERSION_STRING);
+    return m_mpv->version();
 }
 
 void Player::setStation(const Station &newStation, bool playImmediately) {
@@ -637,7 +322,9 @@ void Player::setStation(const Station &newStation, bool playImmediately) {
         if (!alreadyStopping) {
             qCDebug(lcPlayer) << "Stopping before switching station";
 
-            sendStop(AsyncReplyId::StoppingForStationChange);
+            m_mpv->stop([this](const QString &error) {
+                onStoppedForStationChange(error);
+            });
         }
 
         return;
@@ -657,11 +344,14 @@ void Player::setStation(const Station &newStation, bool playImmediately) {
     }
 }
 
-void Player::play() const {
+void Player::play() {
     qCInfo(lcPlayer) << "Loading" << m_station.streamUrl();
 
-    commandAsync({QStringLiteral("loadfile"), m_station.streamUrl()},
-                 AsyncReplyId::LoadingFile);
+    m_mpv->loadFile(m_station.streamUrl(), [](const QString &error) {
+        if (!error.isEmpty()) {
+            qCWarning(lcPlayer) << "loadfile failed:" << error;
+        }
+    });
 }
 
 void Player::stop() {
@@ -669,7 +359,14 @@ void Player::stop() {
 
     cancelRetry();
 
-    sendStop(AsyncReplyId::Stopping);
+    m_mpv->stop([this](const QString &error) {
+        if (error.isEmpty()) {
+            setState(State::Stopped);
+        } else {
+            raiseError(tr("Playback error"),
+                       tr("Failed to stop playback (%0)").arg(error));
+        }
+    });
 }
 
 void Player::setVolume(int newVolume) {
@@ -679,10 +376,21 @@ void Player::setVolume(int newVolume) {
         return;
     }
 
-    m_previousVolume = m_volume;
+    m_mpv->setVolume(
+        newVolume, [this, previous = m_volume](const QString &error) {
+            if (error.isEmpty()) {
+                return;
+            }
+
+            raiseError(tr("Audio error"),
+                       tr("Failed to change the volume (%0)").arg(error));
+
+            m_volume = previous;
+
+            emit volumeChanged();
+        });
+
     m_volume = newVolume;
-    setPropertyAsync(MpvProperties::Volume, m_volume,
-                     AsyncReplyId::SettingVolume);
 
     emit volumeChanged();
 
@@ -694,9 +402,20 @@ void Player::setMuted(bool newMuted) {
         return;
     }
 
-    m_previousMuted = m_muted;
+    m_mpv->setMuted(newMuted, [this, previous = m_muted](const QString &error) {
+        if (error.isEmpty()) {
+            return;
+        }
+
+        raiseError(tr("Audio error"),
+                   tr("Failed to mute the audio (%0)").arg(error));
+
+        m_muted = previous;
+
+        emit mutedChanged();
+    });
+
     m_muted = newMuted;
-    setPropertyAsync(MpvProperties::Mute, m_muted, AsyncReplyId::SettingMuted);
 
     emit mutedChanged();
 }

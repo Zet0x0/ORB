@@ -15,11 +15,11 @@
 <context>
     <name>Player</name>
     <message numerus="yes">
-        <location filename="../player/player.cpp" line="+505"/>
-        <source>Unable to play the station after %n retries</source>
+        <location filename="../player/player.cpp" line="+207"/>
+        <source>Unable to play the station after %n retries (%0)</source>
         <translation>
-            <numerusform>Unable to play the station after %n retry</numerusform>
-            <numerusform>Unable to play the station after %n retries</numerusform>
+            <numerusform>Unable to play the station after %n retry (%0)</numerusform>
+            <numerusform>Unable to play the station after %n retries (%0)</numerusform>
         </translation>
     </message>
 </context>

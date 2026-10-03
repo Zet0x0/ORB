@@ -64,13 +64,10 @@ endif()
 file(COPY_FILE "${MPV_EXTRACT_DIR}/libmpv-2.dll"
      "${CMAKE_CURRENT_BINARY_DIR}/bin/libmpv-2.dll" ONLY_IF_DIFFERENT)
 
-# Set CMake variables
-set(Libmpv_INCLUDE_DIRS
-    "${MPV_EXTRACT_DIR}/include"
-    CACHE PATH "Include directories for libmpv")
-set(Libmpv_LIBRARIES
-    "${MPV_EXTRACT_DIR}/libmpv.dll.a"
-    CACHE FILEPATH "Path to libmpv import library")
-set(Libmpv_RUNTIME_DLL
-    "${MPV_EXTRACT_DIR}/libmpv-2.dll"
-    CACHE FILEPATH "Path to the libmpv runtime DLL")
+# Imported target to link against
+add_library(Libmpv::Libmpv SHARED IMPORTED)
+set_target_properties(
+    Libmpv::Libmpv
+    PROPERTIES IMPORTED_LOCATION "${MPV_EXTRACT_DIR}/libmpv-2.dll"
+               IMPORTED_IMPLIB "${MPV_EXTRACT_DIR}/libmpv.dll.a"
+               INTERFACE_INCLUDE_DIRECTORIES "${MPV_EXTRACT_DIR}/include")

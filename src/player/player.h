@@ -3,15 +3,11 @@
 #include "../common/errorinfo.h"
 #include "../common/singleton.h"
 #include "../sources/station.h"
-#include <MpvController>
+#include "mpv.h"
 #include <QObject>
 #include <QQmlEngine>
 #include <QString>
-#include <QStringList>
-#include <QThread>
 #include <QTimer>
-#include <QVariant>
-#include <mpv/client.h>
 #include <optional>
 
 class Player : public QObject, public Singleton<Player> {
@@ -45,27 +41,13 @@ public:
     Q_ENUM(State)
 
 private:
-    enum class AsyncReplyId {
-        None,
-        LoadingFile,
-        Stopping,
-        StoppingForStationChange,
-        ResolvingNowPlaying,
-        SettingVolume,
-        SettingMuted
-    };
-
     struct PendingStationChange {
         Station station;
         bool shouldPlay = false;
     };
 
-    MpvController *m_mpvController = nullptr;
-    QThread *m_workerThread = nullptr;
-    mpv_handle *m_logClient = nullptr;
-    bool m_shutDown = false;
+    Mpv *m_mpv = nullptr;
 
-    std::optional<QString> m_pendingNowPlaying;
     std::optional<PendingStationChange> m_pendingStationChange;
 
     Station m_station;
@@ -77,9 +59,6 @@ private:
     int m_volume = 100;
     bool m_muted = false;
 
-    int m_previousVolume = 100;
-    bool m_previousMuted = false;
-
     ErrorInfo m_error;
 
     QTimer *m_retryTimer = nullptr;
@@ -87,36 +66,15 @@ private:
     int m_retryAttempt = 0;
     int m_retrySecondsRemaining = 0;
 
-    QString m_mpvVersion;
-
     explicit Player(QObject *parent = nullptr);
 
-    void setupConnections() const;
-    void setupObservations() const;
-    void setupLogClient();
-    void readMpvVersion();
-
-    void destroyLogClient();
-
     void shutdown();
-
-    void observePropertyAsync(const QString &property, mpv_format format,
-                              AsyncReplyId id = AsyncReplyId::None) const;
-    void getPropertyAsync(const QString &property, AsyncReplyId id) const;
-
-    void commandAsync(const QStringList &params,
-                      AsyncReplyId id = AsyncReplyId::None) const;
-
-    void setPropertyAsync(const QString &property, const QVariant &value,
-                          AsyncReplyId id = AsyncReplyId::None) const;
 
     void setNowPlaying(QString newNowPlaying);
 
     void setState(const State &newState);
     QString formatTime(double time) const;
     void setElapsed(const QString &newElapsed);
-
-    void sendStop(AsyncReplyId id) const;
 
     void setError(const ErrorInfo &error);
     void raiseError(const QString &title, const QString &message);
@@ -130,16 +88,12 @@ private:
     void startRetryCountdown(int seconds);
     void stopRetryCountdown();
 
+    void onStoppedForStationChange(const QString &error);
+
 private slots:
-    void readLogMessages();
-
-    void onPropertyChanged(const QString &property, const QVariant &value);
-
-    void onAsyncReply(const QVariant &data, mpv_event event);
-
-    void onEndFile(QString reason);
     void onFileStarted();
     void onFileLoaded();
+    void onFileEnded(bool failed, const QString &reason);
 
     void onRetryTick();
     void onPlaybackStable();
@@ -162,12 +116,11 @@ public:
     int retrySecondsRemaining() const;
 
     Q_INVOKABLE QString mpvVersion() const;
-    Q_INVOKABLE static QString mpvQtVersion();
 
 public slots:
     void setStation(const Station &newStation, bool playImmediately = false);
 
-    void play() const;
+    void play();
     void stop();
 
     void setVolume(int newVolume);

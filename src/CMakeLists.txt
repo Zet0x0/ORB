@@ -9,8 +9,6 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_AUTORCC ON)
 
-set(BUILD_SHARED_LIBS ON)
-
 include("cmake/DownloadLibmpv.cmake")
 include("cmake/DownloadTablerIcons.cmake")
 
@@ -18,9 +16,6 @@ find_package(Qt6 REQUIRED COMPONENTS Quick QuickControls2 LabsPlatform
                                      LinguistTools)
 
 qt_standard_project_setup(REQUIRES 6.11)
-
-add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/../external/mpvqt"
-                 "${CMAKE_CURRENT_BINARY_DIR}/external/mpvqt" EXCLUDE_FROM_ALL)
 
 set(SOURCES ORB.rc main.cpp)
 qt_add_big_resources(SOURCES style/icons/icons.qrc)
@@ -58,19 +53,14 @@ set_target_properties(
     ORB PROPERTIES WIN32_EXECUTABLE TRUE RUNTIME_OUTPUT_DIRECTORY
                                          "${CMAKE_CURRENT_BINARY_DIR}/bin")
 
-set_property(DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/../external/mpvqt"
-             PROPERTY QT_EXCLUDE_FROM_TRANSLATION ON)
 qt_add_translations(ORB TS_OUTPUT_DIRECTORY translations LUPDATE_OPTIONS
                     -locations relative)
 
 set(CMAKE_INSTALL_BINDIR ".")
 include(GNUInstallDirs)
 install(TARGETS ORB RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}")
-install(FILES "${Libmpv_RUNTIME_DLL}" DESTINATION "${CMAKE_INSTALL_BINDIR}")
-
-if(BUILD_SHARED_LIBS)
-    install(FILES "$<TARGET_FILE:MpvQt>" DESTINATION "${CMAKE_INSTALL_BINDIR}")
-endif()
+install(FILES "$<TARGET_FILE:Libmpv::Libmpv>"
+        DESTINATION "${CMAKE_INSTALL_BINDIR}")
 
 qt_generate_deploy_app_script(
     TARGET
