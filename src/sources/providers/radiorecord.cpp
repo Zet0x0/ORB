@@ -8,6 +8,24 @@
 #include <QJsonValue>
 #include <QNetworkRequest>
 
+void RadioRecord::cancelSearch() {
+    if (!m_runningReply) {
+        return;
+    }
+
+    m_runningReply->abort();
+
+    emit searchCancelled();
+}
+
+bool RadioRecord::hasDefaultStations() const {
+    return true;
+}
+
+QString RadioRecord::websiteUrl() const {
+    return RadioRecordConstants::WebsiteUrl.toString();
+}
+
 QJsonArray
 RadioRecord::extractStationsFromJson(const QJsonDocument &json) const {
     return json.object()
@@ -83,32 +101,6 @@ void RadioRecord::handleLoadDefaultStations() {
         request, this, &RadioRecord::onDefaultStationsRequestFinished);
 }
 
-bool RadioRecord::finishReply(QRestReply &reply, QJsonDocument *json) {
-    m_runningReply = nullptr;
-
-    const QString url = reply.networkReply()->url().toDisplayString();
-
-    // aborted by cancelSearch(), which isn't an error
-    if (reply.error() == QNetworkReply::OperationCanceledError) {
-        qCDebug(lcSources) << "Request to" << url << "was cancelled";
-
-        return false;
-    }
-
-    if (!reply.isSuccess()) {
-        qCWarning(lcSources).nospace()
-            << "Request to " << url << " failed (" << reply.error()
-            << ", HTTP status " << reply.httpStatus()
-            << "): " << reply.errorString();
-
-        raiseError(tr("Search error"), reply.networkReply()->errorString());
-
-        return false;
-    }
-
-    return parseJson(reply, json);
-}
-
 void RadioRecord::handleStationsEndpointResult(const QJsonDocument &json) {
     const QJsonArray rawStations = extractStationsFromJson(json);
     QList<Station> stations;
@@ -145,6 +137,32 @@ void RadioRecord::handleSearchEndpointResult(const QJsonDocument &json) {
     emit stationsDispatched(stations);
 }
 
+bool RadioRecord::finishReply(QRestReply &reply, QJsonDocument *json) {
+    m_runningReply = nullptr;
+
+    const QString url = reply.networkReply()->url().toDisplayString();
+
+    // aborted by cancelSearch(), which isn't an error
+    if (reply.error() == QNetworkReply::OperationCanceledError) {
+        qCDebug(lcSources) << "Request to" << url << "was cancelled";
+
+        return false;
+    }
+
+    if (!reply.isSuccess()) {
+        qCWarning(lcSources).nospace()
+            << "Request to " << url << " failed (" << reply.error()
+            << ", HTTP status " << reply.httpStatus()
+            << "): " << reply.errorString();
+
+        raiseError(tr("Search error"), reply.networkReply()->errorString());
+
+        return false;
+    }
+
+    return parseJson(reply, json);
+}
+
 void RadioRecord::onSearchRequestFinished(QRestReply &reply) {
     QJsonDocument json;
 
@@ -159,22 +177,4 @@ void RadioRecord::onDefaultStationsRequestFinished(QRestReply &reply) {
     if (finishReply(reply, &json)) {
         handleStationsEndpointResult(json);
     }
-}
-
-void RadioRecord::cancelSearch() {
-    if (!m_runningReply) {
-        return;
-    }
-
-    m_runningReply->abort();
-
-    emit searchCancelled();
-}
-
-bool RadioRecord::hasDefaultStations() const {
-    return true;
-}
-
-QString RadioRecord::websiteUrl() const {
-    return RadioRecordConstants::WebsiteUrl.toString();
 }

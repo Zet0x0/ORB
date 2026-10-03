@@ -42,6 +42,27 @@ public:
     enum Role { TimestampRole = Qt::UserRole, LevelRole, LineTextRole };
     Q_ENUM(Role)
 
+    static void install();
+
+    int rowCount(const QModelIndex &parent = QModelIndex()) const override;
+    int columnCount(const QModelIndex &parent = QModelIndex()) const override;
+    QVariant data(const QModelIndex &index, int role) const override;
+    QVariant headerData(int section, Qt::Orientation orientation,
+                        int role) const override;
+    QHash<int, QByteArray> roleNames() const override;
+
+    int count() const;
+    QUrl directoryUrl() const;
+
+    void setMaxEntries(int newMaxEntries);
+    void setMaxFiles(int maxFiles);
+
+    // uses QLoggingCategory::setFilterRules
+    static void setFilterRules(const QString &rules);
+
+signals:
+    void countChanged();
+
 private:
     struct Entry {
         QDateTime timestamp;
@@ -79,26 +100,4 @@ private:
     void writeToFile(const QString &line);
 
     void appendEntry(Entry entry);
-
-public:
-    static void install();
-
-    int rowCount(const QModelIndex &parent = QModelIndex()) const override;
-    int columnCount(const QModelIndex &parent = QModelIndex()) const override;
-    QVariant data(const QModelIndex &index, int role) const override;
-    QVariant headerData(int section, Qt::Orientation orientation,
-                        int role) const override;
-    QHash<int, QByteArray> roleNames() const override;
-
-    int count() const;
-    QUrl directoryUrl() const;
-
-    void setMaxEntries(int newMaxEntries);
-    void setMaxFiles(int maxFiles);
-
-    // uses QLoggingCategory::setFilterRules
-    static void setFilterRules(const QString &rules);
-
-signals:
-    void countChanged();
 };

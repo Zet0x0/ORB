@@ -5,33 +5,6 @@
 #include <QSet>
 #include <utility>
 
-void SettingsCategoryModel::rebuildCategories() {
-    m_categories.clear();
-
-    const QList<SettingsGroup *> groups = SettingsIntrospection::groups();
-
-    QSet<QByteArray> usedIds;
-
-    for (const SettingsGroup *group : groups) {
-        const QList<SettingsIntrospection::ResolvedField> fields =
-            SettingsIntrospection::resolvedFields(group);
-
-        for (const SettingsIntrospection::ResolvedField &field :
-             std::as_const(fields)) {
-            usedIds.insert(field.categoryId);
-        }
-    }
-
-    // only show categories that have UI-shown fields in them,
-    // in the order from settingscategories.h
-    for (const char *id : SettingsCategory::Order) {
-        if (usedIds.contains(id)) {
-            m_categories.append(
-                {.id = id, .name = SettingsIntrospection::categoryName(id)});
-        }
-    }
-}
-
 SettingsCategoryModel::SettingsCategoryModel(QObject *parent)
     : QAbstractListModel(parent) {
     rebuildCategories();
@@ -66,4 +39,31 @@ QHash<int, QByteArray> SettingsCategoryModel::roleNames() const {
         {IdRole, QByteArrayLiteral("categoryId")}};
 
     return roles;
+}
+
+void SettingsCategoryModel::rebuildCategories() {
+    m_categories.clear();
+
+    const QList<SettingsGroup *> groups = SettingsIntrospection::groups();
+
+    QSet<QByteArray> usedIds;
+
+    for (const SettingsGroup *group : groups) {
+        const QList<SettingsIntrospection::ResolvedField> fields =
+            SettingsIntrospection::resolvedFields(group);
+
+        for (const SettingsIntrospection::ResolvedField &field :
+             std::as_const(fields)) {
+            usedIds.insert(field.categoryId);
+        }
+    }
+
+    // only show categories that have UI-shown fields in them,
+    // in the order from settingscategories.h
+    for (const char *id : SettingsCategory::Order) {
+        if (usedIds.contains(id)) {
+            m_categories.append(
+                {.id = id, .name = SettingsIntrospection::categoryName(id)});
+        }
+    }
 }

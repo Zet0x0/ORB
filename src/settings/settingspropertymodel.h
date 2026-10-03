@@ -18,37 +18,6 @@ class SettingsPropertyModel : public QAbstractListModel {
     Q_PROPERTY(bool hasPendingChanges READ hasPendingChanges NOTIFY
                    hasPendingChangesChanged FINAL)
 
-private:
-    struct Entry {
-        QObject *target;
-        QMetaProperty property;
-        QString label;
-        QString description;
-        QByteArray subcategoryId;
-        QString subcategory;
-
-        int min;
-        int max;
-        int step;
-    };
-
-    struct PendingChange {
-        QObject *target;
-        QMetaProperty property;
-        QVariant value;
-    };
-
-    QByteArray m_categoryId;
-    QList<Entry> m_entries;
-    QList<PendingChange> m_pendingChanges;
-
-    void rebuildEntries();
-    void clearPendingChanges();
-    int pendingChangeIndex(QObject *target,
-                           const QMetaProperty &property) const;
-
-    static QString propertyType(const QMetaProperty &property);
-
 public:
     enum PropertyRoles {
         NameRole = Qt::UserRole,
@@ -89,4 +58,35 @@ public:
 signals:
     void categoryIdChanged();
     void hasPendingChangesChanged();
+
+private:
+    struct Entry {
+        QObject *target;
+        QMetaProperty property;
+        QString label;
+        QString description;
+        QByteArray subcategoryId;
+        QString subcategory;
+
+        int min;
+        int max;
+        int step;
+    };
+
+    struct PendingChange {
+        QObject *target;
+        QMetaProperty property;
+        QVariant value;
+    };
+
+    QByteArray m_categoryId;
+    QList<Entry> m_entries;
+    QList<PendingChange> m_pendingChanges;
+
+    void rebuildEntries();
+    void clearPendingChanges();
+    int pendingChangeIndex(QObject *target,
+                           const QMetaProperty &property) const;
+
+    static QString propertyType(const QMetaProperty &property);
 };

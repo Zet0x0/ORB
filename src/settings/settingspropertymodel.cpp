@@ -6,96 +6,6 @@
 #include <algorithm>
 #include <utility>
 
-void SettingsPropertyModel::rebuildEntries() {
-    m_entries.clear();
-
-    if (m_categoryId.isEmpty()) {
-        return;
-    }
-
-    const QList<SettingsGroup *> groups = SettingsIntrospection::groups();
-
-    for (SettingsGroup *group : groups) {
-        const QList<SettingsIntrospection::ResolvedField> fields =
-            SettingsIntrospection::resolvedFields(group);
-
-        for (const SettingsIntrospection::ResolvedField &field :
-             std::as_const(fields)) {
-            if (field.categoryId != m_categoryId) {
-                continue;
-            }
-
-            m_entries.append({.target = group,
-                              .property = field.property,
-                              .label = field.label,
-                              .description = field.description,
-                              .subcategoryId = field.subcategoryId,
-                              .subcategory = field.subcategory,
-                              .min = field.min,
-                              .max = field.max,
-                              .step = field.step});
-        }
-    }
-
-    // Fields without a subcategory go first, then go the subcategories in
-    // declared order
-    QList<QByteArray> subcategoryOrder{QByteArray()};
-
-    for (const Entry &entry : std::as_const(m_entries)) {
-        if (!subcategoryOrder.contains(entry.subcategoryId)) {
-            subcategoryOrder.append(entry.subcategoryId);
-        }
-    }
-
-    std::stable_sort(m_entries.begin(), m_entries.end(),
-                     [&subcategoryOrder](const Entry &a, const Entry &b) {
-                         return subcategoryOrder.indexOf(a.subcategoryId) <
-                                subcategoryOrder.indexOf(b.subcategoryId);
-                     });
-}
-
-void SettingsPropertyModel::clearPendingChanges() {
-    if (m_pendingChanges.isEmpty()) {
-        return;
-    }
-
-    m_pendingChanges.clear();
-
-    if (!m_entries.isEmpty()) {
-        emit dataChanged(index(0), index(m_entries.size() - 1), {ValueRole});
-    }
-
-    emit hasPendingChangesChanged();
-}
-
-int
-SettingsPropertyModel::pendingChangeIndex(QObject *target,
-                                          const QMetaProperty &property) const {
-    for (int i = 0; i < m_pendingChanges.size(); ++i) {
-        const PendingChange &change = m_pendingChanges.at(i);
-
-        if (change.target == target &&
-            change.property.propertyIndex() == property.propertyIndex()) {
-            return i;
-        }
-    }
-
-    return -1;
-}
-
-QString SettingsPropertyModel::propertyType(const QMetaProperty &property) {
-    switch (property.metaType().id()) {
-    case QMetaType::Bool:
-        return QStringLiteral("bool");
-
-    case QMetaType::Int:
-        return QStringLiteral("int");
-
-    default:
-        return QStringLiteral("string");
-    }
-}
-
 SettingsPropertyModel::SettingsPropertyModel(QObject *parent)
     : QAbstractListModel(parent) {}
 
@@ -258,4 +168,94 @@ void SettingsPropertyModel::applyChanges() {
 
 void SettingsPropertyModel::discardChanges() {
     clearPendingChanges();
+}
+
+void SettingsPropertyModel::rebuildEntries() {
+    m_entries.clear();
+
+    if (m_categoryId.isEmpty()) {
+        return;
+    }
+
+    const QList<SettingsGroup *> groups = SettingsIntrospection::groups();
+
+    for (SettingsGroup *group : groups) {
+        const QList<SettingsIntrospection::ResolvedField> fields =
+            SettingsIntrospection::resolvedFields(group);
+
+        for (const SettingsIntrospection::ResolvedField &field :
+             std::as_const(fields)) {
+            if (field.categoryId != m_categoryId) {
+                continue;
+            }
+
+            m_entries.append({.target = group,
+                              .property = field.property,
+                              .label = field.label,
+                              .description = field.description,
+                              .subcategoryId = field.subcategoryId,
+                              .subcategory = field.subcategory,
+                              .min = field.min,
+                              .max = field.max,
+                              .step = field.step});
+        }
+    }
+
+    // Fields without a subcategory go first, then go the subcategories in
+    // declared order
+    QList<QByteArray> subcategoryOrder{QByteArray()};
+
+    for (const Entry &entry : std::as_const(m_entries)) {
+        if (!subcategoryOrder.contains(entry.subcategoryId)) {
+            subcategoryOrder.append(entry.subcategoryId);
+        }
+    }
+
+    std::stable_sort(m_entries.begin(), m_entries.end(),
+                     [&subcategoryOrder](const Entry &a, const Entry &b) {
+                         return subcategoryOrder.indexOf(a.subcategoryId) <
+                                subcategoryOrder.indexOf(b.subcategoryId);
+                     });
+}
+
+void SettingsPropertyModel::clearPendingChanges() {
+    if (m_pendingChanges.isEmpty()) {
+        return;
+    }
+
+    m_pendingChanges.clear();
+
+    if (!m_entries.isEmpty()) {
+        emit dataChanged(index(0), index(m_entries.size() - 1), {ValueRole});
+    }
+
+    emit hasPendingChangesChanged();
+}
+
+int
+SettingsPropertyModel::pendingChangeIndex(QObject *target,
+                                          const QMetaProperty &property) const {
+    for (int i = 0; i < m_pendingChanges.size(); ++i) {
+        const PendingChange &change = m_pendingChanges.at(i);
+
+        if (change.target == target &&
+            change.property.propertyIndex() == property.propertyIndex()) {
+            return i;
+        }
+    }
+
+    return -1;
+}
+
+QString SettingsPropertyModel::propertyType(const QMetaProperty &property) {
+    switch (property.metaType().id()) {
+    case QMetaType::Bool:
+        return QStringLiteral("bool");
+
+    case QMetaType::Int:
+        return QStringLiteral("int");
+
+    default:
+        return QStringLiteral("string");
+    }
 }

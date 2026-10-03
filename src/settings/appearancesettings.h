@@ -12,9 +12,6 @@ class AppearanceSettings : public SettingsGroup {
     Q_PROPERTY(bool slidingLabels READ slidingLabels WRITE setSlidingLabels
                    NOTIFY slidingLabelsChanged FINAL)
 
-private:
-    bool m_slidingLabels;
-
 public:
     explicit AppearanceSettings(QObject *parent = nullptr);
 
@@ -25,4 +22,7 @@ public:
 
 signals:
     void slidingLabelsChanged();
+
+private:
+    bool m_slidingLabels;
 };

@@ -18,12 +18,6 @@ class LoggingSettings : public SettingsGroup {
     Q_PROPERTY(QString filterRules READ filterRules WRITE setFilterRules NOTIFY
                    filterRulesChanged FINAL)
 
-private:
-    int m_maxEntries;
-    int m_maxFiles;
-
-    QString m_filterRules;
-
 public:
     explicit LoggingSettings(QObject *parent = nullptr);
 
@@ -43,4 +37,10 @@ signals:
     void maxFilesChanged();
 
     void filterRulesChanged();
+
+private:
+    int m_maxEntries;
+    int m_maxFiles;
+
+    QString m_filterRules;
 };

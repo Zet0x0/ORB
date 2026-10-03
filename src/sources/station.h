@@ -16,15 +16,6 @@ struct Station {
     Q_PROPERTY(QString streamUrl READ streamUrl WRITE setStreamUrl FINAL)
     Q_PROPERTY(QString imageUrl READ imageUrl WRITE setImageUrl FINAL)
 
-private:
-    bool m_valid = false;
-
-    QString m_name;
-    QString m_streamUrl;
-    QString m_imageUrl;
-
-    void setValid(bool newValid);
-
 public:
     Station(const QString &name = QString(),
             const QString &streamUrl = QString(),
@@ -43,4 +34,13 @@ public:
     static Station fromMap(const QVariantMap &map);
 
     bool operator==(const Station &other) const;
+
+private:
+    bool m_valid = false;
+
+    QString m_name;
+    QString m_streamUrl;
+    QString m_imageUrl;
+
+    void setValid(bool newValid);
 };

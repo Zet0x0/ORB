@@ -24,6 +24,14 @@ class Settings : public QObject, public Singleton<Settings> {
 
     friend class Singleton<Settings>;
 
+public:
+    WindowSettings *window() const;
+    SourcesSettings *sources() const;
+    PlayerSettings *player() const;
+    TraySettings *tray() const;
+    AppearanceSettings *appearance() const;
+    LoggingSettings *logging() const;
+
 private:
     WindowSettings *m_window;
     SourcesSettings *m_sources;
@@ -33,12 +41,4 @@ private:
     LoggingSettings *m_logging;
 
     explicit Settings(QObject *parent = nullptr);
-
-public:
-    WindowSettings *window() const;
-    SourcesSettings *sources() const;
-    PlayerSettings *player() const;
-    TraySettings *tray() const;
-    AppearanceSettings *appearance() const;
-    LoggingSettings *logging() const;
 };

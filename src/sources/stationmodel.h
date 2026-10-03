@@ -12,9 +12,6 @@ class StationModel : public QAbstractListModel {
     Q_OBJECT
     QML_ELEMENT
 
-private:
-    QList<Station> m_stations;
-
 public:
     enum StationRoles { StationRole = Qt::UserRole };
     Q_ENUM(StationRoles)
@@ -34,4 +31,7 @@ public:
 
     void setStations(const QList<Station> &stations);
     void clear();
+
+private:
+    QList<Station> m_stations;
 };

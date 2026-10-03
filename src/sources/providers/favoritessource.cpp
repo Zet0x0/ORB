@@ -6,6 +6,16 @@ FavoritesSource::FavoritesSource() {
             &FavoritesSource::dispatch);
 }
 
+void FavoritesSource::cancelSearch() {}
+
+bool FavoritesSource::hasDefaultStations() const {
+    return true;
+}
+
+QString FavoritesSource::websiteUrl() const {
+    return QString();
+}
+
 QList<Station> FavoritesSource::filtered() const {
     const QList<Station> all = Favorites::instance()->stations();
 
@@ -47,14 +57,4 @@ void FavoritesSource::handleLoadDefaultStations() {
     m_query.clear();
 
     dispatch();
-}
-
-void FavoritesSource::cancelSearch() {}
-
-bool FavoritesSource::hasDefaultStations() const {
-    return true;
-}
-
-QString FavoritesSource::websiteUrl() const {
-    return QString();
 }

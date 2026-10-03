@@ -40,6 +40,52 @@ public:
     enum class State { Stopped, Loading, Playing, Retrying };
     Q_ENUM(State)
 
+    ~Player();
+
+    Station station() const;
+    QString nowPlaying() const;
+
+    State state() const;
+    QString elapsed() const;
+
+    int volume() const;
+    bool muted() const;
+
+    ErrorInfo error() const;
+
+    int retryAttempt() const;
+    int retrySecondsRemaining() const;
+
+    Q_INVOKABLE QString mpvVersion() const;
+
+signals:
+    void stationChanged();
+    void nowPlayingChanged();
+
+    void stateChanged();
+    void elapsedChanged();
+
+    void volumeChanged();
+    void mutedChanged();
+
+    void errorChanged();
+
+    void retryAttemptChanged();
+    void retrySecondsRemainingChanged();
+
+public slots:
+    void setStation(const Station &newStation, bool playImmediately = false);
+
+    void play();
+    void stop();
+
+    void setVolume(int newVolume);
+    void setMuted(bool newMuted);
+
+    void clearError();
+
+    void retryNow();
+
 private:
     struct PendingStationChange {
         Station station;
@@ -97,51 +143,4 @@ private slots:
 
     void onRetryTick();
     void onPlaybackStable();
-
-public:
-    ~Player();
-
-    Station station() const;
-    QString nowPlaying() const;
-
-    State state() const;
-    QString elapsed() const;
-
-    int volume() const;
-    bool muted() const;
-
-    ErrorInfo error() const;
-
-    int retryAttempt() const;
-    int retrySecondsRemaining() const;
-
-    Q_INVOKABLE QString mpvVersion() const;
-
-public slots:
-    void setStation(const Station &newStation, bool playImmediately = false);
-
-    void play();
-    void stop();
-
-    void setVolume(int newVolume);
-    void setMuted(bool newMuted);
-
-    void clearError();
-
-    void retryNow();
-
-signals:
-    void stationChanged();
-    void nowPlayingChanged();
-
-    void stateChanged();
-    void elapsedChanged();
-
-    void volumeChanged();
-    void mutedChanged();
-
-    void errorChanged();
-
-    void retryAttemptChanged();
-    void retrySecondsRemainingChanged();
 };

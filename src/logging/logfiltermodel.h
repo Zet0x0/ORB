@@ -18,13 +18,6 @@ class LogFilterModel : public QSortFilterProxyModel {
     Q_PROPERTY(
         Qt::SortOrder sortedOrder READ sortedOrder NOTIFY sortChanged FINAL)
 
-private:
-    int m_levelMask = ~0;
-
-    QString m_query;
-
-    bool showsLevel(int level) const;
-
 public:
     explicit LogFilterModel(QObject *parent = nullptr);
 
@@ -54,4 +47,11 @@ protected:
                           const QModelIndex &sourceParent) const override;
     bool lessThan(const QModelIndex &left,
                   const QModelIndex &right) const override;
+
+private:
+    int m_levelMask = ~0;
+
+    QString m_query;
+
+    bool showsLevel(int level) const;
 };

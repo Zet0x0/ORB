@@ -4,10 +4,6 @@
 #include <QStringList>
 #include <bit>
 
-bool LogFilterModel::showsLevel(int level) const {
-    return (m_levelMask & (1 << level)) != 0;
-}
-
 LogFilterModel::LogFilterModel(QObject *parent)
     : QSortFilterProxyModel(parent) {
     setSourceModel(Logger::instance());
@@ -131,4 +127,8 @@ bool LogFilterModel::lessThan(const QModelIndex &left,
                                 right.data(Qt::DisplayRole).toString(),
                                 Qt::CaseInsensitive) < 0;
     }
+}
+
+bool LogFilterModel::showsLevel(int level) const {
+    return (m_levelMask & (1 << level)) != 0;
 }

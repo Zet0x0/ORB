@@ -1,12 +1,5 @@
 #include "settings.h"
 
-Settings::Settings(QObject *parent)
-    : QObject(parent), m_window(new WindowSettings(this)),
-      m_sources(new SourcesSettings(this)), m_player(new PlayerSettings(this)),
-      m_tray(new TraySettings(this)),
-      m_appearance(new AppearanceSettings(this)),
-      m_logging(new LoggingSettings(this)) {}
-
 WindowSettings *Settings::window() const {
     return m_window;
 }
@@ -30,3 +23,10 @@ AppearanceSettings *Settings::appearance() const {
 LoggingSettings *Settings::logging() const {
     return m_logging;
 }
+
+Settings::Settings(QObject *parent)
+    : QObject(parent), m_window(new WindowSettings(this)),
+      m_sources(new SourcesSettings(this)), m_player(new PlayerSettings(this)),
+      m_tray(new TraySettings(this)),
+      m_appearance(new AppearanceSettings(this)),
+      m_logging(new LoggingSettings(this)) {}

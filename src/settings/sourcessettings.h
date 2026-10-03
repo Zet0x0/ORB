@@ -11,9 +11,6 @@ class SourcesSettings : public SettingsGroup {
     Q_PROPERTY(QString lastSearchSource READ lastSearchSource WRITE
                    setLastSearchSource NOTIFY lastSearchSourceChanged FINAL)
 
-private:
-    QString m_lastSearchSource;
-
 public:
     explicit SourcesSettings(QObject *parent = nullptr);
 
@@ -22,4 +19,7 @@ public:
 
 signals:
     void lastSearchSourceChanged();
+
+private:
+    QString m_lastSearchSource;
 };

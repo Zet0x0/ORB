@@ -12,16 +12,6 @@ class SettingsCategoryModel : public QAbstractListModel {
     Q_OBJECT
     QML_ELEMENT
 
-private:
-    struct Category {
-        QByteArray id;
-        QString name;
-    };
-
-    QList<Category> m_categories;
-
-    void rebuildCategories();
-
 public:
     enum CategoryRoles { NameRole = Qt::UserRole, IdRole };
     Q_ENUM(CategoryRoles)
@@ -35,4 +25,14 @@ public:
                               int role) const override;
 
     QHash<int, QByteArray> roleNames() const override;
+
+private:
+    struct Category {
+        QByteArray id;
+        QString name;
+    };
+
+    QList<Category> m_categories;
+
+    void rebuildCategories();
 };

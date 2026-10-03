@@ -22,15 +22,6 @@ class PlayerSettings : public SettingsGroup {
     Q_PROPERTY(int maxRetries READ maxRetries WRITE setMaxRetries NOTIFY
                    maxRetriesChanged FINAL)
 
-private:
-    Station m_lastStation;
-
-    int m_volume;
-    bool m_muted;
-
-    bool m_retryOnError;
-    int m_maxRetries;
-
 public:
     explicit PlayerSettings(QObject *parent = nullptr);
 
@@ -57,4 +48,13 @@ signals:
 
     void retryOnErrorChanged();
     void maxRetriesChanged();
+
+private:
+    Station m_lastStation;
+
+    int m_volume;
+    bool m_muted;
+
+    bool m_retryOnError;
+    int m_maxRetries;
 };

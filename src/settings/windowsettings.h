@@ -17,16 +17,6 @@ class WindowSettings : public SettingsGroup {
     Q_PROPERTY(
         int height READ height WRITE setHeight NOTIFY heightChanged FINAL)
 
-private:
-    int m_x;
-    int m_y;
-    bool m_hasPosition = false;
-
-    int m_width;
-    int m_height;
-
-    void refreshHasPosition();
-
 public:
     explicit WindowSettings(QObject *parent = nullptr);
 
@@ -49,4 +39,14 @@ signals:
 
     void widthChanged();
     void heightChanged();
+
+private:
+    int m_x;
+    int m_y;
+    bool m_hasPosition = false;
+
+    int m_width;
+    int m_height;
+
+    void refreshHasPosition();
 };

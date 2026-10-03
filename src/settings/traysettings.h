@@ -15,11 +15,6 @@ class TraySettings : public SettingsGroup {
     Q_PROPERTY(bool closeToTray READ closeToTray WRITE setCloseToTray NOTIFY
                    closeToTrayChanged FINAL)
 
-private:
-    bool m_enabled;
-
-    bool m_closeToTray;
-
 public:
     explicit TraySettings(QObject *parent = nullptr);
 
@@ -35,4 +30,9 @@ signals:
     void enabledChanged();
 
     void closeToTrayChanged();
+
+private:
+    bool m_enabled;
+
+    bool m_closeToTray;
 };

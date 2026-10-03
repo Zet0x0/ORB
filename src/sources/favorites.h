@@ -16,17 +16,6 @@ class Favorites : public QObject, public Singleton<Favorites> {
 
     friend class Singleton<Favorites>;
 
-private:
-    QString m_filePath;
-    QList<Station> m_stations;
-
-    explicit Favorites(QObject *parent = nullptr);
-
-    int indexOf(const Station &station) const;
-
-    void load();
-    void persist() const;
-
 public:
     int count() const;
 
@@ -39,4 +28,15 @@ public:
 
 signals:
     void changed();
+
+private:
+    QString m_filePath;
+    QList<Station> m_stations;
+
+    explicit Favorites(QObject *parent = nullptr);
+
+    int indexOf(const Station &station) const;
+
+    void load();
+    void persist() const;
 };

@@ -11,6 +11,57 @@
 #include <QSaveFile>
 #include <QStandardPaths>
 
+int Favorites::count() const {
+    return m_stations.size();
+}
+
+QList<Station> Favorites::stations() const {
+    return m_stations;
+}
+
+bool Favorites::contains(const Station &station) const {
+    return indexOf(station) != -1;
+}
+
+void Favorites::add(const Station &station) {
+    if (!station.isValid() || indexOf(station) != -1) {
+        return;
+    }
+
+    m_stations.append(station);
+
+    qCInfo(lcFavorites) << "Added" << station.name() << station.streamUrl();
+
+    persist();
+
+    emit changed();
+}
+
+void Favorites::remove(const Station &station) {
+    const int index = indexOf(station);
+
+    if (index == -1) {
+        return;
+    }
+
+    qCInfo(lcFavorites) << "Removed" << m_stations.at(index).name()
+                        << m_stations.at(index).streamUrl();
+
+    m_stations.removeAt(index);
+
+    persist();
+
+    emit changed();
+}
+
+void Favorites::toggle(const Station &station) {
+    if (contains(station)) {
+        remove(station);
+    } else {
+        add(station);
+    }
+}
+
 Favorites::Favorites(QObject *parent)
     : QObject(parent),
       m_filePath(QDir(QStandardPaths::writableLocation(
@@ -114,55 +165,4 @@ void Favorites::persist() const {
 
     qCDebug(lcFavorites) << "Saved" << m_stations.size() << "favorites to"
                          << m_filePath;
-}
-
-int Favorites::count() const {
-    return m_stations.size();
-}
-
-QList<Station> Favorites::stations() const {
-    return m_stations;
-}
-
-bool Favorites::contains(const Station &station) const {
-    return indexOf(station) != -1;
-}
-
-void Favorites::add(const Station &station) {
-    if (!station.isValid() || indexOf(station) != -1) {
-        return;
-    }
-
-    m_stations.append(station);
-
-    qCInfo(lcFavorites) << "Added" << station.name() << station.streamUrl();
-
-    persist();
-
-    emit changed();
-}
-
-void Favorites::remove(const Station &station) {
-    const int index = indexOf(station);
-
-    if (index == -1) {
-        return;
-    }
-
-    qCInfo(lcFavorites) << "Removed" << m_stations.at(index).name()
-                        << m_stations.at(index).streamUrl();
-
-    m_stations.removeAt(index);
-
-    persist();
-
-    emit changed();
-}
-
-void Favorites::toggle(const Station &station) {
-    if (contains(station)) {
-        remove(station);
-    } else {
-        add(station);
-    }
 }

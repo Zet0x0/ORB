@@ -12,19 +12,6 @@ WindowSettings::WindowSettings(QObject *parent)
     m_height = SettingsIO::readInt(m_settings, QStringLiteral("height"), 480);
 }
 
-void WindowSettings::refreshHasPosition() {
-    const bool newHasPosition = m_settings->contains(QStringLiteral("x")) &&
-                                m_settings->contains(QStringLiteral("y"));
-
-    if (m_hasPosition == newHasPosition) {
-        return;
-    }
-
-    m_hasPosition = newHasPosition;
-
-    emit hasPositionChanged();
-}
-
 int WindowSettings::x() const {
     return m_x;
 }
@@ -103,4 +90,17 @@ void WindowSettings::setHeight(int newHeight) {
     SettingsIO::write(m_settings, QStringLiteral("height"), m_height);
 
     emit heightChanged();
+}
+
+void WindowSettings::refreshHasPosition() {
+    const bool newHasPosition = m_settings->contains(QStringLiteral("x")) &&
+                                m_settings->contains(QStringLiteral("y"));
+
+    if (m_hasPosition == newHasPosition) {
+        return;
+    }
+
+    m_hasPosition = newHasPosition;
+
+    emit hasPositionChanged();
 }

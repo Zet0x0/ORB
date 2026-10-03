@@ -1,10 +1,6 @@
 #include "station.h"
 #include "../common/utilities.h"
 
-void Station::setValid(bool newValid) {
-    m_valid = newValid;
-}
-
 Station::Station(const QString &name, const QString &streamUrl,
                  const QString &imageUrl) {
     setName(name);
@@ -64,4 +60,8 @@ bool Station::operator==(const Station &other) const {
     return this->name() == other.name() &&
            this->streamUrl() == other.streamUrl() &&
            this->imageUrl() == other.imageUrl();
+}
+
+void Station::setValid(bool newValid) {
+    m_valid = newValid;
 }

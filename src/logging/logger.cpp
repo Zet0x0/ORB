@@ -13,6 +13,170 @@
 #include <QVariant>
 #include <utility>
 
+void Logger::install() {
+    Logger *self = Logger::instance();
+
+    QJSEngine::setObjectOwnership(self, QJSEngine::CppOwnership);
+
+    self->m_guiThread = QThread::currentThread();
+    self->m_previousHandler = qInstallMessageHandler(&Logger::messageHandler);
+
+    self->openLogFile();
+}
+
+int Logger::rowCount(const QModelIndex &parent) const {
+    return parent.isValid() ? 0 : m_entries.size();
+}
+
+int Logger::columnCount(const QModelIndex &parent) const {
+    return parent.isValid() ? 0 : ColumnCount;
+}
+
+QVariant Logger::data(const QModelIndex &index, int role) const {
+    if (!index.isValid() || index.row() < 0 ||
+        index.row() >= m_entries.size()) {
+        return QVariant();
+    }
+
+    const Entry &entry = m_entries.at(index.row());
+
+    switch (role) {
+    case Qt::DisplayRole:
+        switch (index.column()) {
+        case TimeColumn:
+            return entry.timestamp.toString(QStringLiteral("HH:mm:ss.zzz"));
+
+        case LevelColumn:
+            return levelName(entry.level);
+
+        case CategoryColumn:
+            return entry.category;
+
+        case MessageColumn:
+            return entry.message;
+
+        default:
+            return QVariant();
+        }
+
+    case TimestampRole:
+        return entry.timestamp;
+
+    case LevelRole:
+        return entry.level;
+
+    case LineTextRole:
+        return formatLine(entry.timestamp, entry.level, entry.category,
+                          entry.message);
+
+    default:
+        return QVariant();
+    }
+}
+
+QVariant Logger::headerData(int section, Qt::Orientation orientation,
+                            int role) const {
+    if (orientation != Qt::Horizontal || role != Qt::DisplayRole) {
+        return QAbstractTableModel::headerData(section, orientation, role);
+    }
+
+    switch (section) {
+    case TimeColumn:
+        return tr("Time");
+    case LevelColumn:
+        return tr("Level");
+    case CategoryColumn:
+        return tr("Category");
+    case MessageColumn:
+        return tr("Message");
+    }
+
+    return QVariant();
+}
+
+QHash<int, QByteArray> Logger::roleNames() const {
+    static const QHash<int, QByteArray> roles{
+        {Qt::DisplayRole, QByteArrayLiteral("display")},
+        {LevelRole, QByteArrayLiteral("level")},
+    };
+
+    return roles;
+}
+
+int Logger::count() const {
+    return m_entries.size();
+}
+
+QUrl Logger::directoryUrl() const {
+    return QUrl::fromLocalFile(directoryPath());
+}
+
+void Logger::setMaxEntries(int newMaxEntries) {
+    newMaxEntries = qMax(1, newMaxEntries);
+
+    if (m_maxEntries == newMaxEntries) {
+        return;
+    }
+
+    m_maxEntries = newMaxEntries;
+
+    const int excess = m_entries.size() - m_maxEntries;
+
+    if (excess <= 0) {
+        return;
+    }
+
+    beginRemoveRows(QModelIndex(), 0, excess - 1);
+    m_entries.remove(0, excess);
+    endRemoveRows();
+
+    emit countChanged();
+}
+
+void Logger::setMaxFiles(int maxFiles) {
+    maxFiles = qMax(1, maxFiles);
+
+    const QDir directory(directoryPath());
+
+    QStringList existing =
+        directory.entryList({QStringLiteral("*.log")}, QDir::Files, QDir::Name);
+
+    // never touch the one being written to
+    existing.removeOne(QFileInfo(m_logFile.fileName()).fileName());
+
+    for (int i = 0; i < existing.size() - (maxFiles - 1); ++i) {
+        QFile file(directory.filePath(existing.at(i)));
+
+        if (!file.remove()) {
+            qCWarning(lcLogging) << "Cannot remove old log file"
+                                 << file.fileName() << file.errorString();
+
+            continue;
+        }
+
+        qCDebug(lcLogging) << "Removed old log file" << file.fileName();
+    }
+}
+
+void Logger::setFilterRules(const QString &rules) {
+    // setFilterRules() only splits on newlines
+    QLoggingCategory::setFilterRules(QString(rules).replace(u';', u'\n'));
+
+    if (rules.isEmpty()) {
+        return;
+    }
+
+    qCInfo(lcLogging) << "Applied category rules" << rules;
+
+    for (const char *variable : {"QT_LOGGING_CONF", "QT_LOGGING_RULES"}) {
+        if (qEnvironmentVariableIsSet(variable)) {
+            qCWarning(lcLogging)
+                << variable
+                << "is set and takes precedence over applied category rules";
+        }
+    }
+}
+
 Logger::Logger(QObject *parent) : QAbstractTableModel(parent) {}
 
 QString Logger::directoryPath() {
@@ -177,169 +341,5 @@ void Logger::appendEntry(Entry entry) {
 
     if (!isFull) {
         emit countChanged();
-    }
-}
-
-void Logger::install() {
-    Logger *self = Logger::instance();
-
-    QJSEngine::setObjectOwnership(self, QJSEngine::CppOwnership);
-
-    self->m_guiThread = QThread::currentThread();
-    self->m_previousHandler = qInstallMessageHandler(&Logger::messageHandler);
-
-    self->openLogFile();
-}
-
-int Logger::rowCount(const QModelIndex &parent) const {
-    return parent.isValid() ? 0 : m_entries.size();
-}
-
-int Logger::columnCount(const QModelIndex &parent) const {
-    return parent.isValid() ? 0 : ColumnCount;
-}
-
-QVariant Logger::data(const QModelIndex &index, int role) const {
-    if (!index.isValid() || index.row() < 0 ||
-        index.row() >= m_entries.size()) {
-        return QVariant();
-    }
-
-    const Entry &entry = m_entries.at(index.row());
-
-    switch (role) {
-    case Qt::DisplayRole:
-        switch (index.column()) {
-        case TimeColumn:
-            return entry.timestamp.toString(QStringLiteral("HH:mm:ss.zzz"));
-
-        case LevelColumn:
-            return levelName(entry.level);
-
-        case CategoryColumn:
-            return entry.category;
-
-        case MessageColumn:
-            return entry.message;
-
-        default:
-            return QVariant();
-        }
-
-    case TimestampRole:
-        return entry.timestamp;
-
-    case LevelRole:
-        return entry.level;
-
-    case LineTextRole:
-        return formatLine(entry.timestamp, entry.level, entry.category,
-                          entry.message);
-
-    default:
-        return QVariant();
-    }
-}
-
-QVariant Logger::headerData(int section, Qt::Orientation orientation,
-                            int role) const {
-    if (orientation != Qt::Horizontal || role != Qt::DisplayRole) {
-        return QAbstractTableModel::headerData(section, orientation, role);
-    }
-
-    switch (section) {
-    case TimeColumn:
-        return tr("Time");
-    case LevelColumn:
-        return tr("Level");
-    case CategoryColumn:
-        return tr("Category");
-    case MessageColumn:
-        return tr("Message");
-    }
-
-    return QVariant();
-}
-
-QHash<int, QByteArray> Logger::roleNames() const {
-    static const QHash<int, QByteArray> roles{
-        {Qt::DisplayRole, QByteArrayLiteral("display")},
-        {LevelRole, QByteArrayLiteral("level")},
-    };
-
-    return roles;
-}
-
-int Logger::count() const {
-    return m_entries.size();
-}
-
-QUrl Logger::directoryUrl() const {
-    return QUrl::fromLocalFile(directoryPath());
-}
-
-void Logger::setMaxEntries(int newMaxEntries) {
-    newMaxEntries = qMax(1, newMaxEntries);
-
-    if (m_maxEntries == newMaxEntries) {
-        return;
-    }
-
-    m_maxEntries = newMaxEntries;
-
-    const int excess = m_entries.size() - m_maxEntries;
-
-    if (excess <= 0) {
-        return;
-    }
-
-    beginRemoveRows(QModelIndex(), 0, excess - 1);
-    m_entries.remove(0, excess);
-    endRemoveRows();
-
-    emit countChanged();
-}
-
-void Logger::setMaxFiles(int maxFiles) {
-    maxFiles = qMax(1, maxFiles);
-
-    const QDir directory(directoryPath());
-
-    QStringList existing =
-        directory.entryList({QStringLiteral("*.log")}, QDir::Files, QDir::Name);
-
-    // never touch the one being written to
-    existing.removeOne(QFileInfo(m_logFile.fileName()).fileName());
-
-    for (int i = 0; i < existing.size() - (maxFiles - 1); ++i) {
-        QFile file(directory.filePath(existing.at(i)));
-
-        if (!file.remove()) {
-            qCWarning(lcLogging) << "Cannot remove old log file"
-                                 << file.fileName() << file.errorString();
-
-            continue;
-        }
-
-        qCDebug(lcLogging) << "Removed old log file" << file.fileName();
-    }
-}
-
-void Logger::setFilterRules(const QString &rules) {
-    // setFilterRules() only splits on newlines
-    QLoggingCategory::setFilterRules(QString(rules).replace(u';', u'\n'));
-
-    if (rules.isEmpty()) {
-        return;
-    }
-
-    qCInfo(lcLogging) << "Applied category rules" << rules;
-
-    for (const char *variable : {"QT_LOGGING_CONF", "QT_LOGGING_RULES"}) {
-        if (qEnvironmentVariableIsSet(variable)) {
-            qCWarning(lcLogging)
-                << variable
-                << "is set and takes precedence over applied category rules";
-        }
     }
 }

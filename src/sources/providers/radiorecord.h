@@ -25,6 +25,13 @@ constexpr QLatin1StringView SearchPath("/search/");
 class RadioRecord : public Source {
     Q_OBJECT
 
+public:
+    void cancelSearch() override;
+
+    bool hasDefaultStations() const override;
+
+    QString websiteUrl() const override;
+
 private:
     QNetworkRequestFactory m_api{{RadioRecordConstants::BaseApiUrl}};
 
@@ -47,11 +54,4 @@ private:
 private slots:
     void onSearchRequestFinished(QRestReply &reply);
     void onDefaultStationsRequestFinished(QRestReply &reply);
-
-public:
-    void cancelSearch() override;
-
-    bool hasDefaultStations() const override;
-
-    QString websiteUrl() const override;
 };

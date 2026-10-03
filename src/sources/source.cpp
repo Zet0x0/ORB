@@ -5,6 +5,42 @@
 #include <QJsonParseError>
 #include <optional>
 
+Source::Source()
+    : m_networkAccessManager(new QNetworkAccessManager(this)),
+      m_restAccessManager(
+          new QRestAccessManager(m_networkAccessManager, this)) {}
+
+void Source::search(const QString &query) {
+    emit searchStarted();
+
+    handleSearch(query);
+}
+
+bool Source::hasDefaultStations() const {
+    return false;
+}
+
+void Source::loadDefaultStations() {
+    if (!hasDefaultStations()) {
+        return;
+    }
+
+    emit searchStarted();
+
+    const QList<Station> cached = getCachedDefaultStations();
+
+    if (!cached.isEmpty()) {
+        qCDebug(lcSources) << "Using" << cached.size()
+                           << "cached default stations";
+
+        emit stationsDispatched(cached);
+
+        return;
+    }
+
+    handleLoadDefaultStations();
+}
+
 void Source::raiseError(const QString &title, const QString &message) {
     emit errorOccurred(ErrorInfo(title, message));
 }
@@ -52,47 +88,6 @@ const QList<Station> &Source::getCachedDefaultStations() {
 
 void Source::handleLoadDefaultStations() {}
 
-Source::Source()
-    : m_networkAccessManager(new QNetworkAccessManager(this)),
-      m_restAccessManager(
-          new QRestAccessManager(m_networkAccessManager, this)) {}
-
-void Source::search(const QString &query) {
-    emit searchStarted();
-
-    handleSearch(query);
-}
-
-bool Source::hasDefaultStations() const {
-    return false;
-}
-
-void Source::loadDefaultStations() {
-    if (!hasDefaultStations()) {
-        return;
-    }
-
-    emit searchStarted();
-
-    const QList<Station> cached = getCachedDefaultStations();
-
-    if (!cached.isEmpty()) {
-        qCDebug(lcSources) << "Using" << cached.size()
-                           << "cached default stations";
-
-        emit stationsDispatched(cached);
-
-        return;
-    }
-
-    handleLoadDefaultStations();
-}
-
-void Source::DefaultStations::resetCache() {
-    m_stations.clear();
-    m_cachedAt = -1;
-}
-
 void Source::DefaultStations::setCached(const QList<Station> &stations) {
     if (stations.isEmpty()) {
         resetCache();
@@ -111,4 +106,9 @@ const QList<Station> &Source::DefaultStations::getCached() {
     }
 
     return m_stations;
+}
+
+void Source::DefaultStations::resetCache() {
+    m_stations.clear();
+    m_cachedAt = -1;
 }

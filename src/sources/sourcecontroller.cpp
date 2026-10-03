@@ -2,102 +2,6 @@
 #include "../logging/logcategories.h"
 #include <QVariantMap>
 
-SourceController::SourceController(QObject *parent)
-    : QObject(parent), m_stationModel(new StationModel(this)) {}
-
-void SourceController::undoSourceConnections(Source *source) const {
-    disconnect(source, nullptr, this, nullptr);
-}
-
-void SourceController::setupSourceConnections(Source *source) const {
-    connect(source, &Source::stationsDispatched, this,
-            &SourceController::onSourceStationsDispatched);
-    connect(source, &Source::errorOccurred, this,
-            &SourceController::onSourceErrorOccurred);
-
-    connect(source, &Source::searchStarted, this,
-            &SourceController::onSearchStarted);
-    connect(source, &Source::searchCancelled, this,
-            &SourceController::onSearchCancelled);
-}
-
-void SourceController::cancelSearch() {
-    if (!m_source) {
-        return;
-    }
-
-    if (m_searchState == SearchState::Searching) {
-        qCDebug(lcSources) << "Cancelling search in" << m_currentSourceKey;
-    }
-
-    m_source->cancelSearch();
-    setSearchState(SearchState::Idle);
-}
-
-void SourceController::setSearchState(const SearchState &newSearchState) {
-    if (m_searchState == newSearchState) {
-        return;
-    }
-
-    if (m_searchState == SearchState::Error) {
-        setError(ErrorInfo{});
-    }
-
-    m_searchState = newSearchState;
-
-    emit searchStateChanged();
-}
-
-void
-SourceController::setCanShowDefaultStations(bool newCanShowDefaultStations) {
-    if (m_canShowDefaultStations == newCanShowDefaultStations) {
-        return;
-    }
-
-    m_canShowDefaultStations = newCanShowDefaultStations;
-
-    emit canShowDefaultStationsChanged();
-}
-
-void
-SourceController::onSourceStationsDispatched(const QList<Station> &stations) {
-    qCInfo(lcSources) << m_currentSourceKey << "returned" << stations.size()
-                      << "stations";
-
-    m_stationModel->setStations(stations);
-
-    setSearchState(SearchState::Idle);
-}
-
-void SourceController::onSearchStarted() {
-    setSearchState(SearchState::Searching);
-}
-
-void SourceController::onSearchCancelled() {
-    setSearchState(SearchState::Idle);
-}
-
-void SourceController::onSourceErrorOccurred(const ErrorInfo &error) {
-    qCInfo(lcSources).nospace() << m_currentSourceKey << " reported "
-                                << error.title << ": " << error.message;
-
-    setError(error);
-}
-
-void SourceController::setError(const ErrorInfo &error) {
-    if (m_error == error) {
-        return;
-    }
-
-    m_error = error;
-
-    emit errorChanged();
-
-    if (!m_error.title.isEmpty() || !m_error.message.isEmpty()) {
-        setSearchState(SearchState::Error);
-    }
-}
-
 bool SourceController::sourceExists(const QString &key) const {
     return m_sources.contains(key);
 }
@@ -222,4 +126,100 @@ void SourceController::showDefaultStations() {
     qCDebug(lcSources) << "Loading default stations of" << m_currentSourceKey;
 
     m_source->loadDefaultStations();
+}
+
+SourceController::SourceController(QObject *parent)
+    : QObject(parent), m_stationModel(new StationModel(this)) {}
+
+void SourceController::undoSourceConnections(Source *source) const {
+    disconnect(source, nullptr, this, nullptr);
+}
+
+void SourceController::setupSourceConnections(Source *source) const {
+    connect(source, &Source::stationsDispatched, this,
+            &SourceController::onSourceStationsDispatched);
+    connect(source, &Source::errorOccurred, this,
+            &SourceController::onSourceErrorOccurred);
+
+    connect(source, &Source::searchStarted, this,
+            &SourceController::onSearchStarted);
+    connect(source, &Source::searchCancelled, this,
+            &SourceController::onSearchCancelled);
+}
+
+void SourceController::cancelSearch() {
+    if (!m_source) {
+        return;
+    }
+
+    if (m_searchState == SearchState::Searching) {
+        qCDebug(lcSources) << "Cancelling search in" << m_currentSourceKey;
+    }
+
+    m_source->cancelSearch();
+    setSearchState(SearchState::Idle);
+}
+
+void SourceController::setSearchState(const SearchState &newSearchState) {
+    if (m_searchState == newSearchState) {
+        return;
+    }
+
+    if (m_searchState == SearchState::Error) {
+        setError(ErrorInfo{});
+    }
+
+    m_searchState = newSearchState;
+
+    emit searchStateChanged();
+}
+
+void
+SourceController::setCanShowDefaultStations(bool newCanShowDefaultStations) {
+    if (m_canShowDefaultStations == newCanShowDefaultStations) {
+        return;
+    }
+
+    m_canShowDefaultStations = newCanShowDefaultStations;
+
+    emit canShowDefaultStationsChanged();
+}
+
+void
+SourceController::onSourceStationsDispatched(const QList<Station> &stations) {
+    qCInfo(lcSources) << m_currentSourceKey << "returned" << stations.size()
+                      << "stations";
+
+    m_stationModel->setStations(stations);
+
+    setSearchState(SearchState::Idle);
+}
+
+void SourceController::onSearchStarted() {
+    setSearchState(SearchState::Searching);
+}
+
+void SourceController::onSearchCancelled() {
+    setSearchState(SearchState::Idle);
+}
+
+void SourceController::onSourceErrorOccurred(const ErrorInfo &error) {
+    qCInfo(lcSources).nospace() << m_currentSourceKey << " reported "
+                                << error.title << ": " << error.message;
+
+    setError(error);
+}
+
+void SourceController::setError(const ErrorInfo &error) {
+    if (m_error == error) {
+        return;
+    }
+
+    m_error = error;
+
+    emit errorChanged();
+
+    if (!m_error.title.isEmpty() || !m_error.message.isEmpty()) {
+        setSearchState(SearchState::Error);
+    }
 }

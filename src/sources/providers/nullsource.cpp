@@ -1,13 +1,13 @@
 #include "nullsource.h"
 
-void NullSource::handleSearch(const QString &query) {
-    Q_UNUSED(query)
-
-    raiseError(tr("Search error"), tr("This source is not searchable"));
-}
-
 void NullSource::cancelSearch() {}
 
 QString NullSource::websiteUrl() const {
     return QStringLiteral("https://youtu.be/ds8sVhxdvfA");
+}
+
+void NullSource::handleSearch(const QString &query) {
+    Q_UNUSED(query)
+
+    raiseError(tr("Search error"), tr("This source is not searchable"));
 }

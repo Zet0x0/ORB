@@ -42,6 +42,34 @@ public:
     enum class SearchState { Idle, Searching, Error };
     Q_ENUM(SearchState)
 
+    bool sourceExists(const QString &key) const;
+    bool registerSource(const QString &key, const QString &displayName,
+                        Source *source);
+    Q_INVOKABLE QVariantList getSources() const;
+
+    SearchState searchState() const;
+    ErrorInfo error() const;
+
+    Q_INVOKABLE StationModel *stationModel() const;
+
+    bool canShowDefaultStations() const;
+
+    QString currentSourceUrl() const;
+    bool currentSourceIsNull() const;
+
+signals:
+    void searchStateChanged();
+    void errorChanged();
+
+    void canShowDefaultStationsChanged();
+    void currentSourceUrlChanged();
+
+public slots:
+    void setSource(const QString &newSourceName);
+    void search(const QString &query);
+
+    void showDefaultStations();
+
 private:
     QHash<QString, Source *> m_sources;
     QHash<QString, QString> m_sourceDisplayNames;
@@ -73,33 +101,4 @@ private slots:
     void onSourceErrorOccurred(const ErrorInfo &error);
 
     void setError(const ErrorInfo &error);
-
-public:
-    bool sourceExists(const QString &key) const;
-    bool registerSource(const QString &key, const QString &displayName,
-                        Source *source);
-    Q_INVOKABLE QVariantList getSources() const;
-
-    SearchState searchState() const;
-    ErrorInfo error() const;
-
-    Q_INVOKABLE StationModel *stationModel() const;
-
-    bool canShowDefaultStations() const;
-
-    QString currentSourceUrl() const;
-    bool currentSourceIsNull() const;
-
-public slots:
-    void setSource(const QString &newSourceName);
-    void search(const QString &query);
-
-    void showDefaultStations();
-
-signals:
-    void searchStateChanged();
-    void errorChanged();
-
-    void canShowDefaultStationsChanged();
-    void currentSourceUrlChanged();
 };

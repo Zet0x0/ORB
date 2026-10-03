@@ -13,39 +13,6 @@
 #include <utility>
 
 namespace SettingsIntrospection {
-QString label(const QByteArray &propertyName) {
-    QString result;
-
-    for (int i = 0; i < propertyName.size(); ++i) {
-        const QChar ch = QLatin1Char(propertyName.at(i));
-
-        if (i == 0) {
-            result += ch.toUpper();
-
-            continue;
-        }
-
-        if (ch.isUpper()) {
-            result += u' ';
-            result += ch.toLower();
-
-            continue;
-        }
-
-        result += ch;
-    }
-
-    return result;
-}
-
-QString categoryName(const QByteArray &id) {
-    if (id.isEmpty()) {
-        return QString();
-    }
-
-    return QCoreApplication::translate("SettingsCategory", id.constData());
-}
-
 QList<SettingsGroup *> groups() {
     QList<SettingsGroup *> result;
 
@@ -135,5 +102,38 @@ QList<ResolvedField> resolvedFields(const SettingsGroup *group) {
     }
 
     return result;
+}
+
+QString label(const QByteArray &propertyName) {
+    QString result;
+
+    for (int i = 0; i < propertyName.size(); ++i) {
+        const QChar ch = QLatin1Char(propertyName.at(i));
+
+        if (i == 0) {
+            result += ch.toUpper();
+
+            continue;
+        }
+
+        if (ch.isUpper()) {
+            result += u' ';
+            result += ch.toLower();
+
+            continue;
+        }
+
+        result += ch;
+    }
+
+    return result;
+}
+
+QString categoryName(const QByteArray &id) {
+    if (id.isEmpty()) {
+        return QString();
+    }
+
+    return QCoreApplication::translate("SettingsCategory", id.constData());
 }
 }
