@@ -1,5 +1,5 @@
 #include "mpv.h"
-#include "../common/logcategories.h"
+#include "../logging/logcategories.h"
 #include <QByteArray>
 #include <QLatin1StringView>
 #include <QLoggingCategory>

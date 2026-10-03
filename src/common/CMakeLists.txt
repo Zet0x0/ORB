@@ -13,11 +13,9 @@ qt_add_qml_module(
     urlvalidator.h
     urlvalidator.cpp
     errorinfo.h
-    errorinfo.cpp
-    logcategories.h
-    logcategories.cpp)
+    errorinfo.cpp)
 
 target_link_libraries(
     common
     PUBLIC Qt6::Qml
-    PRIVATE Qt6::Gui)
+    PRIVATE Qt6::Gui logging)

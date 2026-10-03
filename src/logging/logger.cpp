@@ -1,5 +1,5 @@
 #include "logger.h"
-#include "../common/logcategories.h"
+#include "logcategories.h"
 #include <QCoreApplication>
 #include <QDir>
 #include <QFileInfo>

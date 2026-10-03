@@ -38,4 +38,4 @@ qt_add_qml_module(
     loggingsettings.h
     loggingsettings.cpp)
 
-target_link_libraries(settings PRIVATE sources common)
+target_link_libraries(settings PRIVATE sources common logging)

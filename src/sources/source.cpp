@@ -1,6 +1,6 @@
 #include "source.h"
-#include "../common/logcategories.h"
 #include "../common/utilities.h"
+#include "../logging/logcategories.h"
 #include <QJsonDocument>
 #include <QJsonParseError>
 #include <optional>

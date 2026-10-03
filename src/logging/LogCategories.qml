@@ -2,7 +2,7 @@ pragma Singleton
 
 import QtQml
 
-// C++ categories are in src/common/logcategories.cpp
+// C++ categories are in logcategories.cpp
 
 QtObject {
     readonly property LoggingCategory tray: LoggingCategory {

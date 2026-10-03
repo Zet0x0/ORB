@@ -15,4 +15,5 @@ qt_add_qml_module(
     mpv.h
     mpv.cpp)
 
-target_link_libraries(player PRIVATE Libmpv::Libmpv sources common settings)
+target_link_libraries(player PRIVATE Libmpv::Libmpv sources common logging
+                                     settings)

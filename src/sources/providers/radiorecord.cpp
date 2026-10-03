@@ -1,5 +1,5 @@
 #include "radiorecord.h"
-#include "../../common/logcategories.h"
+#include "../../logging/logcategories.h"
 #include <QByteArray>
 #include <QHttpMultiPart>
 #include <QJsonArray>

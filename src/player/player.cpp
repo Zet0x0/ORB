@@ -1,6 +1,6 @@
 #include "player.h"
-#include "../common/logcategories.h"
 #include "../common/utilities.h"
+#include "../logging/logcategories.h"
 #include "../settings/playersettings.h"
 #include "../settings/settings.h"
 #include <QCoreApplication>

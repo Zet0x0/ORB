@@ -2,7 +2,7 @@
 
 #include <QLoggingCategory>
 
-// QML categories are in ORB.QmlComponents/LogCategories
+// QML categories are in LogCategories.qml
 // mpv's own ones (mpv.<something>) are created at runtime, in player/mpv.cpp
 
 Q_DECLARE_LOGGING_CATEGORY(lcApp)

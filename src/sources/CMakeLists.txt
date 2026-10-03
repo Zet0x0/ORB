@@ -26,4 +26,4 @@ qt_add_qml_module(
     providers/favoritessource.h
     providers/favoritessource.cpp)
 
-target_link_libraries(sources PRIVATE common Qt6::Network)
+target_link_libraries(sources PRIVATE common logging Qt6::Network)

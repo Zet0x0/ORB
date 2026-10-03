@@ -1,5 +1,5 @@
 #include "settingsgroup.h"
-#include "../common/logcategories.h"
+#include "../logging/logcategories.h"
 #include "settingsfactory.h"
 
 SettingsGroup::SettingsGroup(QObject *parent, const QString &section)

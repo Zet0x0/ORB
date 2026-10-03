@@ -1,5 +1,5 @@
 #include "sourcecontroller.h"
-#include "../common/logcategories.h"
+#include "../logging/logcategories.h"
 #include <QVariantMap>
 
 SourceController::SourceController(QObject *parent)

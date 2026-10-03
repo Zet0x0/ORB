@@ -1,5 +1,5 @@
 #include "settingsintrospection.h"
-#include "../common/logcategories.h"
+#include "../logging/logcategories.h"
 #include "settings.h"
 #include "settingscategories.h"
 #include "settingsfieldmeta.h"

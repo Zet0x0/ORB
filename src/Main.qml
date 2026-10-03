@@ -1,4 +1,5 @@
 import ORB.Common
+import ORB.Logging
 import ORB.Player
 import ORB.QmlComponents
 import ORB.Settings

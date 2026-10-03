@@ -1,6 +1,6 @@
 #include "logcategories.h"
 
-// QML categories are in ORB.QmlComponents/LogCategories
+// QML categories are in LogCategories.qml
 
 Q_LOGGING_CATEGORY(lcApp, "orb.app")
 Q_LOGGING_CATEGORY(lcLogging, "orb.logging")

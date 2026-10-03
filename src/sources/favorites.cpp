@@ -1,5 +1,5 @@
 #include "favorites.h"
-#include "../common/logcategories.h"
+#include "../logging/logcategories.h"
 #include <QDir>
 #include <QFile>
 #include <QFileInfo>

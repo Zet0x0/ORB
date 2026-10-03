@@ -1,5 +1,5 @@
 #include "settingspropertymodel.h"
-#include "../common/logcategories.h"
+#include "../logging/logcategories.h"
 #include "settingsgroup.h"
 #include "settingsintrospection.h"
 #include <QMetaType>

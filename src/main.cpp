@@ -1,4 +1,4 @@
-#include "common/logcategories.h"
+#include "logging/logcategories.h"
 #include "logging/logger.h"
 #include "orbversion.h"
 #include "settings/loggingsettings.h"

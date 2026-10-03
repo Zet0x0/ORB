@@ -1,5 +1,5 @@
 #include "utilities.h"
-#include "logcategories.h"
+#include "../logging/logcategories.h"
 #include <QClipboard>
 #include <QCursor>
 #include <QDateTime>

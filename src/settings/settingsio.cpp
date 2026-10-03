@@ -1,5 +1,5 @@
 #include "settingsio.h"
-#include "../common/logcategories.h"
+#include "../logging/logcategories.h"
 
 namespace {
 QString keyPath(const QSettings *settings, const QString &key) {
