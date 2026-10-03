@@ -1,6 +1,7 @@
 #include "mpv.h"
 #include "../logging/logcategories.h"
 #include <QByteArray>
+#include <QCoreApplication>
 #include <QLatin1StringView>
 #include <QLoggingCategory>
 #include <QMetaObject>
@@ -113,6 +114,13 @@ Mpv::Mpv(QObject *parent) : QObject(parent) {
     }
 
     mpv_set_property_string(m_handle, "vid", "no");
+
+    // by default when on Windows (at least), mpv names our app in Volume mixer
+    // as such: "filename-or-icecast-info - mpv", that's not quite the thing we
+    // want
+    const QByteArray appName = QCoreApplication::applicationName().toUtf8();
+    mpv_set_property_string(m_handle, "audio-client-name", appName.constData());
+    mpv_set_property_string(m_handle, "title", ("$>" + appName).constData());
 
     mpv_request_log_messages(m_handle, "v");
 
